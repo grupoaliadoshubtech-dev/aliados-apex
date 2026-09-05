@@ -1,11 +1,28 @@
+# Dependency directories
 node_modules/
+
+# Environment files
 .env
-remessa.txt
-guias_emitidas/
-xml_gerados/
-xml_logs/
+.env.*
+!.env.example
+
+# Certificates and sensitive credentials
+CERTIFICADOS/
+*.pfx
+*.p12
+*.pem
+*.key
+
+# Temporary and local processing folders
 xml_nfe/
 xml_nfe_backup/
-CERTIFICADOS/
+xml_gerados/
+xml_logs/
+guias_emitidas/
+remessa.txt
 *.log
 *.pdf
+
+# OS / IDE
+.DS_Store
+Thumbs.db
