@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "worker": "node worker/index.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.8",
@@ -14,7 +15,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "https-proxy-agent": "^7.0.4",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.23.0",
+    "pg-boss": "^12.30.0"
   },
   "author": "Antigravity",
   "license": "ISC"
