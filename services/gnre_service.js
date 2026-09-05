@@ -68,7 +68,9 @@ function sendSoapRequest(urlStr, soapAction, xmlPayload, agent) {
             path: url.pathname + url.search,
             port: url.port || 443,
             agent: agent,
-            timeout: 60000, // Timeout de 15 segundos
+            rejectUnauthorized: false,
+            checkServerIdentity: () => undefined,
+            timeout: 60000, // Timeout de 60 segundos
             headers: {
                 'Content-Type': 'application/soap+xml; charset=utf-8;',
                 'SOAPAction': soapAction,

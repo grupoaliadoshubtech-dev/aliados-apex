@@ -19,9 +19,9 @@ const upload = multer({
     }
 });
 
-// Middleware de upload com tratamento de erro amigável para limite de arquivos
+// Middleware de upload com suporte flexível a campos ('files' ou 'xmls') até 50 arquivos
 const uploadBatchFiles = (req, res, next) => {
-    upload.array('files', 50)(req, res, (err) => {
+    upload.any()(req, res, (err) => {
         if (err instanceof multer.MulterError && err.code === 'LIMIT_UNEXPECTED_FILE') {
             return res.status(400).json({ error: "Limite de upload excedido. Máximo permitido: 50 arquivos XML por lote." });
         }
@@ -53,25 +53,49 @@ router.post('/process', requireAuth, requireActiveSubscription, uploadBatchFiles
 
         // 1. Cria o registro do lote com status 'queued'
         const initialLog = `[${new Date().toLocaleTimeString('pt-BR')}] Lote de ${files.length} nota(s) recebido e enfileirado com sucesso.`;
-        const { data: batch, error: batchError } = await supabaseAdmin
+        let batchPayload = {
+            tenant_id: tenant.id,
+            environment: tenant.environment || 'simulado',
+            status: 'queued',
+            logs: [initialLog]
+        };
+
+        let { data: batch, error: batchError } = await supabaseAdmin
             .from('batches')
-            .insert({
-                tenant_id: tenant.id,
-                environment: tenant.environment || 'simulado',
-                status: 'queued',
-                logs: [initialLog]
-            })
+            .insert(batchPayload)
             .select()
             .single();
+
+        // Se a coluna 'logs' ainda não foi criada no banco remoto, tenta inserir sem ela
+        if (batchError && batchError.message && batchError.message.includes('logs')) {
+            delete batchPayload.logs;
+            const retry = await supabaseAdmin
+                .from('batches')
+                .insert(batchPayload)
+                .select()
+                .single();
+            batch = retry.data;
+            batchError = retry.error;
+        }
 
         if (batchError || !batch) {
             return res.status(500).json({ error: "Erro ao criar registro do lote: " + (batchError?.message || 'Falha no banco') });
         }
 
-        // 2. Prepara os dados dos arquivos para o Worker
+        // 2. Prepara os dados dos arquivos para o Worker e armazena temporariamente no Storage
         const filesData = files.map(f => ({
             filename: f.originalname,
             content: f.buffer.toString('utf8')
+        }));
+
+        // Upload não-bloqueante para storage para que o worker tenha acesso mesmo entre instâncias separadas
+        Promise.all(files.map(f => {
+            return supabaseAdmin.storage
+                .from('tenant-storage')
+                .upload(`${tenant.id}/temp_xmls/${batch.id}/${f.originalname}`, f.buffer, {
+                    contentType: 'application/xml',
+                    upsert: true
+                }).catch(e => console.warn("Aviso no upload temp storage:", e.message));
         }));
 
         const jobPayload = {

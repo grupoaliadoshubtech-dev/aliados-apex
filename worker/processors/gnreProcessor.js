@@ -26,11 +26,18 @@ async function processGnreBatch(jobData) {
     try {
         log("🚀 Iniciando processamento do lote no Worker...");
 
+        // Função auxiliar para atualização tolerante a schemas antigos sem a coluna 'logs'
+        async function updateBatchSafe(fields) {
+            const { error } = await supabaseAdmin.from('batches').update(fields).eq('id', batchId);
+            if (error && error.message && error.message.includes('logs')) {
+                const copy = { ...fields };
+                delete copy.logs;
+                await supabaseAdmin.from('batches').update(copy).eq('id', batchId);
+            }
+        }
+
         // 1. Atualiza status no banco para 'processing'
-        await supabaseAdmin
-            .from('batches')
-            .update({ status: 'processing', logs })
-            .eq('id', batchId);
+        await updateBatchSafe({ status: 'processing', logs });
 
         // 2. Busca dados atualizados do tenant
         const { data: tenant, error: tenantError } = await supabaseAdmin
@@ -168,7 +175,6 @@ async function processGnreBatch(jobData) {
         // 5.3 Processamento Portal Nacional GNRE v2.00 (SEFAZ-PE)
         if (notasGnre.length > 0) {
             log(`📡 Enviando ${notasGnre.length} guia(s) ao Portal Nacional da GNRE (SEFAZ)...`);
-            const xmlLote = gnreService.montarXmlLote(notasGnre, dadosEmpresa);
             const resultadoEnvio = await gnreService.enviarLote(notasGnre, agent, 'PE', tenant.environment, dadosEmpresa);
 
             if (!resultadoEnvio.sucesso || !resultadoEnvio.recibo) {
@@ -292,20 +298,17 @@ async function processGnreBatch(jobData) {
 
         // 10. Finaliza o lote com Sucesso
         log("🎉 Lote processado com sucesso!");
-        await supabaseAdmin
-            .from('batches')
-            .update({
-                status: 'sucesso',
-                receipt: recibosEfetuados.join(', ') || null,
-                logs
-            })
-            .eq('id', batchId);
+        await updateBatchSafe({
+            status: 'sucesso',
+            receipt: recibosEfetuados.join(', ') || null,
+            logs
+        });
 
         return { success: true, totalGuias: todasGuias.length };
 
     } catch (err) {
         log(`❌ Falha no processamento: ${err.message}`);
-        await supabaseAdmin
+        const { error } = await supabaseAdmin
             .from('batches')
             .update({
                 status: 'erro',
@@ -313,6 +316,16 @@ async function processGnreBatch(jobData) {
                 logs
             })
             .eq('id', batchId);
+
+        if (error && error.message && error.message.includes('logs')) {
+            await supabaseAdmin
+                .from('batches')
+                .update({
+                    status: 'erro',
+                    error_message: err.message
+                })
+                .eq('id', batchId);
+        }
 
         throw err;
     }

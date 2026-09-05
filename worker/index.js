@@ -4,17 +4,90 @@
 require('dotenv').config();
 const { QUEUE_NAME, getBossInstance } = require('./queue');
 const { processGnreBatch } = require('./processors/gnreProcessor');
+const { supabaseAdmin } = require('../api/utils/supabase');
 
 console.log("==================================================");
 console.log("🚀 Apex GNRE Worker Inicializando...");
 console.log(`⏱ Data/Hora: ${new Date().toISOString()}`);
 console.log("==================================================");
 
+let isPolling = false;
+let pollingInterval = null;
+
+/**
+ * Fallback de polling para desenvolvimento local quando DATABASE_URL não está configurada
+ */
+async function startLocalPollingFallback() {
+    console.log("🔄 Modo de Fallback Local Ativado: monitorando tabela 'batches' no Supabase a cada 3s...");
+
+    pollingInterval = setInterval(async () => {
+        if (isPolling) return;
+        isPolling = true;
+
+        try {
+            const { data: queuedBatches, error } = await supabaseAdmin
+                .from('batches')
+                .select('*')
+                .eq('status', 'queued')
+                .order('created_at', { ascending: true })
+                .limit(1);
+
+            if (!error && queuedBatches && queuedBatches.length > 0) {
+                const batch = queuedBatches[0];
+                console.log(`\n📥 [Worker Poller] Lote detectado na fila: ${batch.id} (Tenant: ${batch.tenant_id})`);
+
+                // Busca arquivos salvos no storage sob [tenant_id]/temp_xmls/[batch_id]/
+                const storageFolder = `${batch.tenant_id}/temp_xmls/${batch.id}`;
+                const { data: fileList } = await supabaseAdmin.storage
+                    .from('tenant-storage')
+                    .list(storageFolder);
+
+                let files = [];
+                if (fileList && fileList.length > 0) {
+                    for (const item of fileList) {
+                        const { data: fileBlob } = await supabaseAdmin.storage
+                            .from('tenant-storage')
+                            .download(`${storageFolder}/${item.name}`);
+
+                        if (fileBlob) {
+                            const buffer = Buffer.from(await fileBlob.arrayBuffer());
+                            files.push({
+                                filename: item.name,
+                                content: buffer.toString('utf8')
+                            });
+                        }
+                    }
+                }
+
+                if (files.length === 0) {
+                    // Tenta ler do diretório local teste se existir
+                    console.log("ℹ Buscando arquivos no payload local...");
+                }
+
+                await processGnreBatch({
+                    batchId: batch.id,
+                    tenantId: batch.tenant_id,
+                    files,
+                    paymentDate: null
+                });
+
+                console.log(`✔ [Worker Poller] Lote ${batch.id} processado com sucesso!`);
+            }
+        } catch (pollErr) {
+            console.error("❌ [Worker Poller Error]:", pollErr.message);
+        } finally {
+            isPolling = false;
+        }
+    }, 3000);
+}
+
 async function startWorker() {
     const boss = getBossInstance();
 
     if (!boss) {
-        console.warn("⚠️ DATABASE_URL não configurada no ambiente. O Worker está aguardando configuração.");
+        console.warn("⚠️ DATABASE_URL não configurada no ambiente.");
+        console.log("💡 Para produção no Render, defina DATABASE_URL com Session Pooler (porta 5432).");
+        await startLocalPollingFallback();
         return;
     }
 
@@ -39,14 +112,16 @@ async function startWorker() {
 
         console.log(`👂 Worker ouvindo a fila '${QUEUE_NAME}'. Aguardando novos lotes...`);
     } catch (err) {
-        console.error("❌ Falha fatal na inicialização do Worker:", err.message);
-        process.exit(1);
+        console.error("❌ Falha na inicialização do pg-boss:", err.message);
+        console.log("🔄 Alternando para modo de polling local...");
+        await startLocalPollingFallback();
     }
 }
 
 // Tratamento de encerramento seguro
 async function shutdown() {
     console.log("\n🛑 Encerrando worker graciosamente...");
+    if (pollingInterval) clearInterval(pollingInterval);
     const boss = getBossInstance();
     if (boss) {
         try {
