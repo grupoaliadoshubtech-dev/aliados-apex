@@ -17,7 +17,8 @@
     "https-proxy-agent": "^7.0.4",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.23.0",
-    "pg-boss": "^12.30.0"
+    "pg-boss": "^12.30.0",
+    "stripe": "^22.6.1"
   },
   "author": "Antigravity",
   "license": "ISC"
