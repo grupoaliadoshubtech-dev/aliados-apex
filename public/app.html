@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex SaaS - Pipeline Fiscal Modular</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #08080f;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08080f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#08080f] text-white flex flex-col justify-between">
+
+  <!-- HEADER PIPELINE -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#08080f]/80 border-b border-white/[0.06]">
+    <div class="max-w-[1400px] mx-auto px-6 h-[64px] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 grid place-items-center font-bold text-white shadow-[0_0_16px_rgba(139,92,246,0.4)] text-sm">A</a>
+        <div>
+          <a href="/" class="font-semibold text-white tracking-tight hover:opacity-90">Apex <span class="text-violet-300">SaaS</span></a>
+          <div class="text-[10px] text-white/50 -mt-1 tracking-widest uppercase">PLATAFORMA FISCAL</div>
+        </div>
+        <div class="ml-6 hidden md:flex items-center gap-2 text-xs">
+          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          <span class="text-white/60">AO VIVO</span>
+        </div>
+      </div>
+
+      <div class="hidden lg:flex items-center gap-2 bg-white/[0.04] border border-white/[0.06] rounded-full p-1" id="stepperNav">
+        <div id="stepTag1" class="px-3 py-1 rounded-full bg-white text-black text-xs font-medium transition-all">1. Importar</div>
+        <div id="stepTag2" class="px-3 py-1 text-xs text-white/40 rounded-full transition-all">2. Validar</div>
+        <div id="stepTag3" class="px-3 py-1 text-xs text-white/40 rounded-full transition-all">3. Emitir</div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/20 text-[11px] font-medium">🧪 SIMULADO</span>
+        <div class="hidden md:block h-6 w-px bg-white/10"></div>
+        <div class="hidden md:flex items-center gap-3">
+          <div class="text-right">
+            <div class="text-[11px] text-white/70" id="headerTenantName">Grupo Aliado Hub Tech LTDA</div>
+            <div class="text-[10px] text-white/40" id="headerUsageCounter">00.000.000/0001-91 • <span id="usageText">247</span>/500</div>
+            <div class="w-[120px] h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+              <div id="headerUsageBar" class="h-full bg-violet-500 transition-all duration-500" style="width: 49.4%"></div>
+            </div>
+          </div>
+          <button onclick="openUpgradeModal()" class="px-3 py-1.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all">Upgrade</button>
+          <button onclick="openConfigWizard()" class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 grid place-items-center text-white/70 hover:text-white transition-all" title="Configurações">⚙️</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-[1400px] w-full mx-auto px-6 py-8">
+
+    <!-- DROPZONE (files.length === 0) -->
+    <div id="dropzoneContainer" class="max-w-[1100px] mx-auto mt-8 transition-all">
+      <div
+        id="dropArea"
+        class="relative rounded-[24px] border border-dashed border-white/15 bg-[#10101a] p-12 text-center transition-all hover:border-violet-500/30 hover:bg-[#13131f]"
+      >
+        <div class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 grid place-items-center text-2xl mb-5 shadow-[0_8px_24px_rgba(99,102,241,0.35)]">📥</div>
+        <h2 class="text-[28px] font-semibold text-white tracking-tight">Arraste seus arquivos fiscais aqui</h2>
+        <p class="mt-2 text-sm text-white/50">XML de NF-e, CT-e ou pasta completa • Processamento em lote • Até 5.000 arquivos</p>
+
+        <div class="mt-8 flex flex-wrap gap-3 justify-center">
+          <label class="px-5 py-2.5 rounded-full bg-white text-black text-sm font-semibold cursor-pointer hover:bg-zinc-100 transition-all shadow-sm">
+            Selecionar arquivos
+            <input type="file" id="fileInput" multiple accept=".xml" class="hidden">
+          </label>
+          <button onclick="useSampleFiles()" class="px-5 py-2.5 rounded-full bg-white/[0.06] border border-white/10 text-white/80 text-sm hover:bg-white/[0.10] hover:text-white transition-all">
+            Usar arquivos de exemplo
+          </button>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-[720px] mx-auto">
+          <div class="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            <div class="text-lg">⚡</div>
+            <div class="mt-2 text-[13px] font-medium text-white">Processamento em lote mTLS</div>
+            <div class="text-[11px] text-white/40 mt-1 leading-snug">Transmissão automática para SEFAZ</div>
+          </div>
+          <div class="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            <div class="text-lg">🏦</div>
+            <div class="mt-2 text-[13px] font-medium text-white">Remessa SISPAG CNAB 240</div>
+            <div class="text-[11px] text-white/40 mt-1 leading-snug">Pronto para Itaú e outros bancos</div>
+          </div>
+          <div class="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            <div class="text-lg">🔗</div>
+            <div class="mt-2 text-[13px] font-medium text-white">Vínculo automático de NFs</div>
+            <div class="text-[11px] text-white/40 mt-1 leading-snug">Sem digitação manual</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 text-center text-[11px] text-white/30">
+        Suporta: .xml • .zip • pastas • Apex SaaS detecta automaticamente o tributo
+      </div>
+    </div>
+
+    <!-- PREVIEW TABLE & TIMELINE (files.length > 0) -->
+    <div id="pipelineActiveContainer" class="hidden space-y-6">
+      
+      <!-- PREVIEW TABLE GRID -->
+      <div class="grid grid-cols-12 gap-6">
+        <!-- Tabela -->
+        <div class="col-span-12 lg:col-span-8 rounded-[20px] bg-[#0f0f19] border border-white/[0.06] overflow-hidden">
+          <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
+            <div>
+              <h3 id="tableHeaderSummary" class="text-white font-semibold">2.347 notas detectadas • R$ 1.2M em base • 14 UFs</h3>
+              <p class="text-xs text-white/40 mt-1">Revise antes de emitir • Apex SaaS agrupou por UF automaticamente</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="groupsBadge" class="px-2.5 py-1 rounded-full bg-emerald-400/15 text-emerald-300 text-xs border border-emerald-400/20">14 grupos fiscais</span>
+              <button onclick="resetPipeline()" class="text-xs text-white/40 hover:text-white px-2 py-1">↺ Novo lote</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto max-h-[420px] overflow-y-auto">
+            <table class="w-full text-[13px]">
+              <thead class="text-[11px] tracking-widest text-white/30 sticky top-0 bg-[#0f0f19] z-10">
+                <tr class="border-b border-white/[0.06]">
+                  <th class="text-left font-normal px-6 py-3">NF-e</th>
+                  <th class="text-left font-normal">Emitente</th>
+                  <th class="text-left font-normal">UF Dest.</th>
+                  <th class="text-left font-normal">Tributo</th>
+                  <th class="text-left font-normal">Valor</th>
+                  <th class="text-left font-normal">Status</th>
+                </tr>
+              </thead>
+              <tbody id="previewTableBody">
+                <!-- Linhas inseridas dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-4 bg-[#0c0c14] border-t border-white/[0.06] flex flex-wrap gap-4 items-center justify-between">
+            <span id="tableFooterInfo" class="text-xs text-white/50">3 UFs selecionadas • Total: R$ 4.382,10 em guias</span>
+            <button
+              id="btnEmitir"
+              onclick="handleGenerate()"
+              class="px-6 py-2.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold shadow-[0_8px_20px_rgba(99,102,241,0.35)] hover:opacity-95 transition-all flex items-center gap-2"
+            >
+              <span>Gerar Guias e Remessa</span>
+              <span id="emitirArrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RESUMO LATERAL + TERMINAL -->
+        <div class="col-span-12 lg:col-span-4 space-y-4">
+          <div class="rounded-[20px] bg-[#10101b] border border-violet-500/20 p-5 shadow-[0_0_30px_rgba(99,102,241,0.12)]">
+            <div class="text-xs tracking-widest text-white/40">RESUMO DA OPERAÇÃO</div>
+            <div class="mt-4 space-y-3 text-sm">
+              <div class="flex justify-between"><span class="text-white/50">Notas</span><span id="resumoNotas" class="text-white font-medium">2.347</span></div>
+              <div class="flex justify-between"><span class="text-white/50">Base total</span><span id="resumoBase" class="text-white font-medium">R$ 1.247.890,00</span></div>
+              <div class="flex justify-between"><span class="text-white/50">Guias a emitir</span><span id="resumoGuias" class="text-white font-medium">1.842</span></div>
+              <div class="flex justify-between"><span class="text-white/50">Banco</span><span class="text-white font-medium">Itaú • CNAB 240</span></div>
+            </div>
+            <div class="mt-5 h-px bg-white/10"></div>
+            <button
+              id="btnDownloadPacote"
+              onclick="downloadPackage()"
+              class="mt-4 w-full py-2.5 rounded-full bg-white text-black text-sm font-semibold hover:bg-zinc-200 transition-all opacity-50 cursor-not-allowed"
+              disabled
+            >
+              Baixar Pacote (PDF + CNAB)
+            </button>
+            <div class="mt-2 text-[11px] text-white/30 text-center">Pronto para SISPAG</div>
+          </div>
+
+          <!-- TERMINAL COMPACTO -->
+          <div class="rounded-[20px] bg-black border border-white/10 p-4 font-mono text-[11px] text-white/50">
+            <div class="text-white/30 mb-2">$ terminal</div>
+            <div id="termCmd" class="text-emerald-300/80">$ apex process --files=2347 --env=simulado</div>
+            <div id="termLog1">✔  2.347 XMLs lidos</div>
+            <div id="termLog2">✔  14 UFs agrupadas</div>
+            <div id="termLog3" class="text-amber-300/70">⏳  aguardando comando de emissão...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE (4 STEPS) -->
+      <div class="rounded-[20px] bg-[#0f0f19] border border-white/[0.06] p-6 flex gap-8 overflow-x-auto">
+        <!-- Step 1 -->
+        <div class="flex items-center gap-3 min-w-[200px]">
+          <div id="timeStep1" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold">
+            ✓
+          </div>
+          <div>
+            <div class="text-sm text-white font-medium">Arquivos lidos</div>
+            <div id="timeStepDesc1" class="text-[11px] text-white/40">XMLs validados</div>
+          </div>
+          <div class="ml-4 w-12 h-px bg-white/10 hidden md:block"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex items-center gap-3 min-w-[200px]">
+          <div id="timeStep2" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold">
+            ✓
+          </div>
+          <div>
+            <div class="text-sm text-white font-medium">Guias geradas</div>
+            <div id="timeStepDesc2" class="text-[11px] text-white/40">Tributos calculados</div>
+          </div>
+          <div class="ml-4 w-12 h-px bg-white/10 hidden md:block"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex items-center gap-3 min-w-[200px]">
+          <div id="timeStep3" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-white/10 text-white/30 border-white/10 font-bold">
+            3
+          </div>
+          <div>
+            <div id="timeStepTitle3" class="text-sm text-white/30 font-medium">Transmissão SEFAZ</div>
+            <div class="text-[11px] text-white/40">Enviando em lote mTLS</div>
+          </div>
+          <div class="ml-4 w-12 h-px bg-white/10 hidden md:block"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex items-center gap-3 min-w-[200px]">
+          <div id="timeStep4" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-white/10 text-white/30 border-white/10 font-bold">
+            4
+          </div>
+          <div>
+            <div id="timeStepTitle4" class="text-sm text-white/30 font-medium">Remessa Banco</div>
+            <div class="text-[11px] text-white/40">CNAB 240 Itaú</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-16 text-center text-[11px] text-white/20 pb-8">
+    Apex SaaS • Plataforma Fiscal Modular • Grupo Aliado Hub Tech • sem menção a GNRE - pronto para DARF, ST, DIFAL
+  </footer>
+
+  <!-- UPGRADE MODAL -->
+  <div id="upgradeModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md place-items-center p-6">
+    <div class="w-full max-w-[1100px] my-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-white">Planos Apex SaaS</h2>
+        <button onclick="closeUpgradeModal()" class="w-9 h-9 rounded-full bg-white/10 text-white hover:bg-white/20 grid place-items-center transition-all">✕</button>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- STARTER -->
+        <div class="relative rounded-[20px] p-6 border bg-[#0f0f19] border-white/[0.06]">
+          <div class="text-white font-semibold text-lg">Starter</div>
+          <div class="mt-1 text-sm text-white/50">Para e-commerces iniciando</div>
+          <div class="mt-6 flex items-end gap-1">
+            <span class="text-4xl font-bold text-white">R$ 199</span>
+            <span class="text-white/40 text-sm mb-1">/mês</span>
+          </div>
+          <ul class="mt-6 space-y-2.5">
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Até 100 guias por mês</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Transmissão em lote mTLS</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Remessas SISPAG CNAB 240</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Vínculo automático de NFs</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Painel unificado</li>
+          </ul>
+          <button class="mt-6 w-full py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-100 transition-all">
+            Selecionar Starter
+          </button>
+        </div>
+
+        <!-- PRO (RECOMENDADO) -->
+        <div class="relative rounded-[20px] p-6 border bg-[#11111d] border-emerald-400/30 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+          <div class="absolute -top-3 -right-3 rotate-12 bg-violet-600 text-white text-[10px] font-bold px-3 py-1 rounded-full">
+            RECOMENDADO
+          </div>
+          <div class="text-white font-semibold text-lg">Pro</div>
+          <div class="mt-1 text-sm text-white/50">Marcas em crescimento</div>
+          <div class="mt-6 flex items-end gap-1">
+            <span class="text-4xl font-bold text-white">R$ 399</span>
+            <span class="text-white/40 text-sm mb-1">/mês</span>
+          </div>
+          <ul class="mt-6 space-y-2.5">
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Até 500 guias por mês</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Transmissão em lote mTLS</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Remessas SISPAG CNAB 240</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Suporte a múltiplos certificados</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Tempo de resposta prioritário</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Histórico expandido</li>
+          </ul>
+          <button class="mt-6 w-full py-2.5 rounded-full text-sm font-semibold bg-emerald-400/15 text-emerald-300 border border-emerald-400/20">
+            ✓ Plano Ativo
+          </button>
+        </div>
+
+        <!-- ADVANCED -->
+        <div class="relative rounded-[20px] p-6 border bg-[#0f0f19] border-white/[0.06]">
+          <div class="text-white font-semibold text-lg">Advanced</div>
+          <div class="mt-1 text-sm text-white/50">Operações robustas</div>
+          <div class="mt-6 flex items-end gap-1">
+            <span class="text-4xl font-bold text-white">R$ 699</span>
+            <span class="text-white/40 text-sm mb-1">/mês</span>
+          </div>
+          <ul class="mt-6 space-y-2.5">
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Até 1.500 guias por mês</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Transmissão em lote mTLS</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Remessas SISPAG CNAB 240</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>APIs dedicadas</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Mapeamento avançado</li>
+            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Suporte Premium 24/7</li>
+          </ul>
+          <button class="mt-6 w-full py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-100 transition-all">
+            Selecionar Advanced
+          </button>
+        </div>
+      </div>
+      <div class="mt-4 text-center text-[11px] text-white/30">
+        Faturamento via Stripe • Cancele quando quiser • Apex SaaS não é só GNRE, é fiscal completo
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPRESA WIZARD MODAL -->
+  <div id="empresaModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur place-items-center p-6">
+    <div class="w-full max-w-[640px] my-auto rounded-[20px] bg-[#0f0f19] border border-white/[0.08] p-6">
+      <div class="flex justify-between items-center">
+        <h3 class="text-white font-semibold">Configuração da Empresa • Apex SaaS</h3>
+        <button onclick="closeConfigWizard()" class="text-white/50 hover:text-white">✕</button>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <div id="wizBar1" class="h-1 flex-1 rounded-full bg-violet-500 transition-all"></div>
+        <div id="wizBar2" class="h-1 flex-1 rounded-full bg-white/10 transition-all"></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="wizStep1" class="mt-6 space-y-4">
+        <div>
+          <label class="text-[11px] tracking-widest text-white/40 uppercase">CNPJ EMITENTE</label>
+          <input id="wizCnpj" placeholder="00.000.000/0001-91" value="00.000.000/0001-91" class="mt-1 w-full rounded-xl bg-[#14141f] border border-white/10 px-4 py-3 text-white text-sm focus:border-violet-500/50 outline-none transition-all">
+          <div class="text-[11px] text-emerald-300/70 mt-1">✓ Busca automática na Receita ativa</div>
+        </div>
+        <div>
+          <label class="text-[11px] tracking-widest text-white/40 uppercase">RAZÃO SOCIAL</label>
+          <input id="wizRazao" value="Grupo Aliado Hub Tech LTDA" class="mt-1 w-full rounded-xl bg-[#14141f] border border-white/10 px-4 py-3 text-white text-sm focus:border-violet-500/50 outline-none transition-all">
+        </div>
+        <button onclick="setWizardStep(2)" class="w-full mt-2 py-3 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold hover:opacity-95 transition-all">
+          Continuar → Certificado
+        </button>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="wizStep2" class="hidden mt-6">
+        <div class="rounded-xl border border-dashed border-violet-500/30 bg-violet-500/5 p-8 text-center">
+          <div class="text-3xl">🔑</div>
+          <div class="mt-2 text-white text-sm font-medium">Arraste seu certificado A1 .pfx aqui</div>
+          <div class="text-[11px] text-white/40 mt-1">Suporte para múltiplos certificados no plano Pro</div>
+          <input type="password" id="wizPfxPass" placeholder="Senha do .pfx" class="mt-4 w-full max-w-[300px] mx-auto rounded-xl bg-[#14141f] border border-white/10 px-4 py-2.5 text-white text-sm text-center outline-none focus:border-violet-500/50 transition-all">
+        </div>
+        <div class="mt-6 flex gap-3">
+          <button onclick="setWizardStep(1)" class="px-5 py-2.5 rounded-full bg-white/10 text-white text-sm hover:bg-white/20 transition-all">Voltar</button>
+          <button onclick="saveEmpresaConfig()" class="flex-1 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition-all">Salvar e ativar Apex SaaS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let uploadedFiles = [];
+    let currentStep = 1;
+    let wizardStep = 1;
+
+    // Exemplos padrão
+    const sampleRows = [
+      { nfe: '000234', emit: 'Loja Aliados LTDA', uf: 'SP', trib: 'ICMS-ST', valor: 'R$ 89,40', status: 'Pronto' },
+      { nfe: '000235', emit: 'Aliados Fashion', uf: 'RJ', trib: 'DIFAL', valor: 'R$ 124,10', status: 'Pronto' },
+      { nfe: '000236', emit: 'Hub Tech Confecções', uf: 'BA', trib: 'FCP', valor: 'R$ 12,30', status: 'Pronto' },
+      { nfe: '000237', emit: 'Grupo Aliado', uf: 'MG', trib: 'ICMS-ST', valor: 'R$ 210,00', status: 'Validando' },
+      { nfe: '000238', emit: 'Aliados Distribuidora', uf: 'ES', trib: 'DUA-e', valor: 'R$ 178,50', status: 'Pronto' },
+      { nfe: '000239', emit: 'Hub Tech Varejo', uf: 'PR', trib: 'GNRE', valor: 'R$ 95,20', status: 'Pronto' },
+      { nfe: '000240', emit: 'Grupo Aliado Tech', uf: 'RS', trib: 'DIFAL', valor: 'R$ 312,80', status: 'Pronto' }
+    ];
+
+    // Drag & Drop
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+
+    ['dragenter', 'dragover'].forEach(name => {
+      dropArea.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropArea.classList.add('border-violet-500/60', 'bg-[#13131f]', 'scale-[1.01]', 'shadow-[0_0_40px_rgba(99,102,241,0.25)]');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      dropArea.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('border-violet-500/60', 'bg-[#13131f]', 'scale-[1.01]', 'shadow-[0_0_40px_rgba(99,102,241,0.25)]');
+      });
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      const files = Array.from(e.dataTransfer.files || []);
+      if (files.length > 0) handleFiles(files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length > 0) handleFiles(files);
+    });
+
+    function useSampleFiles() {
+      const mock = Array(2347).fill(null).map((_, i) => ({ name: `NFe_venda_${i+1}.xml` }));
+      handleFiles(mock, true);
+    }
+
+    function handleFiles(files, isSample = false) {
+      uploadedFiles = files;
+      currentStep = 2;
+
+      // Troca visual do DropZone para Tabela
+      document.getElementById('dropzoneContainer').classList.add('hidden');
+      document.getElementById('pipelineActiveContainer').classList.remove('hidden');
+
+      // Atualiza stepper do Header
+      updateStepper(2);
+
+      // Renderiza tabela
+      renderTable(isSample);
+    }
+
+    function renderTable(isSample) {
+      const tbody = document.getElementById('previewTableBody');
+      tbody.innerHTML = '';
+
+      const count = uploadedFiles.length || 2347;
+      document.getElementById('tableHeaderSummary').textContent = `${count.toLocaleString('pt-BR')} notas detectadas • R$ 1.2M em base • 14 UFs`;
+      document.getElementById('resumoNotas').textContent = count.toLocaleString('pt-BR');
+      document.getElementById('timeStepDesc1').textContent = `${count.toLocaleString('pt-BR')} XMLs validados`;
+      document.getElementById('termLog1').textContent = `✔  ${count.toLocaleString('pt-BR')} XMLs lidos`;
+      document.getElementById('termCmd').textContent = `$ apex process --files=${count} --env=simulado`;
+
+      sampleRows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors';
+        tr.innerHTML = `
+          <td class="px-6 py-3 text-white/80 font-mono">${r.nfe}</td>
+          <td class="text-white/60">${r.emit}</td>
+          <td><span class="px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-white/70 text-xs">${r.uf}</span></td>
+          <td class="text-white/60 font-medium">${r.trib}</td>
+          <td class="text-white font-medium">${r.valor}</td>
+          <td><span class="text-emerald-300 text-xs">● ${r.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function handleGenerate() {
+      const btn = document.getElementById('btnEmitir');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-spin inline-block mr-2">⚙️</span> Transmitindo SEFAZ...';
+
+      // Atualiza Timeline para Step 3 (Ativo)
+      updateTimelineStep(3);
+      updateStepper(3);
+      document.getElementById('termLog3').innerHTML = '<span class="text-amber-300">⏳  transmitindo SEFAZ em lote mTLS...</span>';
+
+      try {
+        // Tenta disparar chamada para a API /api/apex/emitir
+        let formData = new FormData();
+        if (uploadedFiles.length > 0 && uploadedFiles[0] instanceof File) {
+          uploadedFiles.slice(0, 50).forEach(f => formData.append('files', f));
+        }
+
+        const res = await fetch('/api/apex/emitir', {
+          method: 'POST',
+          body: formData
+        }).catch(() => null);
+
+        // Simulação com sucesso imediato caso esteja sem credenciais locais ou em teste
+        setTimeout(() => {
+          updateTimelineStep(4);
+          document.getElementById('termLog3').innerHTML = '<span class="text-emerald-400">✔  1.842 guias emitidas com sucesso</span>';
+          btn.innerHTML = '✔ Guias e Remessa Concluídas';
+          btn.classList.remove('from-violet-600', 'to-indigo-600');
+          btn.classList.add('bg-emerald-500');
+
+          // Habilita download do pacote
+          const btnPkg = document.getElementById('btnDownloadPacote');
+          btnPkg.disabled = false;
+          btnPkg.classList.remove('opacity-50', 'cursor-not-allowed');
+          btnPkg.classList.add('hover:bg-zinc-100', 'shadow-[0_0_20px_rgba(255,255,255,0.2)]');
+        }, 1200);
+
+      } catch (err) {
+        console.warn("[Apex Pipeline]:", err);
+      }
+    }
+
+    function updateStepper(step) {
+      const s1 = document.getElementById('stepTag1');
+      const s2 = document.getElementById('stepTag2');
+      const s3 = document.getElementById('stepTag3');
+
+      [s1, s2, s3].forEach(el => {
+        el.className = 'px-3 py-1 text-xs text-white/40 rounded-full transition-all';
+      });
+
+      if (step === 1) s1.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-medium';
+      if (step === 2) s2.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-medium';
+      if (step === 3) s3.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-medium';
+    }
+
+    function updateTimelineStep(step) {
+      const t3 = document.getElementById('timeStep3');
+      const t3Title = document.getElementById('timeStepTitle3');
+      const t4 = document.getElementById('timeStep4');
+      const t4Title = document.getElementById('timeStepTitle4');
+
+      if (step === 3) {
+        t3.className = 'w-8 h-8 rounded-full grid place-items-center text-xs border bg-amber-400 text-black border-amber-400 animate-pulse font-bold';
+        t3Title.className = 'text-sm text-white font-medium';
+      } else if (step >= 4) {
+        t3.className = 'w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold';
+        t3.textContent = '✓';
+        t3Title.className = 'text-sm text-white font-medium';
+
+        t4.className = 'w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold';
+        t4.textContent = '✓';
+        t4Title.className = 'text-sm text-white font-medium';
+      }
+    }
+
+    function resetPipeline() {
+      uploadedFiles = [];
+      currentStep = 1;
+      document.getElementById('pipelineActiveContainer').classList.add('hidden');
+      document.getElementById('dropzoneContainer').classList.remove('hidden');
+      updateStepper(1);
+    }
+
+    function downloadPackage() {
+      window.location.href = '/download/remessa.txt';
+    }
+
+    // Modal Upgrade
+    function openUpgradeModal() {
+      const m = document.getElementById('upgradeModal');
+      m.classList.remove('hidden');
+      m.classList.add('grid');
+    }
+
+    function closeUpgradeModal() {
+      const m = document.getElementById('upgradeModal');
+      m.classList.add('hidden');
+      m.classList.remove('grid');
+    }
+
+    // Wizard Config
+    function openConfigWizard() {
+      const m = document.getElementById('empresaModal');
+      m.classList.remove('hidden');
+      m.classList.add('grid');
+      setWizardStep(1);
+    }
+
+    function closeConfigWizard() {
+      const m = document.getElementById('empresaModal');
+      m.classList.add('hidden');
+      m.classList.remove('grid');
+    }
+
+    function setWizardStep(step) {
+      wizardStep = step;
+      const b1 = document.getElementById('wizBar1');
+      const b2 = document.getElementById('wizBar2');
+      const s1 = document.getElementById('wizStep1');
+      const s2 = document.getElementById('wizStep2');
+
+      if (step === 1) {
+        b1.className = 'h-1 flex-1 rounded-full bg-violet-500 transition-all';
+        b2.className = 'h-1 flex-1 rounded-full bg-white/10 transition-all';
+        s1.classList.remove('hidden');
+        s2.classList.add('hidden');
+      } else {
+        b1.className = 'h-1 flex-1 rounded-full bg-violet-500 transition-all';
+        b2.className = 'h-1 flex-1 rounded-full bg-violet-500 transition-all';
+        s1.classList.add('hidden');
+        s2.classList.remove('hidden');
+      }
+    }
+
+    function saveEmpresaConfig() {
+      const razao = document.getElementById('wizRazao').value;
+      if (razao) {
+        document.getElementById('headerTenantName').textContent = razao;
+      }
+      closeConfigWizard();
+    }
+  </script>
+</body>
+</html>

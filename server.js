@@ -40,9 +40,20 @@ app.use('/api/tenant', tenantRoutes);
 app.use('/api/batch', batchRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Endpoint do pipeline /api/apex/emitir
+app.use('/api/apex/emitir', (req, res, next) => {
+    req.url = '/process';
+    batchRoutes(req, res, next);
+});
+
 // Rotas de download diretas montadas no roteador de lotes
 app.use('/api/guide', batchRoutes);
 app.use('/api/remessa', batchRoutes);
+
+// Rota para o pipeline modular de 1 tela
+app.get('/app', (req, res) => {
+    return res.sendFile(path.join(__dirname, 'public', 'app.html'));
+});
 
 // Rota de compatibilidade para download de remessa legado
 app.get('/download/remessa.txt', async (req, res) => {
