@@ -93,7 +93,7 @@ if (loginForm) {
 
             showToast("Login bem-sucedido! Acessando painel...", 'success');
             setTimeout(() => {
-                window.location.href = '/dashboard.html';
+                window.location.href = '/app';
             }, 1000);
         } catch (err) {
             showToast(err.message, 'error');

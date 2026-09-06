@@ -77,9 +77,9 @@
             <div class="w-[120px] h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
               <div id="headerUsageBar" class="h-full bg-violet-500 transition-all duration-500" style="width: 49.4%"></div>
             </div>
-          </div>
           <button onclick="openUpgradeModal()" class="px-3 py-1.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all">Upgrade</button>
           <button onclick="openConfigWizard()" class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 grid place-items-center text-white/70 hover:text-white transition-all" title="Configurações">⚙️</button>
+          <button onclick="logout()" class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 grid place-items-center text-white/50 hover:text-red-400 transition-all" title="Sair">🚪</button>
         </div>
       </div>
     </div>
@@ -629,6 +629,42 @@
         document.getElementById('headerTenantName').textContent = razao;
       }
       closeConfigWizard();
+    }
+
+    // Carrega dados reais do tenant caso logado
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const token = localStorage.getItem('sb_access_token');
+        const res = await fetch('/api/auth/me', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.tenant?.razao_social) {
+            document.getElementById('headerTenantName').textContent = data.tenant.razao_social;
+            document.getElementById('wizRazao').value = data.tenant.razao_social;
+          }
+          if (data.tenant?.cnpj) {
+            const rawCnpj = data.tenant.cnpj;
+            const formatted = rawCnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+            document.getElementById('wizCnpj').value = formatted;
+            const used = data.tenant.used_this_month || 0;
+            const quota = data.tenant.monthly_quota || 500;
+            document.getElementById('headerUsageCounter').innerHTML = `${formatted} • <span id="usageText">${used}</span>/${quota}`;
+            const pct = Math.min(100, (used / quota) * 100);
+            document.getElementById('headerUsageBar').style.width = pct + '%';
+          }
+        }
+      } catch (e) {
+        console.warn('Sessão anônima ou simulada:', e);
+      }
+    });
+
+    function logout() {
+      fetch('/api/auth/logout', { method: 'POST' }).finally(() => {
+        localStorage.removeItem('sb_access_token');
+        window.location.href = '/login.html';
+      });
     }
   </script>
 </body>

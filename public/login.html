@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex GNRE - Entrar</title>
+    <title>Apex SaaS - Entrar</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -12,8 +12,8 @@
     <div class="auth-wrapper">
         <div class="card auth-card">
             <div class="auth-header">
-                <h2>Apex GNRE SaaS</h2>
-                <p>Entre na sua conta de assinante para emitir guias</p>
+                <h2>Apex SaaS</h2>
+                <p>Plataforma de Automação Fiscal</p>
             </div>
 
             <form id="login-form">
@@ -42,7 +42,7 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="/js/auth.js?v=3"></script>
+    <script src="/js/auth.js?v=4"></script>
     <script>
         // Prevenir acesso caso já esteja logado
         document.addEventListener('DOMContentLoaded', async () => {
@@ -50,7 +50,7 @@
             if (token) {
                 const res = await fetch('/api/auth/me');
                 if (res.ok) {
-                    window.location.href = '/dashboard.html';
+                    window.location.href = '/app';
                 }
             }
         });

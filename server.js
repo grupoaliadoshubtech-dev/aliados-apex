@@ -29,6 +29,16 @@ app.use((req, res, next) => {
     next();
 });
 
+// Previne cache agressivo de HTML no navegador do usuário
+app.use((req, res, next) => {
+    if (req.url.endsWith('.html') || req.url === '/' || req.url === '/app') {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+    }
+    next();
+});
+
 // Arquivos estáticos da interface web
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -49,6 +59,11 @@ app.use('/api/apex/emitir', (req, res, next) => {
 // Rotas de download diretas montadas no roteador de lotes
 app.use('/api/guide', batchRoutes);
 app.use('/api/remessa', batchRoutes);
+
+// Redireciona o painel antigo para o novo pipeline de 1 tela
+app.get(['/dashboard', '/dashboard.html'], (req, res) => {
+    return res.redirect('/app');
+});
 
 // Rota para o pipeline modular de 1 tela
 app.get('/app', (req, res) => {
