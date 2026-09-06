@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "worker": "node worker/index.js"
+    "worker": "node worker/index.js",
+    "create-admin": "node scripts/create_admin.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.8",
