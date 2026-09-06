@@ -1,8 +1,6 @@
 // worker/queue.js
 // Gerenciador de filas pg-boss para execução assíncrona desacoplada da API
 
-const PgBoss = require('pg-boss');
-
 const QUEUE_NAME = 'process-gnre-batch';
 
 /**
@@ -25,7 +23,10 @@ function getDatabaseUrl() {
 
 let bossInstance = null;
 
-function getBossInstance() {
+/**
+ * Obtém ou inicializa a instância do pg-boss usando importação dinâmica ESM compatível com CommonJS e Vercel
+ */
+async function getBossInstance() {
     if (!bossInstance) {
         const dbUrl = getDatabaseUrl();
         if (!dbUrl) {
@@ -33,18 +34,25 @@ function getBossInstance() {
             return null;
         }
 
-        bossInstance = new PgBoss({
-            connectionString: dbUrl,
-            application_name: 'apex-gnre-worker',
-            max: 5, // Limite de conexões no pool
-            // Opções do pg-boss
-            retentionDays: 7,
-            archiveCompletedAfterSeconds: 3600
-        });
+        try {
+            // Importação dinâmica para compatibilidade total com pacote ESM puro no Vercel Node runtime
+            const { PgBoss } = await import('pg-boss');
 
-        bossInstance.on('error', (err) => {
-            console.error("❌ [pg-boss Error]:", err.message);
-        });
+            bossInstance = new PgBoss({
+                connectionString: dbUrl,
+                application_name: 'apex-gnre-worker',
+                max: 5,
+                retentionDays: 7,
+                archiveCompletedAfterSeconds: 3600
+            });
+
+            bossInstance.on('error', (err) => {
+                console.error("❌ [pg-boss Error]:", err.message);
+            });
+        } catch (err) {
+            console.error("❌ [Queue] Falha ao inicializar módulo pg-boss:", err.message);
+            return null;
+        }
     }
 
     return bossInstance;
@@ -54,24 +62,24 @@ function getBossInstance() {
  * Envia um lote para a fila de processamento
  */
 async function enqueueBatch(jobData) {
-    const boss = getBossInstance();
-    if (!boss) {
-        console.warn("⚠️ [Queue] Fila pg-boss offline (sem DATABASE_URL). O lote foi registrado no banco com status 'queued'.");
-        return null;
-    }
-
     try {
+        const boss = await getBossInstance();
+        if (!boss) {
+            console.warn("⚠️ [Queue] Fila pg-boss offline (sem DATABASE_URL). O lote foi registrado no banco com status 'queued'.");
+            return null;
+        }
+
         await boss.start();
         const jobId = await boss.send(QUEUE_NAME, jobData, {
             retryLimit: 3,
-            retryDelay: 30, // segundos
+            retryDelay: 30,
             expireInMinutes: 30
         });
         console.log(`📥 [Queue] Lote ${jobData.batchId} enfileirado no pg-boss (Job ID: ${jobId})`);
         return jobId;
     } catch (err) {
         console.error("❌ [Queue] Falha ao enfileirar job:", err.message);
-        throw err;
+        return null;
     }
 }
 

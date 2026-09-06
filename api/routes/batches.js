@@ -8,7 +8,6 @@ const AdmZip = require('adm-zip');
 const { supabaseAdmin } = require('../utils/supabase');
 const { requireAuth, requireActiveSubscription } = require('../middlewares/auth');
 const { enqueueBatch } = require('../../worker/queue');
-const { processGnreBatch } = require('../../worker/processors/gnreProcessor');
 
 // Limite rigoroso: máximo 50 XMLs por lote (Ajuste 4)
 const upload = multer({
@@ -114,11 +113,12 @@ router.post('/process', requireAuth, requireActiveSubscription, uploadBatchFiles
             console.warn("⚠️ Falha ao conectar no pg-boss:", queueErr.message);
         }
 
-        // 4. Fallback de Desenvolvimento Local: Se pg-boss estiver offline, executa em background via setImmediate
-        if (!enqueued) {
+        // 4. Fallback de Desenvolvimento Local: Se pg-boss estiver offline e não for ambiente Vercel
+        if (!enqueued && !process.env.VERCEL) {
             console.log(`ℹ [Dev Fallback] Executando lote ${batch.id} localmente em segundo plano.`);
             setImmediate(async () => {
                 try {
+                    const { processGnreBatch } = require('../../worker/processors/gnreProcessor');
                     await processGnreBatch(jobPayload);
                 } catch (procErr) {
                     console.error(`Erro no processamento do lote ${batch.id}:`, procErr.message);

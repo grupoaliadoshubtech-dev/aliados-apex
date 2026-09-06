@@ -82,7 +82,7 @@ async function startLocalPollingFallback() {
 }
 
 async function startWorker() {
-    const boss = getBossInstance();
+    const boss = await getBossInstance();
 
     if (!boss) {
         console.warn("⚠️ DATABASE_URL não configurada no ambiente.");
@@ -122,7 +122,7 @@ async function startWorker() {
 async function shutdown() {
     console.log("\n🛑 Encerrando worker graciosamente...");
     if (pollingInterval) clearInterval(pollingInterval);
-    const boss = getBossInstance();
+    const boss = await getBossInstance();
     if (boss) {
         try {
             await boss.stop({ graceful: true, timeout: 10000 });
