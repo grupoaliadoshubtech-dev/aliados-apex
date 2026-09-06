@@ -239,6 +239,7 @@ app.get('/api/admin/financeiro', adminAuth, async (req, res) => {
     const { data: invoices } = await supabase.from('stripe_invoices').select('*').order('created_at', { ascending: false }).limit(100);
     const { data: inadimplentes } = await supabase.from('view_inadimplentes').select('*');
     const { data: tenants } = await supabase.from('tenants').select('*');
+    const { data: webhooks } = await supabase.from('stripe_webhook_logs').select('*').order('created_at', { ascending: false }).limit(20);
 
     // KPIs
     const mrr = tenants?.reduce((acc, t) => acc + (t.subscription_status === 'ativo' ? Number(t.plano_valor || (t.plan === 'starter' ? 199 : t.plan === 'pro' ? 399 : t.plan === 'advanced' ? 699 : 0)) : 0), 0) || 0;
@@ -248,7 +249,8 @@ app.get('/api/admin/financeiro', adminAuth, async (req, res) => {
         kpis: { mrr, totalInadimplencia, totalClientes: tenants?.length || 0, inadimplentes: inadimplentes?.length || 0 },
         invoices: invoices || [],
         inadimplentes: inadimplentes || [],
-        tenants: tenants || []
+        tenants: tenants || [],
+        webhooks: webhooks || []
     });
 });
 

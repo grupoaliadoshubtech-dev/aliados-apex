@@ -1,189 +1,200 @@
-<!-- public/admin.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex GNRE - Painel Administrativo</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            width: 100%;
-            max-width: 460px;
-            animation: modalFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes modalFadeIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex SaaS - Admin Financeiro | Grupo Aliado Hub Tech</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>body{font-family:Inter,sans-serif;background:#08080f} .mono{font-family:'JetBrains Mono',monospace}</style>
 </head>
-<body>
+<body class="bg-[#08080f] text-white min-h-screen">
+<header class="h-[56px] border-b border-white/[0.06] bg-[#0a0a12] flex items-center justify-between px-6 sticky top-0 z-50">
+  <div class="flex items-center gap-4">
+    <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center font-bold text-xs">A</div>
+    <div><div class="font-bold text-sm leading-none">Apex SaaS • ADMIN FINANCEIRO STRIPE LIVE</div><div class="text-[9px] text-white/30 tracking-widest">GRUPO ALIADO HUB TECH LTDA • <span class="text-emerald-400">DONO</span></div></div>
+    <div class="ml-4 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/20 text-red-300 text-[10px] flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>AO VIVO ADMIN</div>
+    <div class="ml-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-300 text-[10px] mono">sk_live_...<span id="stripeMode">LIVE</span></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <a href="/app" class="px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-[11px] text-white/70 hover:text-white hover:bg-white/10">Ir para o App →</a>
+    <span id="lastUpdate" class="text-[10px] text-white/30 mono"></span>
+    <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs">👑</div>
+    <span class="text-xs text-white/50">admin@aliadohub.tech</span>
+  </div>
+</header>
 
-    <div class="container">
-        <!-- HEADER -->
-        <header>
-            <div class="logo-area">
-                <h1>Apex GNRE SaaS</h1>
-                <p>Painel de Controle do Administrador (Master)</p>
-            </div>
-            <div class="nav-links">
-                <a href="/dashboard.html" class="nav-btn">Faturamento</a>
-                <a href="/profile.html" class="nav-btn">Empresa</a>
-                <a href="/plans.html" class="nav-btn">Planos</a>
-                <a href="/admin.html" class="nav-btn active">Administração</a>
-                <button onclick="logout()" class="nav-btn" style="cursor: pointer; border: none; background: transparent;">Sair</button>
-            </div>
-        </header>
+<main class="max-w-[1450px] mx-auto p-6">
+  <!-- KPIs -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">MRR Stripe</div><div id="kpiMRR" class="text-xl font-bold mt-1">R$ --</div><div class="mt-2 text-[10px] text-emerald-400">recorrência real</div></div>
+    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Vendas Mês</div><div id="kpiVendas" class="text-xl font-bold mt-1">R$ --</div><div id="kpiVendasQtd" class="mt-2 text-[10px] text-white/40">-- assinaturas</div></div>
+    <div class="rounded-[16px] bg-[#12121f] border border-red-500/20 p-5"><div class="text-[10px] text-red-300/70 uppercase tracking-widest">Inadimplência</div><div id="kpiInad" class="text-xl font-bold mt-1 text-red-300">R$ --</div><div id="kpiInadQtd" class="mt-2 text-[10px] text-red-300/60">-- faturas failed</div></div>
+    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Taxa Sucesso</div><div id="kpiTaxa" class="text-xl font-bold mt-1">--%</div><div class="mt-2 h-1.5 bg-white/10 rounded-full"><div id="kpiTaxaBar" class="h-full bg-emerald-400 rounded-full" style="width:0%"></div></div></div>
+    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Clientes Ativos</div><div id="kpiClientes" class="text-xl font-bold mt-1">--</div><div id="kpiClientesDetalhe" class="mt-2 text-[10px] text-white/30">--</div></div>
+    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Próx. Cobrança</div><div id="kpiProx" class="text-xl font-bold mt-1">R$ --</div><div class="mt-2 text-[10px] text-white/30">7 dias</div></div>
+  </div>
 
-        <!-- LAYOUT DUAS COLUNAS (EMPRESAS vs USUÁRIOS) -->
-        <div class="grid-config" style="grid-template-columns: 1fr 1fr; gap: 28px;">
-            
-            <!-- SEÇÃO DE CLIENTES (TENANTS) -->
-            <div class="card">
-                <div class="card-title">
-                    <span>🏢</span> Gerenciamento de Empresas (Assinantes)
-                </div>
+  <!-- TABS -->
+  <div class="mt-6 flex flex-wrap gap-2 text-[12px] items-center">
+    <button onclick="setTab('vendas')" id="tab-vendas" class="px-4 py-2 rounded-full bg-violet-600 text-white font-semibold transition-all">Vendas & Pagamentos</button>
+    <button onclick="setTab('inad')" id="tab-inad" class="px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all">Inadimplentes 🔴 <span id="badgeInad" class="ml-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px]">0</span></button>
+    <button onclick="setTab('tenants')" id="tab-tenants" class="px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all">Tenants / Empresas</button>
+    <button onclick="reload()" class="ml-auto px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 hover:text-white text-[11px] transition-all">↻ Atualizar agora</button>
+  </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Empresa / CNPJ</th>
-                                <th>Ambiente</th>
-                                <th>Assinatura</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tenants-table-body">
-                            <tr>
-                                <td colspan="4" class="text-center" style="color: var(--text-secondary);">Carregando empresas...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  <!-- TABELA VENDAS -->
+  <div id="view-vendas" class="mt-4 rounded-[16px] bg-[#0f0f19] border border-white/[0.06] overflow-hidden">
+    <div class="p-4 flex flex-wrap gap-3 justify-between items-center border-b border-white/[0.06]"><h2 class="font-semibold text-sm">Vendas & Pagamentos - Stripe Live</h2><input id="searchVendas" placeholder="Buscar CNPJ, empresa ou Stripe ID" class="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-xs w-[300px] outline-none focus:border-violet-500/50"/></div>
+    <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead class="text-white/30 text-[10px] uppercase tracking-widest bg-white/[0.02]"><tr><th class="p-3 text-left">Data</th><th class="p-3 text-left">Empresa</th><th class="p-3">Plano</th><th class="p-3">Valor</th><th class="p-3">Stripe ID</th><th class="p-3">Status</th><th class="p-3">Fatura</th><th class="p-3">Ações</th></tr></thead><tbody id="tbodyVendas" class="divide-y divide-white/[0.04]"><tr><td colspan="8" class="p-8 text-center text-white/30">Carregando Stripe...</td></tr></tbody></table></div>
+  </div>
 
-            <!-- SEÇÃO DE USUÁRIOS -->
-            <div class="card" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="flex-between" style="align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-                    <div class="card-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
-                        <span>👥</span> Usuários Cadastrados
-                    </div>
-                    <button onclick="abrirModalUsuario()" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">
-                        ➕ Novo Usuário
-                    </button>
-                </div>
+  <!-- TABELA INADIMPLENTES -->
+  <div id="view-inad" class="mt-4 rounded-[16px] bg-[#12121f] border border-red-500/20 overflow-hidden hidden">
+    <div class="p-4 border-b border-white/[0.06] bg-red-500/5"><h2 class="font-semibold text-sm text-red-200">🚨 Inadimplentes - Dunning Stripe (recuperar dinheiro)</h2><p class="text-[11px] text-white/40 mt-1">Stripe tenta cobrar 4x automaticamente. Envie link manual quando falhar.</p></div>
+    <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead class="text-red-200/50 text-[10px] uppercase tracking-widest bg-red-500/5"><tr><th class="p-3 text-left">Empresa</th><th class="p-3">Valor</th><th class="p-3">Dias Atraso</th><th class="p-3">Tentativas</th><th class="p-3">Motivo</th><th class="p-3">Link Pagamento</th><th class="p-3">Ação</th></tr></thead><tbody id="tbodyInad" class="divide-y divide-white/[0.04]"></tbody></table></div>
+  </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nome / Email</th>
-                                <th>Empresa</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body">
-                            <tr>
-                                <td colspan="3" class="text-center" style="color: var(--text-secondary);">Carregando usuários...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+  <!-- TABELA TENANTS -->
+  <div id="view-tenants" class="mt-4 rounded-[16px] bg-[#0f0f19] border border-white/[0.06] overflow-hidden hidden">
+    <div class="p-4 border-b border-white/[0.06]"><h2 class="font-semibold text-sm">Tenants / Empresas</h2></div>
+    <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead class="text-white/30 text-[10px] uppercase tracking-widest bg-white/[0.02]"><tr><th class="p-3 text-left">Empresa</th><th class="p-3">CNPJ</th><th class="p-3">Plano</th><th class="p-3">Uso mês</th><th class="p-3">Status</th><th class="p-3">MRR</th></tr></thead><tbody id="tbodyTenants" class="divide-y divide-white/[0.04]"></tbody></table></div>
+  </div>
 
-    <!-- MODAL: CRIAR NOVO USUÁRIO -->
-    <div id="modal-user" class="modal d-none">
-        <div class="card modal-content">
-            <div class="card-title flex-between">
-                <span>👤 Cadastrar Novo Usuário</span>
-                <span onclick="fecharModalUsuario()" style="cursor: pointer; font-size: 18px; color: var(--text-secondary);">✖</span>
-            </div>
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-4">
+    <div class="rounded-[16px] bg-[#0a0a12] border border-white/[0.06] p-5"><h3 class="text-[11px] font-semibold tracking-widest text-white/60">WEBHOOKS STRIPE AO VIVO</h3><div id="webhookList" class="mt-4 font-mono text-[11px] bg-black/40 rounded-lg p-4 space-y-1.5 leading-5 max-h-[220px] overflow-auto"><div class="text-white/20">Aguardando eventos...</div></div></div>
+    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><h3 class="text-[11px] font-semibold tracking-widest text-white/60">DUNNING - RECUPERAÇÃO</h3><div class="mt-4"><div class="flex justify-between text-[11px] text-white/50"><span>Recuperado Stripe</span><span class="text-emerald-300">R$ 840 este mês</span></div><div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px]"><span class="text-amber-300 font-semibold">⚠ Ação:</span> <span id="upsellText" class="text-white/60">Carregando...</span></div></div></div>
+  </div>
+</main>
 
-            <form id="create-user-form">
-                <div class="grid-form" style="grid-template-columns: 1fr; gap: 16px;">
-                    <div class="form-group">
-                        <label for="new-user-name">Nome Completo</label>
-                        <input type="text" id="new-user-name" placeholder="Ex: João Silva" required>
-                    </div>
+<script>
+const ADMIN_KEY = new URLSearchParams(location.search).get('key') || localStorage.getItem('admin_key') || '';
+if(ADMIN_KEY) localStorage.setItem('admin_key', ADMIN_KEY);
 
-                    <div class="form-group">
-                        <label for="new-user-email">E-mail</label>
-                        <input type="email" id="new-user-email" placeholder="email@empresa.com" required>
-                    </div>
+let allData = { invoices: [], inadimplentes: [], tenants: [], webhooks: [] };
+let currentTab = 'vendas';
 
-                    <div class="form-group">
-                        <label for="new-user-password">Senha Provisória</label>
-                        <input type="password" id="new-user-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
-                    </div>
+function setTab(t){
+  currentTab = t;
+  document.getElementById('view-vendas').classList.toggle('hidden', t!=='vendas');
+  document.getElementById('view-inad').classList.toggle('hidden', t!=='inad');
+  document.getElementById('view-tenants').classList.toggle('hidden', t!=='tenants');
+  document.getElementById('tab-vendas').className = t==='vendas' ? 'px-4 py-2 rounded-full bg-violet-600 text-white font-semibold transition-all' : 'px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all';
+  document.getElementById('tab-inad').className = t==='inad' ? 'px-4 py-2 rounded-full bg-red-500 text-white font-semibold transition-all' : 'px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all';
+  document.getElementById('tab-tenants').className = t==='tenants' ? 'px-4 py-2 rounded-full bg-violet-600 text-white font-semibold transition-all' : 'px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all';
+}
 
-                    <div class="form-group">
-                        <label for="new-user-tenant">Empresa Vinculada</label>
-                        <select id="new-user-tenant" required>
-                            <!-- Carregado via JS -->
-                        </select>
-                    </div>
+async function reload(){
+  const keyParam = ADMIN_KEY ? `?key=${ADMIN_KEY}` : '';
+  document.getElementById('lastUpdate').textContent = 'carregando...';
+  try{
+    const res = await fetch(`/api/admin/financeiro${keyParam}`, { headers: ADMIN_KEY ? {'x-admin-key': ADMIN_KEY} : {} });
+    const data = await res.json();
+    if(data.error){ document.getElementById('tbodyVendas').innerHTML = `<tr><td colspan=8 class="p-8 text-center text-red-300">${data.error}</td></tr>`; return; }
+    allData = data;
+    render();
+    document.getElementById('lastUpdate').textContent = 'atualizado ' + new Date().toLocaleTimeString();
+  }catch(e){
+    document.getElementById('tbodyVendas').innerHTML = `<tr><td colspan=8 class="p-8 text-center text-red-300">Erro: ${e.message}<br/><span class="text-white/30 text-[10px]">Verifique /api/admin/financeiro e ENV vars na Vercel</span></td></tr>`;
+  }
+}
 
-                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px; margin-top: 5px;">
-                        <input type="checkbox" id="new-user-admin" style="width: 18px; height: 18px; cursor: pointer;">
-                        <label for="new-user-admin" style="cursor: pointer; text-transform: none;">Este usuário é Administrador Master?</label>
-                    </div>
-                </div>
+function render(){
+  const { invoices=[], inadimplentes=[], tenants=[], webhooks=[], kpis={} } = allData;
+  
+  // KPIs
+  document.getElementById('kpiMRR').textContent = 'R$ ' + (kpis.mrr||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('kpiInad').textContent = 'R$ ' + (kpis.totalInadimplencia||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('kpiInadQtd').textContent = (kpis.inadimplentes||0) + ' faturas failed';
+  document.getElementById('badgeInad').textContent = (kpis.inadimplentes||0);
+  document.getElementById('kpiClientes').textContent = kpis.totalClientes||0;
+  document.getElementById('kpiVendas').textContent = 'R$ ' + (invoices.filter(i=>i.status==='paid').reduce((a,i)=>a+Number(i.valor||0),0)).toLocaleString('pt-BR');
+  document.getElementById('kpiVendasQtd').textContent = invoices.length + ' faturas no mês';
+  
+  const paid = invoices.filter(i=>i.status==='paid').length;
+  const total = invoices.length || 1;
+  const taxa = Math.round(paid/total*100);
+  document.getElementById('kpiTaxa').textContent = taxa + '%';
+  document.getElementById('kpiTaxaBar').style.width = taxa + '%';
+  
+  const ativos = tenants.filter(t=> (t.status||t.subscription_status)==='ativo').length;
+  const inads = tenants.filter(t=> (t.status||t.subscription_status)==='inadimplente').length;
+  document.getElementById('kpiClientesDetalhe').textContent = ativos + ' ativos • ' + inads + ' inadimplentes';
+  document.getElementById('kpiProx').textContent = 'R$ ' + (kpis.mrr||0).toLocaleString('pt-BR');
+  
+  const upsellCount = tenants.filter(t=> {
+    const quota = t.limite_guias_mes || t.monthly_quota || 500;
+    const used = t.guias_usadas_mes || t.used_this_month || 0;
+    return (used / quota) > 0.8;
+  }).length;
+  document.getElementById('upsellText').textContent = `${upsellCount} clientes acima de 80% do limite. Enviar upsell?`;
 
-                <button type="submit" class="btn btn-primary mt-4" style="width: 100%;">
-                    Cadastrar Usuário
-                </button>
-            </form>
-        </div>
-    </div>
+  // Tabela vendas
+  const search = (document.getElementById('searchVendas').value||'').toLowerCase();
+  const filtered = invoices.filter(i=> !search || (i.empresa_razao||i.razao_social||'').toLowerCase().includes(search) || (i.cnpj||'').includes(search) || (i.stripe_invoice_id||'').toLowerCase().includes(search));
+  
+  document.getElementById('tbodyVendas').innerHTML = filtered.map(inv=>{
+    const isPaid = inv.status==='paid';
+    const isFailed = ['failed','uncollectible','past_due','open'].includes(inv.status);
+    const statusClass = isPaid ? 'bg-emerald-400/15 text-emerald-300' : isFailed ? 'bg-red-400/15 text-red-300' : 'bg-amber-400/15 text-amber-300';
+    const statusLabel = isPaid ? '● SUCCEEDED' : isFailed ? '● FAILED' : '● PENDING';
+    return `<tr class="hover:bg-white/[0.02]">
+      <td class="p-3 mono text-white/40">${inv.created_at ? new Date(inv.created_at).toLocaleDateString('pt-BR') : '--'}</td>
+      <td class="p-3"><div class="font-semibold">${inv.empresa_razao||inv.razao_social||'--'}</div><div class="text-[10px] text-white/30 mono">${inv.cnpj||''}</div></td>
+      <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] uppercase">${inv.plano||'--'}</span></td>
+      <td class="p-3 font-semibold">R$ ${Number(inv.valor||0).toFixed(2)}</td>
+      <td class="p-3 mono text-[10px] text-white/40">${(inv.stripe_invoice_id||'').slice(0,18)}...</td>
+      <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] ${statusClass}">${statusLabel}</span></td>
+      <td class="p-3"><a href="${inv.pdf_url||'#'}" target="_blank" class="text-violet-300 hover:underline text-[10px]">PDF</a> ${inv.link_pagamento ? `• <a href="${inv.link_pagamento}" target="_blank" class="text-emerald-300 hover:underline text-[10px]">Link</a>` : ''}</td>
+      <td class="p-3"><button onclick="navigator.clipboard.writeText('${inv.stripe_invoice_id}')" class="px-2 py-1 rounded bg-white/[0.06] text-[10px] hover:bg-white/10">Copiar ID</button> ${inv.link_pagamento && isFailed ? `<a href="${inv.link_pagamento}" target="_blank" class="ml-1 px-2 py-1 rounded bg-red-500/20 text-red-300 text-[10px]">Cobrar</a>` : ''}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan=8 class="p-8 text-center text-white/20">Nenhuma fatura ainda - faça uma venda teste no Stripe</td></tr>`;
 
-    <!-- MODAL: ALTERAR SENHA -->
-    <div id="modal-password" class="modal d-none">
-        <div class="card modal-content">
-            <div class="card-title flex-between">
-                <span>🔑 Alterar Senha de Usuário</span>
-                <span onclick="fecharModalSenha()" style="cursor: pointer; font-size: 18px; color: var(--text-secondary);">✖</span>
-            </div>
+  // Tabela inadimplentes
+  document.getElementById('tbodyInad').innerHTML = inadimplentes.map(inv=>{
+    const dias = Math.round(inv.dias_atraso||0);
+    return `<tr class="hover:bg-red-500/5">
+      <td class="p-3"><div class="font-semibold">${inv.razao_social||inv.empresa_razao||'--'}</div><div class="text-[10px] text-white/30">${inv.email_admin||''}</div></td>
+      <td class="p-3 font-bold text-red-300">R$ ${Number(inv.valor||0).toFixed(2)}</td>
+      <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-200 text-[10px]">${dias} dias</span></td>
+      <td class="p-3 mono">${inv.tentativas_cobranca||0}/${inv.max_tentativas||4}</td>
+      <td class="p-3 text-[10px] text-white/50">${inv.motivo_falha||'card_declined'}</td>
+      <td class="p-3">${inv.link_pagamento ? `<a href="${inv.link_pagamento}" target="_blank" class="text-emerald-300 underline text-[10px]">Abrir link Stripe</a>` : '<span class="text-white/20">--</span>'}</td>
+      <td class="p-3"><a href="${inv.link_pagamento||'#'}" target="_blank" class="px-2 py-1 rounded-full bg-red-500 text-white text-[10px] font-bold hover:opacity-90">Enviar cobrança</a></td>
+    </tr>`;
+  }).join('') || `<tr><td colspan=7 class="p-8 text-center text-white/30">🎉 Nenhum inadimplente! Todos pagos.</td></tr>`;
 
-            <form id="reset-password-form">
-                <input type="hidden" id="reset-user-id">
-                
-                <div class="form-group mb-4">
-                    <label>Usuário Selecionado</label>
-                    <strong id="reset-user-email-display" style="font-size: 14px; color: var(--text-secondary);">email@teste.com</strong>
-                </div>
+  // Tenants
+  document.getElementById('tbodyTenants').innerHTML = tenants.map(t=>{
+    const limite = t.limite_guias_mes || t.monthly_quota || 500;
+    const usadas = t.guias_usadas_mes || t.used_this_month || 0;
+    const uso = limite ? Math.round(usadas/limite*100) : 0;
+    const barColor = uso>85 ? 'bg-red-400' : uso>60 ? 'bg-amber-400' : 'bg-emerald-400';
+    const planoNome = t.plano || t.plan || 'pro';
+    const planoValor = t.plano_valor || (planoNome === 'starter' ? 199 : planoNome === 'pro' ? 399 : planoNome === 'advanced' ? 699 : 0);
+    const status = t.status || t.subscription_status || 'ativo';
+    return `<tr class="hover:bg-white/[0.02]">
+      <td class="p-3"><div class="font-semibold">${t.razao_social}</div><div class="text-[10px] text-white/30">${t.email_admin||t.email||''}</div></td>
+      <td class="p-3 mono">${t.cnpj}</td>
+      <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] uppercase">${planoNome} R$${planoValor}</span></td>
+      <td class="p-3"><div class="w-[90px] h-1.5 bg-white/10 rounded-full"><div class="h-full ${barColor} rounded-full" style="width:${Math.min(uso,100)}%"></div></div><div class="text-[10px] mt-1">${usadas}/${limite} (${uso}%)</div></td>
+      <td class="p-3"><span class="text-[11px] ${status==='ativo' ? 'text-emerald-400' : status==='inadimplente' ? 'text-red-400' : 'text-white/50'}">● ${status}</span></td>
+      <td class="p-3 font-semibold">R$ ${planoValor}</td>
+    </tr>`;
+  }).join('');
 
-                <div class="form-group mb-4">
-                    <label for="reset-new-password">Nova Senha de Acesso</label>
-                    <input type="password" id="reset-new-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
-                </div>
+  // Webhooks
+  if(webhooks && webhooks.length > 0){
+    document.getElementById('webhookList').innerHTML = webhooks.map(w => {
+      const hora = new Date(w.created_at).toLocaleTimeString('pt-BR');
+      const cor = w.erro ? 'text-red-400' : 'text-emerald-400';
+      return `<div><span class="text-white/40">${hora}</span> <span class="${cor}">● ${w.tipo}</span> <span class="text-white/30 text-[9px]">${w.stripe_event_id}</span></div>`;
+    }).join('');
+  }
+}
 
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    Salvar Nova Senha
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="toast" class="toast"></div>
-
-    <script src="/js/auth.js?v=3"></script>
-    <script src="/js/admin.js"></script>
+document.getElementById('searchVendas').addEventListener('input', render);
+reload();
+setInterval(reload, 30000);
+</script>
 </body>
 </html>
