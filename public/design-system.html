@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aliado Design System v2.0 — Guia de Identidade Visual & Componentes</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    /* Estilos específicos para a vitrine do Design System */
+    .docs-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .docs-section {
+      background: #ffffff;
+      border: 1px solid var(--sheet-border);
+      border-radius: var(--radius-xl);
+      padding: 32px 36px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .docs-section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark-title);
+      margin-bottom: 8px;
+    }
+    .docs-section-desc {
+      font-size: 13.5px;
+      color: var(--text-dark-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .color-swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .swatch-card {
+      border: 1px solid var(--sheet-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .swatch-box {
+      height: 72px;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .swatch-info {
+      padding: 12px;
+      background: #ffffff;
+    }
+    .swatch-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-dark-title);
+    }
+    .swatch-role {
+      font-size: 11px;
+      color: var(--text-dark-muted);
+    }
+
+    .icon-catalog {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    .icon-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 10px;
+      border: 1px solid var(--sheet-border);
+      border-radius: var(--radius-md);
+      background: var(--sheet-bg-alt);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+    .icon-tile:hover {
+      background: #ffffff;
+      border-color: var(--aliado-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 82, 204, 0.12);
+    }
+    .icon-tile .tile-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-dark-muted);
+    }
+
+    .code-preview-box {
+      background: var(--aliado-navy-dark);
+      color: #93c5fd;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+
+    .template-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .template-card {
+      border: 1px solid var(--sheet-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--sheet-bg-alt);
+      transition: all var(--transition-fast);
+    }
+    .template-card:hover {
+      border-color: var(--aliado-blue);
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</head>
+<body style="background-color: #050b1a;">
+
+  <!-- TOP HEADER DA VITRINE -->
+  <header style="background: #030712; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 24px 36px; color: #ffffff;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div class="aliado-logo-box">A//T</div>
+        <div>
+          <h1 style="font-size: 18px; font-weight: 700; color: #ffffff;">Aliado Design System <span style="color: var(--aliado-cyan); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; background: rgba(0,210,255,0.12); padding: 2px 8px; border-radius: 9999px; margin-left: 6px;">v2.0</span></h1>
+          <div style="font-size: 11px; color: var(--text-light-muted); letter-spacing: 0.05em;">GRUPO ALIADOS HUB TECH LTDA — PADRÃO VISUAL CORPORATIVO</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <a href="/login.html" class="aliado-pill-badge" target="_blank">
+          <span>Ver Login Template</span>
+          <span data-aliado-icon="arrow-up-right" data-size="12"></span>
+        </a>
+        <a href="/dashboard.html" class="btn-aliado-primary" style="padding: 8px 16px; font-size: 12.5px;" target="_blank">
+          <span>Ver Dashboard Referência</span>
+          <span data-aliado-icon="arrow-up-right" data-size="14"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-container">
+
+    <!-- 1. TEMPLATES PRONTOS -->
+    <section class="docs-section">
+      <div class="aliado-sheet-eyebrow">RECURSOS PRONTOS PARA USO</div>
+      <h2 class="docs-section-title">Templates Corporativos Oficiais</h2>
+      <p class="docs-section-desc">
+        Páginas completas desenvolvidas sob a nova identidade visual. Prontas para duplicação e integração nos diferentes sistemas e produtos do Grupo Aliados.
+      </p>
+
+      <div class="template-links-grid">
+        <div class="template-card">
+          <div>
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--aliado-blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">TEMPLATE 01</div>
+            <h3 style="font-size: 17px; font-weight: 600; color: var(--text-dark-title); margin-bottom: 6px;">Tela de Acesso & Login (Split 50/50)</h3>
+            <p style="font-size: 12.5px; color: var(--text-dark-muted);">Painel esquerdo em Obsidian Navy com propostas de valor + Card flutuante branco com inputs otimizados e alternador de senha.</p>
+          </div>
+          <a href="/login.html" class="btn-aliado-secondary" target="_blank">Abrir Template de Login -></a>
+        </div>
+
+        <div class="template-card">
+          <div>
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--aliado-cyan); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">TEMPLATE 02</div>
+            <h3 style="font-size: 17px; font-weight: 600; color: var(--text-dark-title); margin-bottom: 6px;">Dashboard & Lançamentos Semanal</h3>
+            <p style="font-size: 12.5px; color: var(--text-dark-muted);">Layout Two-Tone com Hero Dark + White Sheet Canvas, grid de cards de ação rápida, card escuro de telemetria e lista de pendências.</p>
+          </div>
+          <a href="/dashboard.html" class="btn-aliado-primary" target="_blank">Abrir Dashboard -></a>
+        </div>
+
+        <div class="template-card">
+          <div>
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--status-success-text); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">TEMPLATE 03</div>
+            <h3 style="font-size: 17px; font-weight: 600; color: var(--text-dark-title); margin-bottom: 6px;">Data Grid de Notas Fiscais</h3>
+            <p style="font-size: 12.5px; color: var(--text-dark-muted);">Filtros em pílula por status, tabela com dupla linha de descrição, valores em destaque monetário e badges tonais (PAGA, ENTREGUE).</p>
+          </div>
+          <button class="btn-aliado-secondary" onclick="window.open('/dashboard.html', '_blank')">Abrir Grade de Notas -></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PALETA DE CORES -->
+    <section class="docs-section">
+      <div class="aliado-sheet-eyebrow">FUNDAMENTOS DE COR</div>
+      <h2 class="docs-section-title">Paleta Semântica & Contraste Two-Tone</h2>
+      <p class="docs-section-desc">
+        A identidade utiliza a robustez do <strong>Obsidian Navy</strong> para a moldura estrutural e navegação, aliada ao <strong>White Sheet Canvas</strong> para clareza máxima de leitura e dados.
+      </p>
+
+      <div class="color-swatches">
+        <div class="swatch-card">
+          <div class="swatch-box" style="background: #030712; color: #fff;">#030712</div>
+          <div class="swatch-info">
+            <div class="swatch-name">Obsidian Navy</div>
+            <div class="swatch-role">Canvas de Fundo & Top Hero</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-box" style="background: #050b1a; color: #fff;">#050b1a</div>
+          <div class="swatch-info">
+            <div class="swatch-name">Deep Sidebar Navy</div>
+            <div class="swatch-role">Barra Lateral de Navegação</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-box" style="background: #0052cc; color: #fff;">#0052cc</div>
+          <div class="swatch-info">
+            <div class="swatch-name">Royal / Cobalt Blue</div>
+            <div class="swatch-role">Ações Primárias & CTAs</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-box" style="background: #00d2ff; color: #000;">#00d2ff</div>
+          <div class="swatch-info">
+            <div class="swatch-name">Cyan Tech</div>
+            <div class="swatch-role">Subtítulos Dark & Indicadores</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-box" style="background: #ffffff; color: #000; border-bottom: 1px solid #e2e8f0;">#ffffff</div>
+          <div class="swatch-info">
+            <div class="swatch-name">White Sheet</div>
+            <div class="swatch-role">Prancheta de Trabalho</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CATÁLOGO DE ÍCONES PROFISSIONAIS -->
+    <section class="docs-section">
+      <div class="aliado-sheet-eyebrow">ICONS PACKAGE</div>
+      <h2 class="docs-section-title">Biblioteca AliadoIcons (SVG Vetorial Stroke)</h2>
+      <p class="docs-section-desc">
+        Ícones 100% vetoriais, baseados em traço de 1.8px, alinhados à grade geométrica. Clique em qualquer ícone para copiar a tag de inclusão.
+      </p>
+
+      <div class="icon-catalog" id="icon-catalog-container">
+        <!-- Injetado dinamicamente via JS -->
+      </div>
+
+      <div class="code-preview-box" id="icon-code-preview">
+        &lt;span data-aliado-icon="landmark" data-size="18"&gt;&lt;/span&gt;
+      </div>
+    </section>
+
+    <!-- 4. COMPONENTES INTERATIVOS DE TESTE -->
+    <section class="docs-section">
+      <div class="aliado-sheet-eyebrow">COMPONENTES INTERATIVOS</div>
+      <h2 class="docs-section-title">Botões, Badges, Cards & Toasts</h2>
+      <p class="docs-section-desc">
+        Todos os elementos estilizados de acordo com as especificações da nova marca.
+      </p>
+
+      <!-- Botões -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dark-muted); margin-bottom: 12px;">Variantes de Botões</h4>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <button class="btn-aliado-primary" onclick="AliadoUI.toast('Ação primária disparada', 'success')">
+            <span data-aliado-icon="plus" data-size="16"></span>
+            <span>Ação Primária</span>
+          </button>
+
+          <button class="btn-aliado-secondary" onclick="AliadoUI.toast('Ação secundária', 'info')">
+            <span data-aliado-icon="file-text" data-size="16"></span>
+            <span>Ação Secundária</span>
+          </button>
+
+          <button class="aliado-filter-pill active">Filtro Ativo</button>
+          <button class="aliado-filter-pill">Filtro Inativo</button>
+
+          <button class="btn-aliado-primary" style="background: #059669;" onclick="AliadoUI.toast('Operação de Sucesso!', 'success')">
+            <span>Testar Toast Sucesso</span>
+          </button>
+
+          <button class="btn-aliado-primary" style="background: #dc2626;" onclick="AliadoUI.toast('Alerta de Erro Crítico!', 'danger')">
+            <span>Testar Toast Alerta</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dark-muted); margin-bottom: 12px;">Status Badges Tonais</h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span class="aliado-status-badge paga">PAGA</span>
+          <span class="aliado-status-badge entregue">ENTREGUE</span>
+          <span class="aliado-status-badge pendente">PENDENTE</span>
+          <span class="aliado-status-badge cancelada">CANCELADA</span>
+        </div>
+      </div>
+
+      <!-- Como Usar nos Projetos do Grupo -->
+      <div>
+        <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dark-muted); margin-bottom: 8px;">Como incluir em novos projetos do Grupo:</h4>
+        <div class="code-preview-box">
+&lt;!-- No &lt;head&gt; da página --&gt;
+&lt;link rel="stylesheet" href="/css/aliado-design-system.css"&gt;
+
+&lt;!-- Antes de fechar o &lt;body&gt; --&gt;
+&lt;script src="/js/aliado-icons.js"&gt;&lt;/script&gt;
+&lt;script src="/js/aliado-ui.js"&gt;&lt;/script&gt;
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/aliado-icons.js"></script>
+  <script src="/js/aliado-ui.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Preencher catálogo de ícones
+      const container = document.getElementById('icon-catalog-container');
+      const preview = document.getElementById('icon-code-preview');
+
+      AliadoIcons.list.forEach(iconName => {
+        const tile = document.createElement('div');
+        tile.className = 'icon-tile';
+        tile.innerHTML = `
+          <div data-aliado-icon="${iconName}" data-size="20"></div>
+          <span class="tile-label">${iconName}</span>
+        `;
+        tile.addEventListener('click', () => {
+          const code = `<span data-aliado-icon="${iconName}" data-size="18"></span>`;
+          preview.textContent = code;
+          AliadoUI.toast(`Código copiado: ${iconName}`, 'info');
+        });
+        container.appendChild(tile);
+      });
+
+      AliadoIcons.renderAll();
+    });
+  </script>
+</body>
+</html>

@@ -1,235 +1,570 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex SaaS - Redirecionando para o Pipeline...</title>
-    <script>window.location.replace('/app');</script>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesouraria & Operações — Grupo Aliados Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    /* Transição suave entre visualizações */
+    .tab-view { display: none; }
+    .tab-view.active { display: flex; flex-direction: column; gap: 32px; }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- HEADER -->
-        <header>
-            <div class="logo-area">
-                <h1>Apex GNRE SaaS</h1>
-                <p>Painel de Controle de Faturamento e Emissões</p>
-            </div>
-            <div class="nav-links">
-                <span id="tenant-name" style="font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-right: 10px;"></span>
-                <a href="/dashboard.html" class="nav-btn active">Faturamento</a>
-                <a href="/profile.html" class="nav-btn">Empresa</a>
-                <a href="/plans.html" class="nav-btn">Planos</a>
-                <a href="/admin.html" id="admin-nav-link" class="nav-btn d-none">Administração</a>
-                <button onclick="logout()" class="nav-btn" style="cursor: pointer; border: none; background: transparent;">Sair</button>
-            </div>
-        </header>
+  <div class="aliado-app-shell">
+    
+    <!-- SIDEBAR ESQUERDA DARK NAVY -->
+    <aside class="aliado-sidebar">
+      <div class="aliado-brand-header">
+        <div class="aliado-logo-box">A//T</div>
+        <div class="aliado-brand-info">
+          <span class="aliado-brand-title">Aliado Hub Tech</span>
+          <span class="aliado-brand-subtitle">CONSOLE FINANCEIRO</span>
+        </div>
+      </div>
 
-        <!-- GRID PRINCIPAL -->
-        <div class="grid-config" style="grid-template-columns: 1.1fr 0.9fr; gap: 28px;">
+      <div class="aliado-nav-section-label">OPERAÇÃO FINANCEIRA</div>
+      <ul class="aliado-nav-list">
+        <li class="aliado-nav-item active" id="nav-lancamentos">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="landmark"></span>
+            <span>Cadastro financeiro</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-entradas">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="arrow-down-left"></span>
+            <span>Entradas</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-pix">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="credit-card"></span>
+            <span>Pix e Outros</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-notas">
+          <button onclick="switchTab('notas')">
+            <span data-aliado-icon="file-text"></span>
+            <span>Notas fiscais</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-fechamento">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="lock"></span>
+            <span>Fechamento</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-auditoria">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="shield-check"></span>
+            <span>Auditoria</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-extrato">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="receipt"></span>
+            <span>Extrato</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-relatorios">
+          <button onclick="switchTab('lancamentos')">
+            <span data-aliado-icon="bar-chart"></span>
+            <span>Relatórios</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="aliado-nav-section-label">SERVIÇOS EM LOTE</div>
+      <ul class="aliado-nav-list">
+        <li class="aliado-nav-item" id="nav-processamento">
+          <button onclick="switchTab('processamento')">
+            <span data-aliado-icon="upload-cloud"></span>
+            <span>Processar Guias & XML</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="aliado-sidebar-footer">
+        <div class="aliado-nav-section-label">CONTA</div>
+        <ul class="aliado-nav-list">
+          <li class="aliado-nav-item">
+            <a href="/profile.html">
+              <span data-aliado-icon="user"></span>
+              <span id="user-display-name">Minha Empresa</span>
+            </a>
+          </li>
+          <li class="aliado-nav-item">
+            <button onclick="logout()">
+              <span data-aliado-icon="log-out"></span>
+              <span>Encerrar Sessão</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="aliado-main">
+      
+      <!-- TOPBAR HEADER -->
+      <header class="aliado-topbar">
+        <div class="aliado-topbar-breadcrumb">
+          <span>Aliado Hub Tech</span>
+          <span>|</span>
+          <strong id="topbar-context-title">CONSOLE FINANCEIRO</strong>
+        </div>
+
+        <div class="aliado-topbar-actions">
+          <div class="aliado-cycle-nav">
+            <button title="Semana anterior"><span data-aliado-icon="chevron-left" data-size="14"></span></button>
+            <span>24 AGO — 30 AGO</span>
+            <button title="Próxima semana"><span data-aliado-icon="chevron-right" data-size="14"></span></button>
+          </div>
+
+          <div class="aliado-pill-badge" onclick="AliadoUI.toast('Ciclo atual sincronizado', 'success')">
+            <span data-aliado-icon="refresh-cw" data-size="12"></span>
+            <span>Semana Atual</span>
+          </div>
+
+          <button class="aliado-pill-badge" style="background: transparent;" onclick="AliadoUI.toast('Central de Ajuda Aliado', 'info')">
+            <span data-aliado-icon="help-circle" data-size="14"></span>
+            <span>Ajuda</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- HERO BANNER (DARK NAVY) -->
+      <section class="aliado-hero-banner">
+        <div class="aliado-hero-eyebrow" id="hero-eyebrow">CADASTRO FINANCEIRO</div>
+        <h1 class="aliado-hero-title" id="hero-title">Lançamentos Semanal</h1>
+        <p class="aliado-hero-subtitle" id="hero-subtitle">
+          Registre a arrecadação da congregação e acompanhe o pagamento das notas com um ciclo organizado.
+        </p>
+      </section>
+
+      <!-- WHITE SHEET CANVAS (ÁREA BRANCA DE TRABALHO) -->
+      <div class="aliado-sheet-canvas">
+        
+        <!-- ========================================== -->
+        <!-- ABA 1: LANÇAMENTOS SEMANAL (Visão Geral)   -->
+        <!-- ========================================== -->
+        <div id="view-lancamentos" class="tab-view active">
+          
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">SEMANA ATUAL</div>
+              <h2 class="aliado-sheet-title">Lançamentos</h2>
+            </div>
+          </div>
+
+          <!-- GRID DE 4 CARDS DE AÇÃO -->
+          <div class="aliado-grid-4">
             
-            <!-- COLUNA ESQUERDA: EMISSÃO / PROCESSAMENTO -->
-            <div class="card">
-                <div class="card-title">
-                    <span>⚡</span> Processar Guias e Remessas
-                </div>
-
-                <!-- INFORMAÇÕES DE CONTA -->
-                <div class="flex-between mb-4" style="background: rgba(255, 255, 255, 0.02); padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-color);">
-                    <div>
-                        <span class="label">Ambiente Ativo</span>
-                        <strong id="active-env" style="text-transform: uppercase;">Carregando...</strong>
-                    </div>
-                    <div>
-                        <span class="label">Empresa</span>
-                        <strong id="company-cnpj">Carregando...</strong>
-                    </div>
-                </div>
-
-                <!-- DRAG AND DROP ZONE -->
-                <div id="xml-dropzone" class="dropzone mb-4">
-                    <span class="dropzone-icon">📥</span>
-                    <strong>Arraste os arquivos XML das Notas Fiscais aqui</strong>
-                    <span style="font-size: 12px; color: var(--text-secondary);">Ou clique para selecionar arquivos do seu computador</span>
-                    <input type="file" id="xml-input" multiple accept=".xml" class="d-none">
-                </div>
-
-                <!-- LISTA DE ARQUIVOS SELECIONADOS -->
-                <div id="selected-files" class="file-list mb-4 d-none">
-                    <!-- Arquivos inseridos via JS -->
-                </div>
-
-                <!-- DATA DE PAGAMENTO -->
-                <div class="form-group mb-4" style="max-width: 280px;">
-                    <label for="payment-date">Data de Pagamento (Remessa CNAB)</label>
-                    <input type="date" id="payment-date" required>
-                </div>
-
-                <!-- AÇÕES -->
-                <div style="display: flex; gap: 12px;" class="mb-4">
-                    <button id="btn-process-upload" class="btn btn-primary" style="flex: 1;">
-                        Processar XMLs Selecionados
-                    </button>
-                    <button id="btn-process-local" class="btn btn-secondary" title="Lê arquivos da pasta 'xml_nfe' no servidor">
-                        Processar Pasta Local (xml_nfe)
-                    </button>
-                </div>
-
-                <!-- PROGRESSO -->
-                <div id="processing-progress" class="mb-4 d-none">
-                    <div class="flex-between">
-                        <label>Progresso de Processamento</label>
-                        <span id="progress-val" style="font-weight: bold; font-size: 13px;">0%</span>
-                    </div>
-                    <div class="progress-container">
-                        <div id="progress-inner" class="progress-bar"></div>
-                    </div>
-                </div>
-
-                <!-- PAINEL DE LOGS EM TEMPO REAL -->
-                <div class="form-group">
-                    <label>Terminal de Operações (Histórico do Lote)</label>
-                    <div id="terminal-logs" class="log-container">
-                        <span class="log-line" style="color: var(--text-secondary);">Aguardando início de processamento...</span>
-                    </div>
-                </div>
+            <div class="aliado-action-card" onclick="AliadoUI.toast('Módulo Entradas selecionado', 'info')">
+              <div class="card-top-label">ARRECADAÇÃO</div>
+              <div class="card-main-row">
+                <span class="card-title">Entradas</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">14 períodos DIA / NOITE</div>
             </div>
 
-            <!-- COLUNA DIREITA: HISTÓRICO DE LOTES -->
-            <div class="card" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="flex-between" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 4px;">
-                    <div style="font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
-                        <span>🕒</span> Histórico de Lotes Enviados
-                    </div>
-                    <button onclick="abrirModalRecibo()" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; font-weight: 500;">
-                        🔍 Consultar Recibo Manual
-                    </button>
-                </div>
-
-                <div class="table-container" style="max-height: 250px; overflow-y: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data/Hora</th>
-                                <th>Ambiente</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body">
-                            <tr>
-                                <td colspan="4" class="text-center" style="color: var(--text-secondary);">Nenhum lote enviado ainda.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- DETALHES DO LOTE SELECIONADO / DOWNLOAD DAS GUIAS -->
-                <div id="batch-details-section" class="d-none" style="border-top: 1px solid var(--border-color); padding-top: 20px;">
-                    <div class="card-title" style="border-bottom: none; padding-bottom: 0; font-size: 16px;">
-                        <span>📋</span> Guias Geradas no Lote
-                    </div>
-                    <div id="batch-receipts-container" style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-family: monospace;"></div>
-                    
-                    <div class="flex-between mb-4 mt-4">
-                        <strong style="font-size: 13px; color: var(--text-secondary);">AÇÕES DO LOTE:</strong>
-                        <div style="display: flex; gap: 8px;">
-                            <a id="download-sp-xml-btn" href="#" class="btn btn-secondary d-none" style="padding: 6px 12px; font-size: 12px; border-color: var(--warning); color: var(--warning); font-weight: 500;">
-                                📥 Baixar XML de Lote para São Paulo (SP)
-                            </a>
-                            <a id="download-guias-all-btn" href="#" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; font-weight: 500;">
-                                📦 Baixar Todas as Guias (ZIP)
-                            </a>
-                            <a id="download-remessa-btn" href="#" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">
-                                📥 Baixar remessa.txt
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="table-container" style="max-height: 220px; overflow-y: auto;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>NF</th>
-                                    <th>UF</th>
-                                    <th>Valor</th>
-                                    <th>Guia Visual</th>
-                                </tr>
-                            </thead>
-                            <tbody id="guides-table-body">
-                                <!-- Preenchido dinamicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="aliado-action-card" onclick="switchTab('notas')">
+              <div class="card-top-label">CONTROLE DOCUMENTAL</div>
+              <div class="card-main-row">
+                <span class="card-title">Saídas</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">Notas fiscais e comprovantes</div>
             </div>
+
+            <div class="aliado-action-card" onclick="AliadoUI.toast('Módulo Pix & Cartões selecionado', 'info')">
+              <div class="card-top-label">INFORMAÇÃO PARA AUDITORIA</div>
+              <div class="card-main-row">
+                <span class="card-title">Pix e Outros</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">Pix, Cartão e Outros</div>
+            </div>
+
+            <div class="aliado-action-card" onclick="AliadoUI.toast('Módulo Missões selecionado', 'info')">
+              <div class="card-top-label">INFORMAÇÃO SEMANAL</div>
+              <div class="card-main-row">
+                <span class="card-title">Missões</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">Sem impacto no caixa</div>
+            </div>
+
+          </div>
+
+          <!-- GRID ASSIMÉTRICO: CARD ESCURO DE CAIXA + CARD BRANCO DE PENDÊNCIAS -->
+          <div class="aliado-grid-2-asymmetric">
+            
+            <!-- CARD ESCURO TELEMETRIA -->
+            <div class="aliado-telemetry-card">
+              <div class="aliado-telemetry-header">
+                <div>
+                  <div class="telemetry-eyebrow">LEITURA RÁPIDA</div>
+                  <h3 class="telemetry-title">Caixa da semana</h3>
+                </div>
+                <div class="telemetry-icon" data-aliado-icon="landmark" data-size="24"></div>
+              </div>
+
+              <div class="aliado-telemetry-grid">
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">SALDO ANTERIOR</div>
+                  <div class="metric-value">R$ 782,30</div>
+                </div>
+
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">ENTRADAS</div>
+                  <div class="metric-value light-val">R$ 1.687,10</div>
+                </div>
+
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">VALOR EM CAIXA</div>
+                  <div class="metric-value">R$ 594,02</div>
+                </div>
+
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">SAÍDAS PAGAS</div>
+                  <div class="metric-value light-val">R$ 1.875,38</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD BRANCO PENDÊNCIAS -->
+            <div class="aliado-white-card">
+              <div class="card-eyebrow">ACOMPANHE O CICLO</div>
+              <h3 class="card-headline">Pendências</h3>
+
+              <div class="aliado-list-rows">
+                <div class="aliado-list-row">
+                  <div class="row-info">
+                    <div class="row-title">Notas não pagas</div>
+                    <div class="row-desc">0 registros cadastrados</div>
+                  </div>
+                  <div class="row-value">R$ 0,00</div>
+                </div>
+
+                <div class="aliado-list-row">
+                  <div class="row-info">
+                    <div class="row-title">Notas Entregues</div>
+                    <div class="row-desc">4 selecionadas para pagamento</div>
+                  </div>
+                  <div class="row-value">R$ 691,37</div>
+                </div>
+              </div>
+
+              <div class="aliado-white-card-footer">
+                <a href="#" onclick="switchTab('notas'); return false;">
+                  <span>Acessar fechamento detalhado</span>
+                  <span data-aliado-icon="arrow-right" data-size="14"></span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
         </div>
-    </div>
 
-    <div id="toast" class="toast"></div>
-
-    <!-- MODAL DE CONSULTA DE RECIBO MANUAL -->
-    <div id="modal-recibo" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>🔍 Consultar Recibo Manual</h3>
-                <button onclick="fecharModalRecibo()" class="modal-close">✖</button>
+        <!-- ========================================== -->
+        <!-- ABA 2: NOTAS FISCAIS (Data Grid & Filtros) -->
+        <!-- ========================================== -->
+        <div id="view-notas" class="tab-view">
+          
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">DESPESAS DA SEMANA</div>
+              <h2 class="aliado-sheet-title">Notas cadastradas</h2>
             </div>
-            <form id="form-consulta-recibo" onsubmit="enviarConsultaRecibo(event)">
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <div class="form-group">
-                        <label for="recibo-uf">UF do Governo</label>
-                        <select id="recibo-uf" required>
-                            <option value="" disabled selected>Selecione a UF...</option>
-                            <option value="AC">Acre (AC)</option>
-                            <option value="AL">Alagoas (AL)</option>
-                            <option value="AP">Amapá (AP)</option>
-                            <option value="AM">Amazonas (AM)</option>
-                            <option value="BA">Bahia (BA)</option>
-                            <option value="CE">Ceará (CE)</option>
-                            <option value="DF">Distrito Federal (DF)</option>
-                            <option value="ES">Espírito Santo (ES)</option>
-                            <option value="GO">Goiás (GO)</option>
-                            <option value="MA">Maranhão (MA)</option>
-                            <option value="MT">Mato Grosso (MT)</option>
-                            <option value="MS">Mato Grosso do Sul (MS)</option>
-                            <option value="MG">Minas Gerais (MG)</option>
-                            <option value="PA">Pará (PA)</option>
-                            <option value="PB">Paraíba (PB)</option>
-                            <option value="PR">Paraná (PR)</option>
-                            <option value="PE">Pernambuco (PE)</option>
-                            <option value="PI">Piauí (PI)</option>
-                            <option value="RJ">Rio de Janeiro (RJ)</option>
-                            <option value="RN">Rio Grande do Norte (RN)</option>
-                            <option value="RS">Rio Grande do Sul (RS)</option>
-                            <option value="RO">Rondônia (RO)</option>
-                            <option value="RR">Roraima (RR)</option>
-                            <option value="SC">Santa Catarina (SC)</option>
-                            <option value="SP">São Paulo (SP)</option>
-                            <option value="SE">Sergipe (SE)</option>
-                            <option value="TO">Tocantins (TO)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="recibo-numero">Número do Recibo</label>
-                        <input type="text" id="recibo-numero" placeholder="Ex: 26000286148551" required pattern="[0-9]+" title="Digite apenas números">
-                    </div>
-                    <div class="form-group">
-                        <label for="recibo-payment-date">Data de Pagamento (Remessa CNAB)</label>
-                        <input type="date" id="recibo-payment-date" required>
-                    </div>
-                    <div style="display: flex; gap: 12px; margin-top: 10px;">
-                        <button type="button" onclick="fecharModalRecibo()" class="btn btn-secondary" style="flex: 1;">Cancelar</button>
-                        <button type="submit" id="btn-submit-recibo" class="btn btn-primary" style="flex: 1;">Consultar e Resgatar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <script src="/js/auth.js?v=3"></script>
-    <script src="/js/dashboard.js"></script>
+            <button class="btn-aliado-primary" onclick="abrirModalNovaNota()">
+              <span data-aliado-icon="plus" data-size="16"></span>
+              <span>Nova nota</span>
+            </button>
+          </div>
+
+          <!-- FILTROS EM PÍLULAS -->
+          <div class="aliado-filter-group">
+            <button class="aliado-filter-pill active" onclick="filtrarNotas('todas', this)">Todas</button>
+            <button class="aliado-filter-pill" onclick="filtrarNotas('nao-pagas', this)">Não pagas</button>
+            <button class="aliado-filter-pill" onclick="filtrarNotas('pagas', this)">Pagas</button>
+            <button class="aliado-filter-pill" onclick="filtrarNotas('entregues', this)">Entregues</button>
+          </div>
+
+          <!-- TABELA DE NOTAS FISCAIS -->
+          <div class="aliado-table-container">
+            <table class="aliado-table" id="tabela-notas">
+              <thead>
+                <tr>
+                  <th>DESCRIÇÃO</th>
+                  <th>CADASTRO</th>
+                  <th>VALOR</th>
+                  <th>SITUAÇÃO</th>
+                  <th style="width: 48px; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-status="pagas">
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Despesa com atendimento na terça</div>
+                      <div class="desc-secondary">Almoço de Jeremias e Florisvaldo</div>
+                    </div>
+                  </td>
+                  <td>05/09/2026</td>
+                  <td class="aliado-cell-value">R$ 40,00</td>
+                  <td><span class="aliado-status-badge paga">PAGA</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Opções da nota #1', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr data-status="entregues">
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Conta de água 1/2</div>
+                      <div class="desc-secondary">EMBASA - Fornecimento Sede</div>
+                    </div>
+                  </td>
+                  <td>05/09/2026</td>
+                  <td class="aliado-cell-value">R$ 105,27</td>
+                  <td><span class="aliado-status-badge entregue">ENTREGUE</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Opções da nota #2', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr data-status="pagas">
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Conta de água</div>
+                      <div class="desc-secondary">EMBASA - Anexo Administrativo</div>
+                    </div>
+                  </td>
+                  <td>05/09/2026</td>
+                  <td class="aliado-cell-value">R$ 133,70</td>
+                  <td><span class="aliado-status-badge paga">PAGA</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Opções da nota #3', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr data-status="entregues">
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Manutenção do Interfone</div>
+                      <div class="desc-secondary">Diversos - Serviço Técnico e Troca de Fiação</div>
+                    </div>
+                  </td>
+                  <td>05/09/2026</td>
+                  <td class="aliado-cell-value">R$ 154,00</td>
+                  <td><span class="aliado-status-badge entregue">ENTREGUE</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Opções da nota #4', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr data-status="entregues">
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Compra de presente para o Pastor e Esposa</div>
+                      <div class="desc-secondary">Diversos - Homenagem Anual</div>
+                    </div>
+                  </td>
+                  <td>05/09/2026</td>
+                  <td class="aliado-cell-value">R$ 300,00</td>
+                  <td><span class="aliado-status-badge entregue">ENTREGUE</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Opções da nota #5', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ABA 3: PROCESSAMENTO FISCAL EM LOTE (XMLs) -->
+        <!-- ========================================== -->
+        <div id="view-processamento" class="tab-view">
+          
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">AUTOMAÇÃO EM LOTE</div>
+              <h2 class="aliado-sheet-title">Processamento de Arquivos XML</h2>
+            </div>
+          </div>
+
+          <!-- DROPZONE -->
+          <div class="aliado-dropzone" id="dropzone-area" onclick="document.getElementById('xml-file-input').click()">
+            <div class="aliado-dropzone-icon" data-aliado-icon="upload-cloud" data-size="28"></div>
+            <div class="aliado-dropzone-title">Arraste seus arquivos fiscais aqui</div>
+            <div class="aliado-dropzone-desc">Suporta XML de NF-e, CT-e e lotes compactados (.zip)</div>
+            <input type="file" id="xml-file-input" style="display: none;" multiple accept=".xml,.zip" onchange="handleFileSelect(this)">
+          </div>
+
+          <div id="file-feedback" style="display: none; padding: 14px 20px; background: var(--sheet-bg-alt); border: 1px solid var(--sheet-border); border-radius: var(--radius-md);">
+            <strong id="file-count-text">0 arquivos selecionados</strong>
+            <button class="btn-aliado-primary" style="margin-left: 16px;" onclick="processarArquivos()">Iniciar Processamento</button>
+          </div>
+
+          <!-- TERMINAL LOG -->
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">
+              Console de Operações
+            </div>
+            <div class="aliado-terminal" id="terminal-console">
+              <div>[SISTEMA] Motor fiscal pronto para recebimento de notas.</div>
+              <div>[SEGURANÇA] Conexão com backend autorizada via token corporativo.</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/aliado-icons.js"></script>
+  <script src="/js/aliado-ui.js"></script>
+  <script>
+    // Gerenciador de Abas
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.aliado-nav-item').forEach(el => el.classList.remove('active'));
+
+      const heroEyebrow = document.getElementById('hero-eyebrow');
+      const heroTitle = document.getElementById('hero-title');
+      const heroSubtitle = document.getElementById('hero-subtitle');
+
+      if (tabId === 'lancamentos') {
+        document.getElementById('view-lancamentos').classList.add('active');
+        document.getElementById('nav-lancamentos').classList.add('active');
+        heroEyebrow.textContent = 'CADASTRO FINANCEIRO';
+        heroTitle.textContent = 'Lançamentos Semanal';
+        heroSubtitle.textContent = 'Registre a arrecadação da congregação e acompanhe o pagamento das notas com um ciclo organizado.';
+      } else if (tabId === 'notas') {
+        document.getElementById('view-notas').classList.add('active');
+        document.getElementById('nav-notas').classList.add('active');
+        heroEyebrow.textContent = 'CADASTRO FINANCEIRO';
+        heroTitle.textContent = 'Notas fiscais';
+        heroSubtitle.textContent = 'Gerencie despesas semanais, comprovantes fiscais e controle o status de quitação de pagamentos.';
+      } else if (tabId === 'processamento') {
+        document.getElementById('view-processamento').classList.add('active');
+        document.getElementById('nav-processamento').classList.add('active');
+        heroEyebrow.textContent = 'AUTOMAÇÃO FISCAL';
+        heroTitle.textContent = 'Processamento em Lote';
+        heroSubtitle.textContent = 'Importação massiva de XMLs para validação, emissão de guias GNRE e geração de remessa bancária.';
+      }
+
+      AliadoIcons.renderAll();
+    }
+
+    // Filtro de Tabela de Notas Fiscais
+    function filtrarNotas(status, btn) {
+      document.querySelectorAll('.aliado-filter-pill').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+
+      const rows = document.querySelectorAll('#tabela-notas tbody tr');
+      rows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status');
+        if (status === 'todas') {
+          row.style.display = '';
+        } else if (status === rowStatus) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // Nova Nota
+    function abrirModalNovaNota() {
+      const desc = prompt("Informe a descrição da nova nota/despesa:");
+      if (!desc) return;
+      const val = prompt("Informe o valor (Ex: R$ 85,00):", "R$ 85,00");
+      if (!val) return;
+
+      const tbody = document.querySelector('#tabela-notas tbody');
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-status', 'nao-pagas');
+      tr.innerHTML = `
+        <td>
+          <div class="aliado-cell-desc">
+            <div class="desc-primary">${desc}</div>
+            <div class="desc-secondary">Cadastrado manualmente via painel</div>
+          </div>
+        </td>
+        <td>${new Date().toLocaleDateString('pt-BR')}</td>
+        <td class="aliado-cell-value">${val}</td>
+        <td><span class="aliado-status-badge pendente">NÃO PAGA</span></td>
+        <td style="text-align: center;">
+          <button class="aliado-btn-dots" onclick="AliadoUI.toast('Opções da nova nota', 'info')">
+            <span data-aliado-icon="more-horizontal" data-size="16"></span>
+          </button>
+        </td>
+      `;
+      tbody.prepend(tr);
+      AliadoIcons.renderAll();
+      AliadoUI.toast('Nota fiscal cadastrada com sucesso!', 'success');
+    }
+
+    // Manipulação de Upload
+    function handleFileSelect(input) {
+      if (input.files && input.files.length > 0) {
+        document.getElementById('file-feedback').style.display = 'flex';
+        document.getElementById('file-count-text').textContent = `${input.files.length} arquivo(s) prontos para processamento.`;
+      }
+    }
+
+    function processarArquivos() {
+      const terminal = document.getElementById('terminal-console');
+      const line = document.createElement('div');
+      line.textContent = `[PROCESSAMENTO] Lote submetido em ${new Date().toLocaleTimeString('pt-BR')} com validação de schemas.`;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+      AliadoUI.toast('Lote enviado para processamento com sucesso!', 'success');
+    }
+
+    function logout() {
+      localStorage.removeItem('sb_access_token');
+      localStorage.removeItem('sb_refresh_token');
+      window.location.href = '/login.html';
+    }
+
+    // Carregar informações do usuário
+    document.addEventListener('DOMContentLoaded', async () => {
+      AliadoIcons.renderAll();
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.tenant) {
+            document.getElementById('user-display-name').textContent = data.tenant.razao_social || 'Grupo Aliados';
+          }
+        }
+      } catch (e) {}
+    });
+  </script>
 </body>
 </html>

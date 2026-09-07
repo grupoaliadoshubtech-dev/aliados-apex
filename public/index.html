@@ -3,118 +3,557 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex SaaS - Plataforma de Automação Fiscal</title>
-  <meta name="description" content="Plataforma de Automação Fiscal Modular • GNRE • DUA-e • DARF • ICMS-ST Ativos - Chega de preencher guias fiscais uma a uma.">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Apex — Automação e Emissão de GNRE em Lote | Grupo Aliados Hub Tech</title>
+  <meta name="description" content="Automatize a geração de GNRE a partir dos XMLs das suas notas fiscais interestaduais. Acompanhe os lotes, baixe os PDFs e gere a remessa SISPAG CNAB 240.">
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
   <style>
-    body { font-family: 'Inter', sans-serif; background: #08080f; }
+    /* Estilos dedicados da Landing Page no Padrão Runway */
+    body {
+      background-color: var(--color-cream-canvas);
+      color: var(--color-bark);
+      font-family: var(--font-sans);
+    }
+
+    .landing-announcement-bar {
+      background-color: var(--color-espresso);
+      color: #ffffff;
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.14px;
+    }
+
+    .landing-announcement-bar a {
+      color: var(--color-honey-wash);
+      text-decoration: underline;
+      margin-left: 6px;
+    }
+
+    .landing-header {
+      background-color: #fbfaf8;
+      border-bottom: 1px solid var(--color-linen-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .landing-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .landing-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-bark);
+    }
+
+    .landing-nav-links a:hover {
+      color: var(--color-espresso);
+    }
+
+    .landing-hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 24px 48px 24px;
+      text-align: center;
+    }
+
+    .hero-eyebrow-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      background-color: var(--color-honey-wash);
+      color: var(--color-espresso);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 24px;
+    }
+
+    .hero-display-title {
+      font-size: 52px;
+      font-weight: 600;
+      color: var(--color-espresso);
+      letter-spacing: -1.12px;
+      line-height: 1.12;
+      margin-bottom: 20px;
+    }
+
+    .hero-display-title .amber-underline {
+      position: relative;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .hero-display-title .amber-underline::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 4px;
+      width: 100%;
+      height: 10px;
+      background-color: var(--color-honey-wash);
+      z-index: -1;
+      border-radius: 2px;
+    }
+
+    .hero-subtitle {
+      font-size: 17px;
+      color: var(--color-bark);
+      line-height: 1.45;
+      letter-spacing: -0.16px;
+      max-width: 740px;
+      margin: 0 auto 36px auto;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    .terminal-container {
+      max-width: 820px;
+      margin: 0 auto;
+      background-color: var(--color-pure-paper);
+      border: 1px solid var(--color-linen-border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card-elevated);
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background-color: #f7f5f0;
+      border-bottom: 1px solid var(--color-linen-border);
+      font-size: 12px;
+      color: var(--color-driftwood);
+      font-family: var(--font-mono);
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      background-color: #faf9f7;
+      color: var(--color-espresso);
+    }
+
+    .terminal-line-prompt { color: var(--color-espresso); font-weight: 600; }
+    .terminal-line-success { color: #1e6b37; }
+    .terminal-line-warning { color: #8c5800; }
+    .terminal-line-muted { color: var(--color-driftwood); }
+
+    /* Seções de Conteúdo */
+    .section-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 72px 24px;
+    }
+
+    .section-header-center {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 48px auto;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-driftwood);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--color-espresso);
+      letter-spacing: -0.61px;
+      line-height: 1.15;
+    }
+
+    /* Grid 3 Benefícios */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .benefits-grid { grid-template-columns: 1fr; }
+      .hero-display-title { font-size: 36px; letter-spacing: -0.61px; }
+      .landing-nav-links { display: none; }
+    }
+
+    .benefit-card {
+      background-color: var(--color-pure-paper);
+      border: 1px solid var(--color-linen-border);
+      border-radius: 8px;
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      transition: all var(--transition-fast);
+    }
+
+    .benefit-card:hover {
+      border-color: var(--color-warm-ash);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-elevated);
+    }
+
+    .benefit-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: #f7f5f0;
+      border: 1px solid var(--color-linen-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-espresso);
+      margin-bottom: 20px;
+    }
+
+    .benefit-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--color-espresso);
+      letter-spacing: -0.22px;
+      margin-bottom: 8px;
+    }
+
+    .benefit-card p {
+      font-size: 14px;
+      color: var(--color-bark);
+      line-height: 1.4;
+      letter-spacing: -0.14px;
+    }
+
+    /* Grid de Planos */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
+    .pricing-card {
+      background-color: var(--color-pure-paper);
+      border: 1px solid var(--color-linen-border);
+      border-radius: 8px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--color-espresso);
+      box-shadow: var(--shadow-card-elevated);
+    }
+
+    .pricing-badge-popular {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--color-amber-signal);
+      color: var(--color-espresso);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 4px;
+      box-shadow: var(--shadow-amber-cta);
+    }
+
+    .price-value {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--color-espresso);
+      letter-spacing: -0.61px;
+      margin: 16px 0;
+    }
+
+    .price-features {
+      list-style: none;
+      margin: 20px 0 32px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13.5px;
+      color: var(--color-bark);
+    }
+
+    .price-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .landing-footer {
+      border-top: 1px solid var(--color-linen-border);
+      padding: 40px 24px;
+      background-color: #fbfaf8;
+      font-size: 13px;
+      color: var(--color-driftwood);
+    }
+
+    .landing-footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    @media (max-width: 680px) {
+      .landing-footer-inner { flex-direction: column; text-align: center; }
+    }
   </style>
 </head>
-<body class="bg-[#08080f] text-white antialiased">
-  <!-- HEADER -->
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#08080f]/80 border-b border-white/[0.06]">
-    <div class="max-w-[1300px] mx-auto px-6 h-[64px] flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white">A</div>
+<body>
+
+  <!-- BARRA DE AVISO TOPO (RUNWAY TOP BANNER) -->
+  <div class="landing-announcement-bar">
+    Nova versão operacional com suporte a SEFAZ mTLS, emissão em lote de GNRE e remessa SISPAG CNAB 240.
+    <a href="/login.html">Acessar plataforma &rarr;</a>
+  </div>
+
+  <!-- HEADER INSTITUCIONAL -->
+  <header class="landing-header">
+    <div class="landing-header-inner">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="aliado-logo-box">A//T</div>
         <div>
-          <div class="font-bold text-[18px] leading-none tracking-tight text-white">Apex <span class="bg-gradient-to-r from-violet-300 to-fuchsia-300 bg-clip-text text-transparent">SaaS</span></div>
-          <div class="text-[9px] tracking-[0.15em] text-white/40 mt-0.5">PLATAFORMA DE AUTOMAÇÃO FISCAL</div>
+          <div style="font-size: 16px; font-weight: 600; color: var(--color-espresso); letter-spacing: -0.22px;">Apex GNRE</div>
+          <div style="font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-driftwood);">GRUPO ALIADOS HUB TECH</div>
         </div>
       </div>
-      <nav class="hidden lg:flex items-center gap-7 text-[13px] text-white/60">
-        <a href="#funcionalidades" class="hover:text-white">Funcionalidades</a>
-        <a href="#estados" class="hover:text-white">Estados Atendidos</a>
-        <a href="#como" class="hover:text-white">Como Funciona</a>
-        <a href="#planos" class="hover:text-white">Planos</a>
-        <a href="#faq" class="hover:text-white">Perguntas Frequentes</a>
+
+      <nav class="landing-nav-links">
+        <a href="#como">Como Funciona</a>
+        <a href="#beneficios">Funcionalidades</a>
+        <a href="#planos">Planos</a>
+        <a href="/login.html">Suporte</a>
       </nav>
-      <div class="flex items-center gap-3">
-        <a href="/login.html" class="px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/80 text-[13px] hover:bg-white/[0.1]">Entrar</a>
-        <a href="/app" class="px-5 py-2 rounded-full bg-[#6366f1] hover:bg-[#5558e6] text-white text-[13px] font-semibold">Testar Grátis</a>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="/login.html" class="btn-aliado-secondary" style="padding: 6px 14px; font-size: 13px;">Entrar</a>
+        <a href="/login.html" class="btn-pill-amber">Acessar Plataforma</a>
       </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="max-w-[1100px] mx-auto px-6 pt-20 pb-10 text-center">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-[12px] text-violet-300 font-medium">
-      <span>⚡</span> Automação Fiscal Modular • GNRE • DUA-e • DARF • ICMS-ST Ativos
+  <!-- HERO PRINCIPAL (POSICIONAMENTO GNRE-FIRST EM ESTILO RUNWAY) -->
+  <section class="landing-hero">
+    <div class="hero-eyebrow-tag">
+      <span style="width: 6px; height: 6px; border-radius: 50%; background-color: var(--color-burnished-gold); display: inline-block;"></span>
+      Automação de GNRE para operações interestaduais
     </div>
-    <h1 class="mt-8 text-[38px] md:text-[56px] font-extrabold tracking-tight leading-[1.05] text-white">
-      Chega de preencher <span class="bg-gradient-to-r from-violet-300 to-fuchsia-300 bg-clip-text text-transparent">guias fiscais</span><br/>uma a uma.
+
+    <h1 class="hero-display-title">
+      Emita suas GNREs <span class="amber-underline">sem preencher guia por guia</span>.
     </h1>
-    <p class="mt-6 max-w-[720px] mx-auto text-[16px] leading-7 text-white/50">
-      Suba os arquivos XML das suas notas fiscais de venda interestadual. Nossa plataforma conecta-se diretamente à SEFAZ via mTLS, emite as guias, baixa os PDFs originais e gera a remessa de pagamento CNAB 240 para o seu banco de forma totalmente automatizada.
+
+    <p class="hero-subtitle">
+      Envie os XMLs das suas notas interestaduais, valide os dados fiscais de DIFAL e FCP, gere as guias oficiais com código de barras e baixe a remessa bancária SISPAG em um só lugar.
     </p>
-    <div class="mt-8 flex justify-center gap-3">
-      <a href="/app" class="px-7 py-3 rounded-full bg-[#6366f1] hover:bg-[#5558e6] text-white text-[14px] font-semibold shadow-[0_8px_24px_rgba(99,102,241,0.4)]">Iniciar Teste Gratuito</a>
-      <a href="#planos" class="px-7 py-3 rounded-full bg-white/[0.06] border border-white/10 text-white/80 text-[14px]">Ver Planos de Assinatura</a>
+
+    <div class="hero-cta-group">
+      <a href="/login.html" class="btn-aliado-primary" style="padding: 12px 24px; font-size: 15px;">
+        <span>Começar a emitir GNRE</span>
+        <span data-aliado-icon="arrow-right" data-size="16"></span>
+      </a>
+      <a href="#como" class="btn-aliado-secondary" style="padding: 12px 22px; font-size: 15px;">
+        Ver como funciona
+      </a>
     </div>
 
-    <!-- TERMINAL FAKE IGUAL IMAGEM -->
-    <div class="max-w-[820px] mx-auto mt-14 rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-4 text-left">
-      <div class="flex items-center gap-2 text-[11px] text-white/40">
-        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
-        <span class="ml-3 font-mono">fluxo-de-automacao.sh — Apex SaaS</span>
+    <!-- TERMINAL DEMONSTRATIVO RUNWAY -->
+    <div class="terminal-container">
+      <div class="terminal-bar">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-stone-mist); display: inline-block;"></span>
+          <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-stone-mist); display: inline-block;"></span>
+          <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-stone-mist); display: inline-block;"></span>
+          <span style="margin-left: 8px; color: var(--color-driftwood);">exemplo-de-processamento.sh &mdash; Apex GNRE</span>
+        </div>
+        <span style="color: var(--color-espresso); font-weight: 500;">HOMOLOGAÇÃO SEFAZ</span>
       </div>
-      <div class="mt-4 font-mono text-[12px] space-y-1">
-        <div class="text-white/50"><span class="text-violet-400">$</span> apex process --env=simulado --tributo=auto</div>
-        <div class="text-emerald-300/80">✔  2.347 XMLs lidos • 14 UFs detectadas</div>
-        <div class="text-emerald-300/80">✔  1.842 guias emitidas (GNRE, DUA-e, DARF)</div>
-        <div class="text-white/30">⏳  gerando CNAB 240 Itaú... pronto para SISPAG</div>
+
+      <div class="terminal-body">
+        <div class="terminal-line-prompt">$ apex gnre process --env=homologacao --files=24</div>
+        <div class="terminal-line-success">&check; 24 XMLs importados com sucesso</div>
+        <div class="terminal-line-success">&check; 18 notas prontas para validação (DIFAL / FCP calculados)</div>
+        <div class="terminal-line-warning">&Delta; 6 notas com pendência de código de receita (MG)</div>
+        <div class="terminal-line-muted">&rarr; revisão necessária antes da emissão oficial</div>
+        <div class="terminal-line-prompt">&check; arquivo remessa_sispag_cnab240.txt gerado para o Banco Itaú</div>
       </div>
     </div>
   </section>
 
-  <!-- FUNCIONALIDADES -->
-  <section id="funcionalidades" class="max-w-[1100px] mx-auto px-6 py-16 grid md:grid-cols-3 gap-6">
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-6">
-      <div class="text-2xl">🏢</div><h3 class="mt-3 font-semibold">Emissão Direta via Web Services</h3>
-      <p class="mt-2 text-sm text-white/40">Conexão direta com SEFAZ-ES (DUA-e) e Portal Nacional GNRE via seu certificado A1.</p>
+  <!-- 3 BENEFÍCIOS ESSENCIAIS (COM ÍCONES SVG GLYPH, SEM EMOJIS) -->
+  <section id="beneficios" class="section-container" style="border-top: 1px solid var(--color-linen-border);">
+    <div class="section-header-center">
+      <div class="section-eyebrow">CLAREZA &amp; EFICIÊNCIA FISCAL</div>
+      <h2 class="section-title">Uma operação GNRE mais rápida, rastreável e organizada</h2>
     </div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-6">
-      <div class="text-2xl">📄</div><h3 class="mt-3 font-semibold">Download do PDF Oficial</h3>
-      <p class="mt-2 text-sm text-white/40">Busca o PDF original da SEFAZ, não HTML cru.</p>
-    </div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-6">
-      <div class="text-2xl">🏦</div><h3 class="mt-3 font-semibold">Remessa CNAB 240</h3>
-      <p class="mt-2 text-sm text-white/40">Gera CNAB 240 padrão Itaú SISPAG para pagar centenas de uma vez.</p>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon-box" data-aliado-icon="upload-cloud" data-size="20"></div>
+        <h3>Importação em Lote</h3>
+        <p>Reduza a digitação manual em até 90%. Arraste os XMLs das suas notas fiscais de venda interestaduais e organize centenas de documentos em um único lote.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon-box" data-aliado-icon="check-circle" data-size="20"></div>
+        <h3>Validação Pré-Emissão</h3>
+        <p>Encontre inconsistências de alíquotas interestaduais antes de transmitir à SEFAZ. Saiba com precisão quais notas estão prontas e quais exigem ajuste.</p>
+      </div>
+
+      <div class="benefit-card">
+        <div class="benefit-icon-box" data-aliado-icon="landmark" data-size="20"></div>
+        <h3>PDF Oficial &amp; Remessa CNAB</h3>
+        <p>Baixe os PDFs oficiais gerados pelas Secretarias de Fazenda e exporte o arquivo CNAB 240 pronto para importação no SISPAG Itaú ou Bradesco.</p>
+      </div>
     </div>
   </section>
 
-  <!-- PLANOS -->
-  <section id="planos" class="max-w-[1100px] mx-auto px-6 py-20">
-    <h2 class="text-center text-3xl font-bold">Planos de Assinatura Simples e Transparentes</h2>
-    <div class="mt-10 grid md:grid-cols-3 gap-6">
-      <div class="rounded-[20px] p-6 border bg-[#0f0f19] border-white/[0.06]">
-        <div class="font-semibold">Starter</div><div class="text-xs text-white/40">Para e-commerces iniciando</div>
-        <div class="mt-5"><span class="text-3xl font-bold">R$ 199</span><span class="text-white/40">/mês</span></div>
-        <ul class="mt-6 space-y-2 text-[13px] text-white/60"><li>✓ Até 100 guias/mês</li><li>✓ Transmissão mTLS</li><li>✓ CNAB 240</li></ul>
-        <a href="/app" class="mt-6 block text-center py-2.5 rounded-full bg-white text-black text-sm font-semibold">Selecionar Starter</a>
+  <!-- FLUXO EM 4 ETAPAS (COMO FUNCIONA) -->
+  <section id="como" class="section-container" style="border-top: 1px solid var(--color-linen-border);">
+    <div class="section-header-center">
+      <div class="section-eyebrow">FLUXO SIMPLIFICADO</div>
+      <h2 class="section-title">Da nota fiscal à guia pronta para pagamento</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;">
+      <div class="aliado-card" style="padding: 24px 16px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background-color: var(--color-espresso); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-family: var(--font-mono); font-weight: 600;">1</div>
+        <h4 style="font-size: 15px; font-weight: 600; color: var(--color-espresso); margin-bottom: 4px;">1. Importar</h4>
+        <p style="font-size: 13px; color: var(--color-bark); line-height: 1.35;">Envie os XMLs das notas fiscais da sua empresa.</p>
       </div>
-      <div class="relative rounded-[20px] p-6 border bg-[#12121f] border-emerald-400/30 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
-        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-400 text-black text-[10px] font-bold px-3 py-1 rounded-full">RECOMENDADO</div>
-        <div class="font-semibold">Pro</div><div class="text-xs text-white/40">Marcas em crescimento</div>
-        <div class="mt-5"><span class="text-3xl font-bold">R$ 399</span><span class="text-white/40">/mês</span></div>
-        <ul class="mt-6 space-y-2 text-[13px] text-white/60"><li>✓ Até 500 guias/mês</li><li>✓ Múltiplos CNPJs</li><li>✓ Suporte &lt;4h</li></ul>
-        <a href="/app" class="mt-6 block text-center py-2.5 rounded-full bg-emerald-400/15 text-emerald-300 border border-emerald-400/20 text-sm font-semibold">Selecionar Pro</a>
+
+      <div class="aliado-card" style="padding: 24px 16px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background-color: var(--color-espresso); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-family: var(--font-mono); font-weight: 600;">2</div>
+        <h4 style="font-size: 15px; font-weight: 600; color: var(--color-espresso); margin-bottom: 4px;">2. Revisar</h4>
+        <p style="font-size: 13px; color: var(--color-bark); line-height: 1.35;">O sistema identifica UFs favorecidas e alíquotas de DIFAL.</p>
       </div>
-      <div class="rounded-[20px] p-6 border bg-[#0f0f19] border-white/[0.06]">
-        <div class="font-semibold">Advanced</div><div class="text-xs text-white/40">Operações robustas</div>
-        <div class="mt-5"><span class="text-3xl font-bold">R$ 699</span><span class="text-white/40">/mês</span></div>
-        <ul class="mt-6 space-y-2 text-[13px] text-white/60"><li>✓ Até 1.500 guias/mês</li><li>✓ APIs dedicadas</li><li>✓ Suporte Premium 24/7</li></ul>
-        <a href="/app" class="mt-6 block text-center py-2.5 rounded-full bg-white text-black text-sm font-semibold">Selecionar Advanced</a>
+
+      <div class="aliado-card" style="padding: 24px 16px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background-color: var(--color-espresso); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-family: var(--font-mono); font-weight: 600;">3</div>
+        <h4 style="font-size: 15px; font-weight: 600; color: var(--color-espresso); margin-bottom: 4px;">3. Emitir</h4>
+        <p style="font-size: 13px; color: var(--color-bark); line-height: 1.35;">Transmissão segura com seu Certificado Digital A1 mTLS.</p>
+      </div>
+
+      <div class="aliado-card" style="padding: 24px 16px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background-color: var(--color-amber-signal); color: var(--color-espresso); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-family: var(--font-mono); font-weight: 600; box-shadow: var(--shadow-amber-cta);">4</div>
+        <h4 style="font-size: 15px; font-weight: 600; color: var(--color-espresso); margin-bottom: 4px;">4. Baixar</h4>
+        <p style="font-size: 13px; color: var(--color-bark); line-height: 1.35;">Receba os PDFs oficiais e o arquivo de remessa bancária.</p>
       </div>
     </div>
-    <div class="mt-10 text-center text-[11px] text-white/30">Taxa única de setup e homologação bancária: R$ 600,00 • Pagamento seguro via Stripe • Cancele quando quiser</div>
   </section>
 
-  <footer class="border-t border-white/[0.06] py-10 text-center text-[11px] text-white/20">
-    Apex SaaS • Plataforma de Automação Fiscal Modular • Grupo Aliado Hub Tech LTDA • 2026<br/>
-    <span class="text-white/10">GNRE • DUA-e • DARF • ICMS-ST • DIFAL - Detectado automaticamente</span>
+  <!-- PLANOS E ASSINATURA -->
+  <section id="planos" class="section-container" style="border-top: 1px solid var(--color-linen-border);">
+    <div class="section-header-center">
+      <div class="section-eyebrow">ASSINATURA SIMPLES</div>
+      <h2 class="section-title">Planos adaptados ao volume da sua empresa</h2>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div>
+          <div style="font-size: 18px; font-weight: 600; color: var(--color-espresso);">Starter</div>
+          <div style="font-size: 13px; color: var(--color-driftwood); margin-top: 4px;">Para e-commerces iniciando operações interestaduais</div>
+          <div class="price-value">R$ 199 <span style="font-size: 14px; color: var(--color-driftwood); font-weight: 400;">/mês</span></div>
+          <ul class="price-features">
+            <li><span data-aliado-icon="check" data-size="14"></span> Até 100 guias GNRE por mês</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Transmissão mTLS em lote</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Remessas SISPAG CNAB 240</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Suporte via ticket</li>
+          </ul>
+        </div>
+        <a href="/login.html" class="btn-aliado-secondary" style="width: 100%; text-align: center;">Começar com Starter</a>
+      </div>
+
+      <!-- Pro (Featured) -->
+      <div class="pricing-card featured">
+        <div class="pricing-badge-popular">MAIS POPULAR</div>
+        <div>
+          <div style="font-size: 18px; font-weight: 600; color: var(--color-espresso);">Pro</div>
+          <div style="font-size: 13px; color: var(--color-driftwood); margin-top: 4px;">Para empresas com vendas diárias interestaduais</div>
+          <div class="price-value">R$ 399 <span style="font-size: 14px; color: var(--color-driftwood); font-weight: 400;">/mês</span></div>
+          <ul class="price-features">
+            <li><span data-aliado-icon="check" data-size="14"></span> <strong>Até 500 guias GNRE por mês</strong></li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Múltiplos Certificados A1</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Suporte prioritário via WhatsApp</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Relatórios e histórico expandido</li>
+          </ul>
+        </div>
+        <a href="/login.html" class="btn-aliado-primary" style="width: 100%; text-align: center;">Começar com Pro</a>
+      </div>
+
+      <!-- Advanced -->
+      <div class="pricing-card">
+        <div>
+          <div style="font-size: 18px; font-weight: 600; color: var(--color-espresso);">Advanced</div>
+          <div style="font-size: 13px; color: var(--color-driftwood); margin-top: 4px;">Para operações de alto volume e distribuidoras</div>
+          <div class="price-value">R$ 699 <span style="font-size: 14px; color: var(--color-driftwood); font-weight: 400;">/mês</span></div>
+          <ul class="price-features">
+            <li><span data-aliado-icon="check" data-size="14"></span> Até 1.500 guias GNRE por mês</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> APIs dedicadas de integração</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> SLA prioritário &amp; suporte 24/7</li>
+            <li><span data-aliado-icon="check" data-size="14"></span> Gerente de contas dedicado</li>
+          </ul>
+        </div>
+        <a href="/login.html" class="btn-aliado-secondary" style="width: 100%; text-align: center;">Começar com Advanced</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RODAPÉ INSTITUCIONAL RUNWAY -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div>
+        <strong style="color: var(--color-espresso);">Apex GNRE</strong> &mdash; automação fiscal para empresas e operações interestaduais.
+      </div>
+      <div>
+        Grupo Aliados Hub Tech LTDA &bull; Todos os direitos reservados.
+      </div>
+    </div>
   </footer>
+
+  <script src="/js/aliado-icons.js"></script>
 </body>
 </html>

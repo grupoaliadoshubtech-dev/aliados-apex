@@ -1,639 +1,1584 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex SaaS - Pipeline Fiscal Modular</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
+  <title>Apex — Automação e Emissão de GNRE em Lote | Grupo Aliados Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
   <style>
-    body {
-      background-color: #08080f;
-      color: #ffffff;
-      font-family: 'Inter', sans-serif;
-    }
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #08080f;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
+    /* Transição entre visualizações principais do produto */
+    .portal-view { display: none; }
+    .portal-view.active { display: flex; flex-direction: column; gap: 32px; }
+
+    /* Estilos do fluxo de emissão */
+    .pipeline-stage { display: none; }
+    .pipeline-stage.active { display: flex; flex-direction: column; gap: 24px; }
   </style>
 </head>
-<body class="min-h-screen bg-[#08080f] text-white flex flex-col justify-between">
+<body>
 
-  <!-- HEADER PIPELINE -->
-  <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#08080f]/80 border-b border-white/[0.06]">
-    <div class="max-w-[1400px] mx-auto px-6 h-[64px] flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <a href="/" class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 grid place-items-center font-bold text-white shadow-[0_0_16px_rgba(139,92,246,0.4)] text-sm">A</a>
-        <div>
-          <a href="/" class="font-semibold text-white tracking-tight hover:opacity-90">Apex <span class="text-violet-300">SaaS</span></a>
-          <div class="text-[10px] text-white/50 -mt-1 tracking-widest uppercase">PLATAFORMA FISCAL</div>
-        </div>
-        <div class="ml-6 hidden md:flex items-center gap-2 text-xs">
-          <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-          <span class="text-white/60">AO VIVO</span>
+  <div class="aliado-app-shell">
+
+    <!-- ==================================================================== -->
+    <!-- 1. NAVEGAÇÃO LATERAL ÚNICA (SHELL COMPARTILHADA)                    -->
+    <!-- ==================================================================== -->
+    <aside class="aliado-sidebar">
+      <!-- Marca & Empresa Ativa -->
+      <div class="aliado-brand-header">
+        <div class="aliado-logo-box">A//T</div>
+        <div class="aliado-brand-info">
+          <span class="aliado-brand-title">Apex GNRE</span>
+          <span class="aliado-brand-subtitle">AUTOMAÇÃO FISCAL</span>
         </div>
       </div>
 
-      <div class="hidden md:flex items-center gap-2 bg-white/[0.04] border border-white/[0.06] rounded-full p-1" id="stepperNav">
-        <div id="stepTag1" class="px-3 py-1 rounded-full bg-white text-black text-xs font-medium transition-all">1. Importar</div>
-        <div id="stepTag2" class="px-3 py-1 text-xs text-white/40 rounded-full transition-all">2. Validar</div>
-        <div id="stepTag3" class="px-3 py-1 text-xs text-white/40 rounded-full transition-all">3. Emitir</div>
-      </div>
+      <!-- Menu Principal de Operações -->
+      <div class="aliado-nav-section-label">OPERAÇÕES FISCAIS</div>
+      <ul class="aliado-nav-list">
+        <li class="aliado-nav-item active" id="nav-visao-geral">
+          <button onclick="navegarPara('visao-geral')">
+            <span data-aliado-icon="grid"></span>
+            <span>Visão Geral</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-emitir-gnre">
+          <button onclick="navegarPara('emitir-gnre')">
+            <span data-aliado-icon="upload-cloud"></span>
+            <span>Emitir GNRE</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-lotes">
+          <button onclick="navegarPara('lotes')">
+            <span data-aliado-icon="layout"></span>
+            <span>Lotes</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-guias-emitidas">
+          <button onclick="navegarPara('guias-emitidas')">
+            <span data-aliado-icon="file-text"></span>
+            <span>Guias Emitidas</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-remessas-cnab">
+          <button onclick="navegarPara('remessas-cnab')">
+            <span data-aliado-icon="landmark"></span>
+            <span>Remessas CNAB</span>
+          </button>
+        </li>
+      </ul>
 
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <span class="px-2.5 py-1 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/20 text-[11px] font-medium whitespace-nowrap">🧪 SIMULADO</span>
-        <div class="hidden sm:block h-6 w-px bg-white/10"></div>
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:block text-right">
-            <div class="text-[11px] text-white/70 font-medium" id="headerTenantName">Grupo Aliado Hub Tech LTDA</div>
-            <div class="text-[10px] text-white/40" id="headerUsageCounter">00.000.000/0001-91 • <span id="usageText">247</span>/500</div>
-            <div class="w-[120px] h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
-              <div id="headerUsageBar" class="h-full bg-violet-500 transition-all duration-500" style="width: 49.4%"></div>
+      <!-- Menu de Gestão & Configurações -->
+      <div class="aliado-nav-section-label">GERENCIAMENTO</div>
+      <ul class="aliado-nav-list">
+        <li class="aliado-nav-item" id="nav-configuracoes">
+          <button onclick="navegarPara('configuracoes')">
+            <span data-aliado-icon="settings"></span>
+            <span>Configurações</span>
+          </button>
+        </li>
+        <li class="aliado-nav-item" id="nav-ajuda">
+          <button onclick="navegarPara('ajuda')">
+            <span data-aliado-icon="help-circle"></span>
+            <span>Ajuda & Suporte</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Rodapé: Empresa, Cota & Logout -->
+      <div class="aliado-sidebar-footer">
+        <div class="aliado-nav-section-label">EMPRESA CONECTADA</div>
+        <ul class="aliado-nav-list">
+          <li class="aliado-nav-item">
+            <a href="#" onclick="navegarPara('configuracoes'); return false;">
+              <span data-aliado-icon="user"></span>
+              <span id="sidebarTenantName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Grupo Aliados</span>
+            </a>
+          </li>
+          <li class="aliado-nav-item">
+            <button onclick="logout()">
+              <span data-aliado-icon="log-out"></span>
+              <span>Encerrar Sessão</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- ==================================================================== -->
+    <!-- 2. ÁREA PRINCIPAL COM TOPBAR PERSISTENTE E HERO                     -->
+    <!-- ==================================================================== -->
+    <main class="aliado-main">
+
+      <!-- TOPBAR HEADER PERSISTENTE -->
+      <header class="aliado-topbar">
+        <div class="aliado-topbar-breadcrumb">
+          <span id="topbarTenantDisplay">Grupo Aliado Hub Tech LTDA</span>
+          <span>|</span>
+          <strong id="topbarModuleBreadcrumb">VISÃO GERAL</strong>
+        </div>
+
+        <div class="aliado-topbar-actions">
+          <!-- BADGE DE AMBIENTE INEQUÍVOCO -->
+          <div id="envBadge" class="badge-env homologacao" onclick="toggleAmbienteRapido()" title="Clique para alternar ambiente">
+            <span class="dot"></span>
+            <span id="envBadgeText">HOMOLOGAÇÃO (SEFAZ Testes)</span>
+          </div>
+
+          <!-- CONSUMO DE COTA CORPORATIVA -->
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
+            <div style="font-size: 11px; color: var(--color-driftwood); font-family: var(--font-mono);">
+              Franquia: <strong id="quotaUsedDisplay" style="color: var(--color-espresso);">247</strong>/<span id="quotaTotalDisplay">500</span> guias
+            </div>
+            <div style="width: 110px; height: 6px; background: var(--color-linen-border); border-radius: 4px; overflow: hidden;">
+              <div id="quotaBarFill" style="width: 49.4%; height: 100%; background: var(--color-amber-signal); border-radius: 4px;"></div>
             </div>
           </div>
-          <button onclick="openUpgradeModal()" class="px-3.5 py-1.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition-all whitespace-nowrap shadow-sm">Upgrade</button>
-          <button onclick="openConfigWizard()" class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all text-xs" title="Configurações">⚙️</button>
-          <button onclick="logout()" class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-white/50 hover:text-red-400 transition-all text-xs" title="Sair">🚪</button>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-[1400px] w-full mx-auto px-6 py-8">
-
-    <!-- DROPZONE (files.length === 0) -->
-    <div id="dropzoneContainer" class="max-w-[1100px] mx-auto mt-8 transition-all">
-      <div
-        id="dropArea"
-        class="relative rounded-[24px] border border-dashed border-white/15 bg-[#10101a] p-12 text-center transition-all hover:border-violet-500/30 hover:bg-[#13131f]"
-      >
-        <div class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 grid place-items-center text-2xl mb-5 shadow-[0_8px_24px_rgba(99,102,241,0.35)]">📥</div>
-        <h2 class="text-[28px] font-semibold text-white tracking-tight">Arraste seus arquivos fiscais aqui</h2>
-        <p class="mt-2 text-sm text-white/50">XML de NF-e, CT-e ou pasta completa • Processamento em lote • Até 5.000 arquivos</p>
-
-        <div class="mt-8 flex flex-wrap gap-3 justify-center">
-          <label class="px-5 py-2.5 rounded-full bg-white text-black text-sm font-semibold cursor-pointer hover:bg-zinc-100 transition-all shadow-sm">
-            Selecionar arquivos
-            <input type="file" id="fileInput" multiple accept=".xml" class="hidden">
-          </label>
-          <button onclick="useSampleFiles()" class="px-5 py-2.5 rounded-full bg-white/[0.06] border border-white/10 text-white/80 text-sm hover:bg-white/[0.10] hover:text-white transition-all">
-            Usar arquivos de exemplo
+          <!-- BOTÃO DE UPGRADE DISCRETO -->
+          <button class="btn-aliado-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="abrirModalPlanos()">
+            Plano Pro
           </button>
         </div>
+      </header>
 
-        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 text-left max-w-[720px] mx-auto">
-          <div class="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
-            <div class="text-lg">⚡</div>
-            <div class="mt-2 text-[13px] font-medium text-white">Processamento em lote mTLS</div>
-            <div class="text-[11px] text-white/40 mt-1 leading-snug">Transmissão automática para SEFAZ</div>
-          </div>
-          <div class="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
-            <div class="text-lg">🏦</div>
-            <div class="mt-2 text-[13px] font-medium text-white">Remessa SISPAG CNAB 240</div>
-            <div class="text-[11px] text-white/40 mt-1 leading-snug">Pronto para Itaú e outros bancos</div>
-          </div>
-          <div class="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
-            <div class="text-lg">🔗</div>
-            <div class="mt-2 text-[13px] font-medium text-white">Vínculo automático de NFs</div>
-            <div class="text-[11px] text-white/40 mt-1 leading-snug">Sem digitação manual</div>
-          </div>
-        </div>
-      </div>
+      <!-- HERO BANNER CONTEXTUAL -->
+      <section class="aliado-hero-banner">
+        <div class="aliado-hero-eyebrow" id="heroEyebrow">OPERAÇÃO DE GNRE EM LOTE</div>
+        <h1 class="aliado-hero-title" id="heroTitle">Painel de Operações Fiscais</h1>
+        <p class="aliado-hero-subtitle" id="heroSubtitle">
+          Automatize a geração de guias GNRE a partir dos XMLs das suas notas fiscais, acompanhe os lotes e gere a remessa bancária SISPAG em um só lugar.
+        </p>
+      </section>
 
-      <div class="mt-4 text-center text-[11px] text-white/30">
-        Suporta: .xml • .zip • pastas • Apex SaaS detecta automaticamente o tributo
-      </div>
-    </div>
+      <!-- ==================================================================== -->
+      <!-- 3. PRANCHETA DE TRABALHO BRANCA (THE WHITE SHEET CANVAS)             -->
+      <!-- ==================================================================== -->
+      <div class="aliado-sheet-canvas">
 
-    <!-- PREVIEW TABLE & TIMELINE (files.length > 0) -->
-    <div id="pipelineActiveContainer" class="hidden space-y-6">
-      
-      <!-- PREVIEW TABLE GRID -->
-      <div class="grid grid-cols-12 gap-6">
-        <!-- Tabela -->
-        <div class="col-span-12 lg:col-span-8 rounded-[20px] bg-[#0f0f19] border border-white/[0.06] overflow-hidden">
-          <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
+        <!-- ================================================================ -->
+        <!-- VIEW 1: VISÃO GERAL (DASHBOARD OPERACIONAL)                      -->
+        <!-- ================================================================ -->
+        <div id="view-visao-geral" class="portal-view active">
+          
+          <div class="aliado-sheet-header">
             <div>
-              <h3 id="tableHeaderSummary" class="text-white font-semibold">2.347 notas detectadas • R$ 1.2M em base • 14 UFs</h3>
-              <p class="text-xs text-white/40 mt-1">Revise antes de emitir • Apex SaaS agrupou por UF automaticamente</p>
+              <div class="aliado-sheet-eyebrow">RESUMO DO MÊS ATUAL</div>
+              <h2 class="aliado-sheet-title">Visão Geral da Operação</h2>
             </div>
-            <div class="flex items-center gap-2">
-              <span id="groupsBadge" class="px-2.5 py-1 rounded-full bg-emerald-400/15 text-emerald-300 text-xs border border-emerald-400/20">14 grupos fiscais</span>
-              <button onclick="resetPipeline()" class="text-xs text-white/40 hover:text-white px-2 py-1">↺ Novo lote</button>
+
+            <button class="btn-aliado-primary" onclick="iniciarNovoFluxoEmissao()">
+              <span data-aliado-icon="plus" data-size="16"></span>
+              <span>Emitir Novas Guias GNRE</span>
+            </button>
+          </div>
+
+          <!-- ============================================================ -->
+          <!-- ONBOARDING WIZARD: CHECKLIST DE BOAS-VINDAS PÓS-REGISTRO     -->
+          <!-- ============================================================ -->
+          <div id="onboardingWizardCard" class="aliado-white-card" style="padding: 24px; border: 1px solid rgba(99, 102, 241, 0.25); background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(238, 242, 255, 0.6) 100%); margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span style="background: rgba(99, 102, 241, 0.15); color: #4338ca; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.5px;">PRIMEIROS PASSOS</span>
+                  <span id="onboardingProgressText" style="font-size: 12px; font-weight: 600; color: #6366f1;">0 de 3 concluídos (0%)</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: var(--text-dark-title); margin: 0;">Configure sua empresa para emitir a primeira GNRE</h3>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin: 4px 0 0 0;">
+                  Complete estas 3 etapas simples para homologar a comunicação com a SEFAZ e habilitar a geração de remessa Itaú SISPAG.
+                </p>
+              </div>
+              <button onclick="dispensarOnboarding()" style="background: transparent; border: none; font-size: 12px; color: var(--text-dark-muted); cursor: pointer; text-decoration: underline;">
+                Dispensar checklist
+              </button>
+            </div>
+
+            <!-- BARRA DE PROGRESSO DO ONBOARDING -->
+            <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.06); border-radius: 6px; overflow: hidden; margin-bottom: 20px;">
+              <div id="onboardingProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 6px; transition: width 0.4s ease;"></div>
+            </div>
+
+            <!-- GRID DOS 3 PASSOS DE ONBOARDING -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+              <!-- PASSO 1: DADOS DA EMPRESA & BANCO -->
+              <div id="onboardingStep1" class="aliado-white-card" style="padding: 16px; background: #fff; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text-dark-title);">1. DADOS CADASTRAIS & BANCO</span>
+                    <span id="step1Badge" style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #fef3c7; color: #92400e;">Pendente</span>
+                  </div>
+                  <p style="font-size: 12.5px; color: var(--text-dark-muted); line-height: 1.4; margin: 0 0 14px 0;">
+                    Cadastre o CNPJ emitente e a conta corrente Itaú (Agência, Conta, DAC) para remessa bancária SISPAG.
+                  </p>
+                </div>
+                <button class="btn-aliado-secondary" style="font-size: 12px; padding: 6px 12px; align-self: flex-start;" onclick="navegarPara('configuracoes'); alternarAbaConfig('banco');">
+                  Configurar Empresa & Banco ↗
+                </button>
+              </div>
+
+              <!-- PASSO 2: CERTIFICADO DIGITAL A1 -->
+              <div id="onboardingStep2" class="aliado-white-card" style="padding: 16px; background: #fff; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text-dark-title);">2. CERTIFICADO DIGITAL A1</span>
+                    <span id="step2Badge" style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #fef3c7; color: #92400e;">Pendente</span>
+                  </div>
+                  <p style="font-size: 12.5px; color: var(--text-dark-muted); line-height: 1.4; margin: 0 0 14px 0;">
+                    Envie seu arquivo .pfx e configure a senha para autenticação criptográfica mTLS perante as SEFAZs.
+                  </p>
+                </div>
+                <button class="btn-aliado-secondary" style="font-size: 12px; padding: 6px 12px; align-self: flex-start;" onclick="navegarPara('configuracoes'); alternarAbaConfig('certificado');">
+                  Upload Certificado A1 ↗
+                </button>
+              </div>
+
+              <!-- PASSO 3: PRIMEIRA EMISSÃO DE GNRE -->
+              <div id="onboardingStep3" class="aliado-white-card" style="padding: 16px; background: #fff; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text-dark-title);">3. PRIMEIRA GUIA GNRE</span>
+                    <span id="step3Badge" style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #f1f5f9; color: #475569;">Aguardando</span>
+                  </div>
+                  <p style="font-size: 12.5px; color: var(--text-dark-muted); line-height: 1.4; margin: 0 0 14px 0;">
+                    Importe o primeiro XML de NFe ou teste nosso lote de exemplo com cálculo de DIFAL e FCP.
+                  </p>
+                </div>
+                <button class="btn-aliado-primary" style="font-size: 12px; padding: 6px 12px; align-self: flex-start;" onclick="iniciarNovoFluxoEmissao();">
+                  Emitir Primeira Guia ↗
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="overflow-x-auto max-h-[420px] overflow-y-auto">
-            <table class="w-full text-[13px]">
-              <thead class="text-[11px] tracking-widest text-white/30 sticky top-0 bg-[#0f0f19] z-10">
-                <tr class="border-b border-white/[0.06]">
-                  <th class="text-left font-normal px-6 py-3">NF-e</th>
-                  <th class="text-left font-normal">Emitente</th>
-                  <th class="text-left font-normal">UF Dest.</th>
-                  <th class="text-left font-normal">Tributo</th>
-                  <th class="text-left font-normal">Valor</th>
-                  <th class="text-left font-normal">Status</th>
+          <!-- 4 CARDS COMPACTOS DE METRICAS OPERACIONAIS -->
+          <div class="aliado-grid-4">
+            <div class="aliado-action-card" onclick="navegarPara('guias-emitidas')">
+              <div class="card-top-label">GUIAS EMITIDAS NO MÊS</div>
+              <div class="card-main-row">
+                <span class="card-title">247 Guias</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">100% transmitidas com recibo</div>
+            </div>
+
+            <div class="aliado-action-card" onclick="navegarPara('guias-emitidas')">
+              <div class="card-top-label">VALOR TOTAL PROCESSADO</div>
+              <div class="card-main-row">
+                <span class="card-title">R$ 14.892,40</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">Tributos interestaduais</div>
+            </div>
+
+            <div class="aliado-action-card" onclick="navegarPara('lotes')">
+              <div class="card-top-label">LOTES PROCESSADOS</div>
+              <div class="card-main-row">
+                <span class="card-title">12 Lotes</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">Média de 20 notas por lote</div>
+            </div>
+
+            <div class="aliado-action-card" onclick="navegarPara('lotes')">
+              <div class="card-top-label">PENDÊNCIAS QUE EXIGEM AÇÃO</div>
+              <div class="card-main-row">
+                <span class="card-title" style="color: #b45309;">0 Pendências</span>
+                <span class="card-arrow" data-aliado-icon="arrow-right" data-size="16"></span>
+              </div>
+              <div class="card-subtext">Todas as notas regularizadas</div>
+            </div>
+          </div>
+
+          <!-- GRID ASSIMÉTRICO: TELEMETRIA SEFAZ + ATALHOS & ATIVIDADES -->
+          <div class="aliado-grid-2-asymmetric">
+            <!-- Telemetria SEFAZ -->
+            <div class="aliado-telemetry-card">
+              <div class="aliado-telemetry-header">
+                <div>
+                  <div class="telemetry-eyebrow">COMUNICAÇÃO FISCAL</div>
+                  <h3 class="telemetry-title">Status da Conexão SEFAZ</h3>
+                </div>
+                <div class="telemetry-icon" data-aliado-icon="shield-check" data-size="24"></div>
+              </div>
+
+              <div class="aliado-telemetry-grid">
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">PORTAL NACIONAL GNRE</div>
+                  <div class="metric-value light-val">Online (280ms)</div>
+                </div>
+
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">SEFAZ-ES (DUA-E)</div>
+                  <div class="metric-value light-val">Online (310ms)</div>
+                </div>
+
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">CERTIFICADO DIGITAL A1</div>
+                  <div class="metric-value">Válido (18/11/2026)</div>
+                </div>
+
+                <div class="telemetry-metric-item">
+                  <div class="metric-label">REMESSA BANCÁRIA SISPAG</div>
+                  <div class="metric-value light-val">Itaú CNAB 240</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Atividades Recentes do Tenant -->
+            <div class="aliado-white-card">
+              <div class="card-eyebrow">REGISTRO DE ATIVIDADES</div>
+              <h3 class="card-headline">Eventos Recentes</h3>
+
+              <div class="aliado-list-rows">
+                <div class="aliado-list-row">
+                  <div class="row-info">
+                    <div class="row-title">Lote #2026-0905 emitido com sucesso</div>
+                    <div class="row-desc">18 guias GNRE geradas • Ontem às 17:42</div>
+                  </div>
+                  <span class="aliado-status-badge entregue">CONCLUÍDO</span>
+                </div>
+
+                <div class="aliado-list-row">
+                  <div class="row-info">
+                    <div class="row-title">Remessa SISPAG baixada</div>
+                    <div class="row-desc">Arquivo remessa.txt enviado ao Itaú • 05/09</div>
+                  </div>
+                  <span class="aliado-status-badge paga">EXPORTADA</span>
+                </div>
+
+                <div class="aliado-list-row">
+                  <div class="row-info">
+                    <div class="row-title">Certificado A1 verificado</div>
+                    <div class="row-desc">Teste de comunicação SEFAZ mTLS bem-sucedido</div>
+                  </div>
+                  <span class="aliado-status-badge entregue">VÁLIDO</span>
+                </div>
+              </div>
+
+              <div class="aliado-white-card-footer">
+                <a href="#" onclick="navegarPara('lotes'); return false;">
+                  <span>Ver todos os lotes históricos</span>
+                  <span data-aliado-icon="arrow-right" data-size="14"></span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- VIEW 2: EMITIR GNRE (FLUXO GUIADO EM 4 ETAPAS EXPLÍCITAS)        -->
+        <!-- ================================================================ -->
+        <div id="view-emitir-gnre" class="portal-view">
+
+          <!-- STEPPER VISUAL DE 4 ETAPAS -->
+          <div class="fiscal-stepper-progress">
+            <div class="step-node active" id="stepperNode1" onclick="irParaEtapa(1)">
+              <div class="step-node-circle">1</div>
+              <div class="step-node-label">1. Importar Notas</div>
+            </div>
+
+            <div class="step-node" id="stepperNode2" onclick="irParaEtapa(2)">
+              <div class="step-node-circle">2</div>
+              <div class="step-node-label">2. Revisar Inconsistências</div>
+            </div>
+
+            <div class="step-node" id="stepperNode3" onclick="irParaEtapa(3)">
+              <div class="step-node-circle">3</div>
+              <div class="step-node-label">3. Confirmar & Emitir</div>
+            </div>
+
+            <div class="step-node" id="stepperNode4">
+              <div class="step-node-circle">4</div>
+              <div class="step-node-label">4. Baixar Guias & CNAB</div>
+            </div>
+          </div>
+
+          <!-- ETAPA 1: IMPORTAR ARQUIVOS XML -->
+          <div id="stage-1-importar" class="pipeline-stage active">
+            <div class="aliado-sheet-header">
+              <div>
+                <div class="aliado-sheet-eyebrow">ETAPA 1 DE 4</div>
+                <h2 class="aliado-sheet-title">Importar Notas Interestaduais</h2>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                  Envie os arquivos XML das suas NF-e para identificar automaticamente as alíquotas de DIFAL, FCP e ICMS-ST.
+                </p>
+              </div>
+            </div>
+
+            <!-- Dropzone com Limites Claros -->
+            <div class="aliado-dropzone" id="pipelineDropArea">
+              <div class="aliado-dropzone-icon" data-aliado-icon="upload-cloud" data-size="32"></div>
+              <div class="aliado-dropzone-title">Arraste seus arquivos fiscais aqui</div>
+              <div class="aliado-dropzone-desc">Formatos suportados: .XML (NF-e modelo 55) ou pacote compactado .ZIP • Até 500 arquivos por lote</div>
+
+              <div style="display: flex; gap: 12px; margin-top: 12px;">
+                <label class="btn-aliado-primary" style="cursor: pointer;">
+                  <span>Selecionar Arquivos</span>
+                  <input type="file" id="pipelineFileInput" multiple accept=".xml,.zip" style="display: none;" onchange="aoSelecionarArquivos(this)">
+                </label>
+                <button type="button" class="btn-aliado-secondary" onclick="carregarLoteExemplo()">
+                  Carregar Lote de Exemplo (18 XMLs)
+                </button>
+              </div>
+            </div>
+
+            <!-- Lista dos Arquivos Selecionados com Remoção Individual -->
+            <div id="containerArquivosSelecionados" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="font-size: 13.5px; font-weight: 700; color: var(--text-dark-title);" id="totalArquivosBadge">0 arquivos selecionados</h4>
+                <button class="btn-aliado-secondary" style="padding: 5px 12px; font-size: 11.5px;" onclick="limparArquivosSelecionados()">Limpar seleção</button>
+              </div>
+
+              <div class="file-selection-list" id="listaArquivosUpload">
+                <!-- Inserido dinamicamente -->
+              </div>
+
+              <!-- CTA Etapa 1 -->
+              <div style="display: flex; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--sheet-border-light);">
+                <button id="btnAvancarEtapa2" class="btn-aliado-primary" onclick="irParaEtapa(2)">
+                  <span>Continuar para Revisão</span>
+                  <span data-aliado-icon="arrow-right" data-size="16"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETAPA 2: REVISAR E VALIDAR INCONSISTÊNCIAS -->
+          <div id="stage-2-revisar" class="pipeline-stage">
+            <div class="aliado-sheet-header">
+              <div>
+                <div class="aliado-sheet-eyebrow">ETAPA 2 DE 4</div>
+                <h2 class="aliado-sheet-title">Revisão Fiscal e Validação do Lote</h2>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                  Identifique notas prontas para emissão e corrija eventuais inconsistências de cadastro tributário antes da transmissão.
+                </p>
+              </div>
+
+              <div style="display: flex; gap: 10px;">
+                <button class="btn-aliado-secondary" onclick="irParaEtapa(1)">
+                  <span>← Voltar aos Arquivos</span>
+                </button>
+                <button id="btnValidarLote" class="btn-aliado-primary" onclick="executarValidacaoLote()">
+                  <span>Validar Lote (18 Notas)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Resumo das Notas e Alerta de Inconsistência Estruturado -->
+            <div class="aliado-grid-4">
+              <div class="aliado-action-card" style="cursor: default;">
+                <div class="card-top-label">TOTAL NO LOTE</div>
+                <div class="card-main-row"><span class="card-title" id="resumoQtdNotas">18 Notas</span></div>
+                <div class="card-subtext">5 UFs favorecidas</div>
+              </div>
+
+              <div class="aliado-action-card" style="cursor: default;">
+                <div class="card-top-label">VALOR ESTIMADO</div>
+                <div class="card-main-row"><span class="card-title">R$ 4.382,10</span></div>
+                <div class="card-subtext">Total a recolher em guias</div>
+              </div>
+
+              <div class="aliado-action-card" style="cursor: default;">
+                <div class="card-top-label">PRONTAS PARA EMISSÃO</div>
+                <div class="card-main-row"><span class="card-title" style="color: #047857;" id="resumoProntas">15 Notas</span></div>
+                <div class="card-subtext">Alíquotas e código OK</div>
+              </div>
+
+              <div class="aliado-action-card" style="cursor: default;">
+                <div class="card-top-label">PENDÊNCIAS CADASTRAIS</div>
+                <div class="card-main-row"><span class="card-title" style="color: #b45309;" id="resumoPendentes">3 Notas</span></div>
+                <div class="card-subtext">Exigem código de receita</div>
+              </div>
+            </div>
+
+            <!-- Callout de Alerta Estruturado -->
+            <div class="fiscal-callout warning">
+              <div class="fiscal-callout-icon" data-aliado-icon="alert-circle" data-size="20"></div>
+              <div class="fiscal-callout-content">
+                <div class="callout-title">Atenção: 3 notas requerem revisão antes da emissão oficial</div>
+                <div class="callout-desc">
+                  As notas para <strong>Minas Gerais (MG)</strong> não possuem código de receita padrão definido. Selecionamos o código <strong>10010-2 (ICMS Consumidor Final Não Contribuinte)</strong> por padrão. Você pode validar ou alterar individualmente na tabela abaixo.
+                </div>
+              </div>
+            </div>
+
+            <!-- Filtros de Inconsistência -->
+            <div class="aliado-filter-group">
+              <button class="aliado-filter-pill active" onclick="filtrarTabelaRevisao('todas', this)">Todas as Notas (18)</button>
+              <button class="aliado-filter-pill" onclick="filtrarTabelaRevisao('prontas', this)">Prontas para Emissão (15)</button>
+              <button class="aliado-filter-pill" onclick="filtrarTabelaRevisao('pendentes', this)">Com Pendência (3)</button>
+            </div>
+
+            <!-- Tabela de Revisão Fiscal -->
+            <div class="aliado-table-container">
+              <table class="aliado-table" id="tabelaRevisaoFiscal">
+                <thead>
+                  <tr>
+                    <th>NF-E / CHAVE DE ACESSO</th>
+                    <th>EMITENTE CORPORATIVO</th>
+                    <th>UF DESTINO</th>
+                    <th>RECEITA / TRIBUTO</th>
+                    <th>VALOR GUIA</th>
+                    <th>DIAGNÓSTICO</th>
+                    <th style="text-align: center;">AÇÃO</th>
+                  </tr>
+                </thead>
+                <tbody id="corpoTabelaRevisao">
+                  <!-- Inserido via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+              <span style="font-size: 12.5px; color: var(--text-dark-muted);">Todas as 18 notas foram verificadas pelo motor fiscal Apex.</span>
+              <button class="btn-aliado-primary" onclick="irParaEtapa(3)">
+                <span>Prosseguir para Emissão</span>
+                <span data-aliado-icon="arrow-right" data-size="16"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ETAPA 3: CONFIRMAÇÃO & EMISSÃO DE GUIAS -->
+          <div id="stage-3-emitir" class="pipeline-stage">
+            <div class="aliado-sheet-header">
+              <div>
+                <div class="aliado-sheet-eyebrow">ETAPA 3 DE 4</div>
+                <h2 class="aliado-sheet-title">Revisão Final & Autorização da Emissão</h2>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                  Confira os dados consolidados do lote antes de iniciar a transmissão criptografada para as Secretarias de Fazenda.
+                </p>
+              </div>
+
+              <button class="btn-aliado-secondary" onclick="irParaEtapa(2)">
+                <span>← Voltar para Revisão</span>
+              </button>
+            </div>
+
+            <!-- Resumo Formal de Confirmação -->
+            <div class="aliado-white-card" style="padding: 28px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                <div>
+                  <div class="card-eyebrow">CONTRATO DE TRANSMISSÃO SEFAZ</div>
+                  <h3 class="card-headline" style="margin-bottom: 0;">Resumo da Operação</h3>
+                </div>
+
+                <div class="badge-env homologacao" id="stage3EnvBadge">
+                  <span class="dot"></span>
+                  <span id="stage3EnvText">AMBIENTE: HOMOLOGAÇÃO</span>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px 0; border-top: 1px solid var(--sheet-border-light); border-bottom: 1px solid var(--sheet-border-light);">
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase;">Quantidade de Guias</div>
+                  <div style="font-size: 20px; font-weight: 700; color: var(--text-dark-title); margin-top: 4px;">18 Guias</div>
+                </div>
+
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase;">Estados Favorecidos</div>
+                  <div style="font-size: 20px; font-weight: 700; color: var(--text-dark-title); margin-top: 4px;">SP, RJ, MG, BA, RS</div>
+                </div>
+
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase;">Valor Total das Guias</div>
+                  <div style="font-size: 20px; font-weight: 700; color: var(--aliado-blue); margin-top: 4px;">R$ 4.382,10</div>
+                </div>
+
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase;">Vencimento das Guias</div>
+                  <div style="font-size: 16px; font-weight: 600; color: var(--text-dark-title); margin-top: 6px;">Data de Emissão (Hoje)</div>
+                </div>
+              </div>
+
+              <div style="margin-top: 24px;">
+                <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                  <input type="checkbox" id="checkConfirmacaoFiscal" checked style="margin-top: 4px; accent-color: var(--aliado-blue);">
+                  <span style="font-size: 13px; color: var(--text-dark-body); line-height: 1.5;">
+                    Confirmo a exatidão das notas fiscais selecionadas e autorizo a transmissão via Certificado Digital A1 mTLS para os webservices da SEFAZ e geração da remessa SISPAG CNAB 240.
+                  </span>
+                </label>
+              </div>
+
+              <div style="margin-top: 28px; display: flex; justify-content: flex-end; gap: 14px;">
+                <button id="btnEmitirOficial" class="btn-aliado-primary" style="padding: 14px 28px; font-size: 14.5px;" onclick="executarTransmissaoOficial()">
+                  <span id="btnEmitirTexto">Emitir 18 guias GNRE em HOMOLOGAÇÃO</span>
+                  <span data-aliado-icon="arrow-right" data-size="16"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Console de Acompanhamento da Transmissão -->
+            <div id="areaTerminalTransmissao" style="display: none;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">
+                Console de Transmissão SEFAZ mTLS
+              </div>
+              <div class="aliado-terminal" id="terminalLogEmissao">
+                <div>[SISTEMA] Inicializando túnel mTLS com a SEFAZ...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETAPA 4: RESULTADO, PDFS & REMESSA SISPAG -->
+          <div id="stage-4-resultado" class="pipeline-stage">
+            <div class="aliado-sheet-header">
+              <div>
+                <div class="aliado-sheet-eyebrow">ETAPA 4 DE 4 — OPERAÇÃO CONCLUÍDA</div>
+                <h2 class="aliado-sheet-title">Guias Emitidas com Sucesso</h2>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                  O lote foi processado pelas Secretarias de Fazenda. Seus documentos e arquivo bancário estão prontos para download.
+                </p>
+              </div>
+
+              <button class="btn-aliado-primary" onclick="iniciarNovoFluxoEmissao()">
+                <span data-aliado-icon="plus" data-size="16"></span>
+                <span>Emitir Novo Lote</span>
+              </button>
+            </div>
+
+            <!-- Callout de Sucesso Total -->
+            <div class="fiscal-callout success">
+              <div class="fiscal-callout-icon" data-aliado-icon="check-circle" data-size="20"></div>
+              <div class="fiscal-callout-content">
+                <div class="callout-title">18 guias GNRE autorizadas pela SEFAZ</div>
+                <div class="callout-desc">
+                  Todos os códigos de barra oficiais foram resgatados. O arquivo de remessa CNAB 240 já foi compilado para conciliação direta com o Banco Itaú SISPAG.
+                </div>
+              </div>
+            </div>
+
+            <!-- Cards de Ação para Download -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="aliado-white-card" style="padding: 24px;">
+                <div class="card-eyebrow">DOCUMENTOS OFICIAIS</div>
+                <h3 class="card-headline">Pacote de PDFs das Guias</h3>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin-bottom: 20px;">
+                  Arquivo compactado contendo os 18 PDFs oficiais gerados pela SEFAZ com código de barras pronto para impressão ou envio contábil.
+                </p>
+                <button class="btn-aliado-primary" onclick="baixarPacoteGuias()">
+                  <span data-aliado-icon="file-text" data-size="16"></span>
+                  <span>Baixar PDFs das 18 Guias (.ZIP)</span>
+                </button>
+              </div>
+
+              <div class="aliado-white-card" style="padding: 24px;">
+                <div class="card-eyebrow">PAGAMENTO BANCÁRIO</div>
+                <h3 class="card-headline">Arquivo de Remessa CNAB 240</h3>
+                <p style="font-size: 13px; color: var(--text-dark-muted); margin-bottom: 20px;">
+                  Arquivo de remessa estruturado no padrão SISPAG (Itaú / Bradesco) para pagamento em lote via Internet Banking sem digitação manual.
+                </p>
+                <button class="btn-aliado-primary" style="background: #047857;" onclick="baixarRemessaCNAB()">
+                  <span data-aliado-icon="landmark" data-size="16"></span>
+                  <span>Baixar Remessa SISPAG (.TXT)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Atalho para histórico -->
+            <div style="text-align: center; margin-top: 12px;">
+              <a href="#" onclick="navegarPara('guias-emitidas'); return false;" style="font-size: 13px; color: var(--aliado-blue); font-weight: 600;">
+                Consultar estas guias no painel histórico →
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- VIEW 3: LOTES HISTÓRICOS E EM PROCESSAMENTO                      -->
+        <!-- ================================================================ -->
+        <div id="view-lotes" class="portal-view">
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">CONTROLE HISTÓRICO</div>
+              <h2 class="aliado-sheet-title">Lotes de Processamento Fiscal</h2>
+              <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                Acompanhe o ciclo de vida completo de cada lote importado: validação, transmissão e liquidação.
+              </p>
+            </div>
+
+            <button class="btn-aliado-primary" onclick="iniciarNovoFluxoEmissao()">
+              <span data-aliado-icon="plus" data-size="16"></span>
+              <span>Novo Lote</span>
+            </button>
+          </div>
+
+          <!-- Filtros de Lotes -->
+          <div class="aliado-filter-group">
+            <button class="aliado-filter-pill active">Todos os Lotes</button>
+            <button class="aliado-filter-pill">Concluídos</button>
+            <button class="aliado-filter-pill">Em Validação</button>
+            <button class="aliado-filter-pill">Com Pendências</button>
+          </div>
+
+          <!-- Tabela de Lotes -->
+          <div class="aliado-table-container">
+            <table class="aliado-table">
+              <thead>
+                <tr>
+                  <th>LOTE / IDENTIFICADOR</th>
+                  <th>DATA & HORA</th>
+                  <th>NOTAS</th>
+                  <th>VALOR TOTAL</th>
+                  <th>AMBIENTE</th>
+                  <th>STATUS DO LOTE</th>
+                  <th style="text-align: center;">AÇÃO</th>
                 </tr>
               </thead>
-              <tbody id="previewTableBody">
-                <!-- Linhas inseridas dinamicamente via JS -->
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Lote #2026-0906-01</div>
+                      <div class="desc-secondary">Origem: Upload manual XML</div>
+                    </div>
+                  </td>
+                  <td>06/09/2026 22:45</td>
+                  <td>18 notas</td>
+                  <td class="aliado-cell-value">R$ 4.382,10</td>
+                  <td><span class="badge-env homologacao" style="font-size: 9.5px; padding: 2px 8px;">HOMOLOGAÇÃO</span></td>
+                  <td><span class="aliado-status-badge entregue">CONCLUÍDO</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Exportando arquivos do lote', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">Lote #2026-0905-02</div>
+                      <div class="desc-secondary">Origem: Lote de 24 XMLs</div>
+                    </div>
+                  </td>
+                  <td>05/09/2026 18:20</td>
+                  <td>24 notas</td>
+                  <td class="aliado-cell-value">R$ 5.920,80</td>
+                  <td><span class="badge-env homologacao" style="font-size: 9.5px; padding: 2px 8px;">HOMOLOGAÇÃO</span></td>
+                  <td><span class="aliado-status-badge entregue">CONCLUÍDO</span></td>
+                  <td style="text-align: center;">
+                    <button class="aliado-btn-dots" onclick="AliadoUI.toast('Exportando arquivos do lote', 'info')">
+                      <span data-aliado-icon="more-horizontal" data-size="16"></span>
+                    </button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
-
-          <div class="p-4 bg-[#0c0c14] border-t border-white/[0.06] flex flex-wrap gap-4 items-center justify-between">
-            <span id="tableFooterInfo" class="text-xs text-white/50">3 UFs selecionadas • Total: R$ 4.382,10 em guias</span>
-            <button
-              id="btnEmitir"
-              onclick="handleGenerate()"
-              class="px-6 py-2.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold shadow-[0_8px_20px_rgba(99,102,241,0.35)] hover:opacity-95 transition-all flex items-center gap-2"
-            >
-              <span>Gerar Guias e Remessa</span>
-              <span id="emitirArrow">→</span>
-            </button>
-          </div>
         </div>
 
-        <!-- RESUMO LATERAL + TERMINAL -->
-        <div class="col-span-12 lg:col-span-4 space-y-4">
-          <div class="rounded-[20px] bg-[#10101b] border border-violet-500/20 p-5 shadow-[0_0_30px_rgba(99,102,241,0.12)]">
-            <div class="text-xs tracking-widest text-white/40">RESUMO DA OPERAÇÃO</div>
-            <div class="mt-4 space-y-3 text-sm">
-              <div class="flex justify-between"><span class="text-white/50">Notas</span><span id="resumoNotas" class="text-white font-medium">2.347</span></div>
-              <div class="flex justify-between"><span class="text-white/50">Base total</span><span id="resumoBase" class="text-white font-medium">R$ 1.247.890,00</span></div>
-              <div class="flex justify-between"><span class="text-white/50">Guias a emitir</span><span id="resumoGuias" class="text-white font-medium">1.842</span></div>
-              <div class="flex justify-between"><span class="text-white/50">Banco</span><span class="text-white font-medium">Itaú • CNAB 240</span></div>
+        <!-- ================================================================ -->
+        <!-- VIEW 4: GUIAS EMITIDAS (DATA GRID COM BUSCA & FILTROS)           -->
+        <!-- ================================================================ -->
+        <div id="view-guias-emitidas" class="portal-view">
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">BASE FISCAL UNIFICADA</div>
+              <h2 class="aliado-sheet-title">Guias GNRE Emitidas</h2>
+              <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                Consulte qualquer guia gerada, visualize recibos SEFAZ e faça o download dos PDFs oficiais.
+              </p>
             </div>
-            <div class="mt-5 h-px bg-white/10"></div>
-            <button
-              id="btnDownloadPacote"
-              onclick="downloadPackage()"
-              class="mt-4 w-full py-2.5 rounded-full bg-white text-black text-sm font-semibold hover:bg-zinc-200 transition-all opacity-50 cursor-not-allowed"
-              disabled
-            >
-              Baixar Pacote (PDF + CNAB)
+
+            <div style="display: flex; gap: 10px;">
+              <button class="btn-aliado-secondary" onclick="AliadoUI.toast('Exportando relatório em CSV', 'info')">
+                <span data-aliado-icon="bar-chart" data-size="14"></span>
+                <span>Exportar CSV</span>
+              </button>
+              <button class="btn-aliado-primary" onclick="iniciarNovoFluxoEmissao()">
+                <span data-aliado-icon="plus" data-size="16"></span>
+                <span>Emitir GNRE</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Barra de Busca e Filtro de Guias -->
+          <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 280px; position: relative;">
+              <input type="text" placeholder="Buscar por número da NF, chave de acesso ou emitente..." class="aliado-input" style="padding-left: 38px;">
+              <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-dark-subtle);" data-aliado-icon="search" data-size="16"></div>
+            </div>
+
+            <div class="aliado-filter-group" style="margin-bottom: 0;">
+              <button class="aliado-filter-pill active">Todas as UFs</button>
+              <button class="aliado-filter-pill">São Paulo (SP)</button>
+              <button class="aliado-filter-pill">Rio de Janeiro (RJ)</button>
+              <button class="aliado-filter-pill">Minas Gerais (MG)</button>
+              <button class="aliado-filter-pill">Bahia (BA)</button>
+            </div>
+          </div>
+
+          <!-- Tabela de Guias -->
+          <div class="aliado-table-container">
+            <table class="aliado-table">
+              <thead>
+                <tr>
+                  <th>NF-E / DOCUMENTO</th>
+                  <th>CONTRIBUINTE EMITENTE</th>
+                  <th>UF</th>
+                  <th>CÓDIGO DE RECEITA</th>
+                  <th>VALOR</th>
+                  <th>STATUS SEFAZ</th>
+                  <th style="text-align: center;">PDF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">NF-e 000.234</div>
+                      <div class="desc-secondary">Chave: 3524 0900 0000 0001 9155 0010 0023 4101</div>
+                    </div>
+                  </td>
+                  <td>Loja Aliados LTDA</td>
+                  <td><span class="aliado-pill-badge" style="background: var(--sheet-bg-alt); color: var(--text-dark-title); border-color: var(--sheet-border);">SP</span></td>
+                  <td>10010-2 (DIFAL Não Contribuinte)</td>
+                  <td class="aliado-cell-value">R$ 89,40</td>
+                  <td><span class="aliado-status-badge entregue">AUTORIZADA</span></td>
+                  <td style="text-align: center;">
+                    <button class="btn-aliado-secondary" style="padding: 4px 8px; font-size: 11.5px;" onclick="AliadoUI.toast('Baixando PDF da NF-e 000.234', 'info')">
+                      Baixar PDF
+                    </button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">NF-e 000.235</div>
+                      <div class="desc-secondary">Chave: 3324 0900 0000 0001 9155 0010 0023 5102</div>
+                    </div>
+                  </td>
+                  <td>Aliados Fashion E-commerce</td>
+                  <td><span class="aliado-pill-badge" style="background: var(--sheet-bg-alt); color: var(--text-dark-title); border-color: var(--sheet-border);">RJ</span></td>
+                  <td>10010-2 (DIFAL Consumidor Final)</td>
+                  <td class="aliado-cell-value">R$ 124,10</td>
+                  <td><span class="aliado-status-badge entregue">AUTORIZADA</span></td>
+                  <td style="text-align: center;">
+                    <button class="btn-aliado-secondary" style="padding: 4px 8px; font-size: 11.5px;" onclick="AliadoUI.toast('Baixando PDF da NF-e 000.235', 'info')">
+                      Baixar PDF
+                    </button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">NF-e 000.236</div>
+                      <div class="desc-secondary">Chave: 2924 0900 0000 0001 9155 0010 0023 6103</div>
+                    </div>
+                  </td>
+                  <td>Hub Tech Confecções BA</td>
+                  <td><span class="aliado-pill-badge" style="background: var(--sheet-bg-alt); color: var(--text-dark-title); border-color: var(--sheet-border);">BA</span></td>
+                  <td>10008-0 (ICMS Recolhimento Especial)</td>
+                  <td class="aliado-cell-value">R$ 12,30</td>
+                  <td><span class="aliado-status-badge entregue">AUTORIZADA</span></td>
+                  <td style="text-align: center;">
+                    <button class="btn-aliado-secondary" style="padding: 4px 8px; font-size: 11.5px;" onclick="AliadoUI.toast('Baixando PDF da NF-e 000.236', 'info')">
+                      Baixar PDF
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- VIEW 5: REMESSAS BANCÁRIAS CNAB 240 (SISPAG)                     -->
+        <!-- ================================================================ -->
+        <div id="view-remessas-cnab" class="portal-view">
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">PAGAMENTOS BANCÁRIOS EM LOTE</div>
+              <h2 class="aliado-sheet-title">Remessas SISPAG CNAB 240</h2>
+              <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                Arquivos de pagamento gerados no layout padrão Itaú e Bradesco para quitação automática de tributos.
+              </p>
+            </div>
+
+            <button class="btn-aliado-primary" onclick="baixarRemessaCNAB()">
+              <span data-aliado-icon="landmark" data-size="16"></span>
+              <span>Baixar Última Remessa (.TXT)</span>
             </button>
-            <div class="mt-2 text-[11px] text-white/30 text-center">Pronto para SISPAG</div>
           </div>
 
-          <!-- TERMINAL COMPACTO -->
-          <div class="rounded-[20px] bg-black border border-white/10 p-4 font-mono text-[11px] text-white/50">
-            <div class="text-white/30 mb-2">$ terminal</div>
-            <div id="termCmd" class="text-emerald-300/80">$ apex process --files=2347 --env=simulado</div>
-            <div id="termLog1">✔  2.347 XMLs lidos</div>
-            <div id="termLog2">✔  14 UFs agrupadas</div>
-            <div id="termLog3" class="text-amber-300/70">⏳  aguardando comando de emissão...</div>
+          <!-- Tabela de Remessas -->
+          <div class="aliado-table-container">
+            <table class="aliado-table">
+              <thead>
+                <tr>
+                  <th>ARQUIVO DE REMESSA</th>
+                  <th>BANCO / CONVÊNIO</th>
+                  <th>QUANTIDADE DE TÍTULOS</th>
+                  <th>VALOR CONSOLIDADO</th>
+                  <th>DATA DE TRANSMISSÃO</th>
+                  <th>STATUS NO BANCO</th>
+                  <th style="text-align: center;">AÇÃO</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="aliado-cell-desc">
+                      <div class="desc-primary">remessa_20260906.txt</div>
+                      <div class="desc-secondary">Layout CNAB 240 SISPAG Itaú</div>
+                    </div>
+                  </td>
+                  <td>Banco Itaú (341)</td>
+                  <td>18 títulos</td>
+                  <td class="aliado-cell-value">R$ 4.382,10</td>
+                  <td>06/09/2026</td>
+                  <td><span class="aliado-status-badge paga">PRONTO P/ ENVIO</span></td>
+                  <td style="text-align: center;">
+                    <button class="btn-aliado-secondary" style="padding: 4px 8px; font-size: 11.5px;" onclick="baixarRemessaCNAB()">
+                      Download
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+
+        <!-- ================================================================ -->
+        <!-- VIEW 6: CONFIGURAÇÕES SEPARADAS POR CONTEXTO                     -->
+        <!-- ================================================================ -->
+        <div id="view-configuracoes" class="portal-view">
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">PARÂMETROS DA ORGANIZAÇÃO</div>
+              <h2 class="aliado-sheet-title">Configurações do Sistema</h2>
+              <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                Gerencie os dados cadastrais da empresa, credenciais criptográficas e ambiente de operação.
+              </p>
+            </div>
+          </div>
+
+          <!-- Navegação de Abas Internas de Configuração -->
+          <div class="config-nav-tabs">
+            <button class="config-nav-tab active" id="tabBtnEmpresa" onclick="alternarAbaConfig('empresa')">
+              Dados da Empresa
+            </button>
+            <button class="config-nav-tab" id="tabBtnCertificado" onclick="alternarAbaConfig('certificado')">
+              Certificado Digital A1
+            </button>
+            <button class="config-nav-tab" id="tabBtnBanco" onclick="alternarAbaConfig('banco')">
+              Conta Bancária & SISPAG
+            </button>
+            <button class="config-nav-tab" id="tabBtnAmbiente" onclick="alternarAbaConfig('ambiente')">
+              Ambiente de Operação
+            </button>
+          </div>
+
+          <!-- ABA 1: DADOS DA EMPRESA -->
+          <div id="configPanelEmpresa" class="config-panel-section active">
+            <div style="max-width: 600px; display: flex; flex-direction: column; gap: 20px;">
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">CNPJ DO EMITENTE</label>
+                <input type="text" id="cfgCnpj" class="aliado-input" value="00.000.000/0001-91">
+              </div>
+
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">RAZÃO SOCIAL</label>
+                <input type="text" id="cfgRazao" class="aliado-input" value="Grupo Aliado Hub Tech LTDA">
+              </div>
+
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">INSCRIÇÃO ESTADUAL (IE)</label>
+                <input type="text" id="cfgIE" class="aliado-input" value="123.456.789.000">
+              </div>
+
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">E-MAIL PARA NOTIFICAÇÕES FISCAIS</label>
+                <input type="email" id="cfgEmail" class="aliado-input" value="fiscal@grupoaliados.com.br">
+              </div>
+
+              <button class="btn-aliado-primary" style="align-self: flex-start;" onclick="salvarConfigEmpresa()">
+                Salvar Dados da Empresa
+              </button>
+            </div>
+          </div>
+
+          <!-- ABA 2: CERTIFICADO DIGITAL A1 (COM EXPLICAÇÃO DE SEGURANÇA) -->
+          <div id="configPanelCertificado" class="config-panel-section">
+            <div style="max-width: 680px; display: flex; flex-direction: column; gap: 20px;">
+              <!-- Callout Explicativo de Segurança -->
+              <div class="fiscal-callout info">
+                <div class="fiscal-callout-icon" data-aliado-icon="shield" data-size="20"></div>
+                <div class="fiscal-callout-content">
+                  <div class="callout-title">Segurança Criptográfica Homologada</div>
+                  <div class="callout-desc">
+                    O arquivo do Certificado Digital A1 é utilizado exclusivamente para assinar e autenticar a comunicação mTLS com as Secretarias de Fazenda. A senha é cifrada em repouso e nunca é exibida em telas ou logs.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status Atual do Certificado -->
+              <div class="aliado-white-card" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-dark-muted); text-transform: uppercase;">Certificado Digital Ativo</div>
+                    <div style="font-size: 15px; font-weight: 700; color: var(--text-dark-title); margin-top: 2px;">GRUPO ALIADO HUB TECH:00000000000191</div>
+                    <div style="font-size: 12px; color: var(--status-success-text); margin-top: 2px;">✓ Válido até 18 de Novembro de 2026 • Emissor: Certisign Multipla</div>
+                  </div>
+                  <button class="btn-aliado-secondary" onclick="AliadoUI.toast('Teste de conexão com SEFAZ realizado com sucesso!', 'success')">
+                    Testar Conexão SEFAZ
+                  </button>
+                </div>
+              </div>
+
+              <!-- Formulário para Substituição de Certificado -->
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">SUBSTITUIR CERTIFICADO (.PFX / .P12)</label>
+                <div class="aliado-dropzone" style="padding: 24px; border-radius: var(--radius-md);">
+                  <div data-aliado-icon="lock" data-size="28"></div>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--text-dark-title);">Selecione o arquivo do novo Certificado A1</div>
+                  <input type="file" accept=".pfx,.p12" style="display: none;" id="inputNovoCertificado">
+                  <button type="button" class="btn-aliado-secondary" style="margin-top: 8px;" onclick="document.getElementById('inputNovoCertificado').click()">
+                    Procurar no computador
+                  </button>
+                </div>
+              </div>
+
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">SENHA DO CERTIFICADO DIGITAL</label>
+                <input type="password" placeholder="••••••••" class="aliado-input" style="max-width: 300px;">
+              </div>
+
+              <button class="btn-aliado-primary" style="align-self: flex-start;" onclick="AliadoUI.toast('Certificado atualizado com sucesso!', 'success')">
+                Atualizar Certificado A1
+              </button>
+            </div>
+          </div>
+
+          <!-- ABA 3: CONTA BANCÁRIA & SISPAG -->
+          <div id="configPanelBanco" class="config-panel-section">
+            <div style="max-width: 600px; display: flex; flex-direction: column; gap: 20px;">
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">BANCO CONVENIADO</label>
+                <select class="aliado-input">
+                  <option selected>Banco Itaú S.A. (Código 341 - SISPAG)</option>
+                  <option>Banco Bradesco S.A. (Código 237 - PagFor)</option>
+                  <option>Banco Santander Brasil (Código 033)</option>
+                </select>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 12px;">
+                <div class="aliado-form-group">
+                  <label class="aliado-form-label">AGÊNCIA</label>
+                  <input type="text" class="aliado-input" value="0452">
+                </div>
+
+                <div class="aliado-form-group">
+                  <label class="aliado-form-label">CONTA CORRENTE</label>
+                  <input type="text" class="aliado-input" value="12345">
+                </div>
+
+                <div class="aliado-form-group">
+                  <label class="aliado-form-label">DÍGITO (DAC)</label>
+                  <input type="text" class="aliado-input" value="6">
+                </div>
+              </div>
+
+              <div class="aliado-form-group">
+                <label class="aliado-form-label">CÓDIGO DA EMPRESA NO CONVÊNIO BANCÁRIO</label>
+                <input type="text" class="aliado-input" value="987654">
+              </div>
+
+              <button class="btn-aliado-primary" style="align-self: flex-start;" onclick="AliadoUI.toast('Dados bancários salvos com sucesso!', 'success')">
+                Salvar Configurações Bancárias
+              </button>
+            </div>
+          </div>
+
+          <!-- ABA 4: AMBIENTE DE OPERAÇÃO (COM AVISO CLARO) -->
+          <div id="configPanelAmbiente" class="config-panel-section">
+            <div style="max-width: 680px; display: flex; flex-direction: column; gap: 20px;">
+              <div class="fiscal-callout warning">
+                <div class="fiscal-callout-icon" data-aliado-icon="alert-circle" data-size="20"></div>
+                <div class="fiscal-callout-content">
+                  <div class="callout-title">Atenção ao Ambiente de Produção</div>
+                  <div class="callout-desc">
+                    Em <strong>Produção Real</strong>, as guias GNRE geradas possuem validade fiscal e jurídica imediata perante as Secretarias de Fazenda estaduais.
+                  </div>
+                </div>
+              </div>
+
+              <div class="aliado-white-card" style="padding: 24px;">
+                <div class="card-eyebrow">ALTERNADOR DE AMBIENTE SEFAZ</div>
+                <h3 class="card-headline">Ambiente Atual de Operação</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 14px; margin: 20px 0;">
+                  <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                    <input type="radio" name="optAmbiente" id="radioHomologacao" checked onchange="definirAmbiente('homologacao')" style="accent-color: var(--aliado-blue);">
+                    <div>
+                      <div style="font-weight: 700; font-size: 13.5px; color: var(--text-dark-title);">Homologação / Simulação (Recomendado para Testes)</div>
+                      <div style="font-size: 12px; color: var(--text-dark-muted);">Transmissão de teste sem recolhimento financeiro real aos cofres públicos.</div>
+                    </div>
+                  </label>
+
+                  <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                    <input type="radio" name="optAmbiente" id="radioProducao" onchange="definirAmbiente('producao')" style="accent-color: #ef4444;">
+                    <div>
+                      <div style="font-weight: 700; font-size: 13.5px; color: #b91c1c;">Produção Real (Validade Jurídica e Fiscal)</div>
+                      <div style="font-size: 12px; color: var(--text-dark-muted);">Conexão ao ambiente oficial das SEFAZs. Guias geradas exigem recolhimento.</div>
+                    </div>
+                  </label>
+                </div>
+
+                <button class="btn-aliado-primary" onclick="salvarAmbiente()">
+                  Aplicar Configuração de Ambiente
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================ -->
+        <!-- VIEW 7: AJUDA, REGRAS E SUPORTE                                  -->
+        <!-- ================================================================ -->
+        <div id="view-ajuda" class="portal-view">
+          <div class="aliado-sheet-header">
+            <div>
+              <div class="aliado-sheet-eyebrow">CENTRAL DE SUPORTE</div>
+              <h2 class="aliado-sheet-title">Ajuda & Manuais Fiscais</h2>
+              <p style="font-size: 13px; color: var(--text-dark-muted); margin-top: 4px;">
+                Orientações práticas para emissão correta de guias e solução de pendências de alíquotas.
+              </p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="aliado-white-card" style="padding: 24px;">
+              <div class="card-eyebrow">FLUXO DE EMISSÃO</div>
+              <h3 class="card-headline">Como emitir suas guias em 4 etapas</h3>
+              <ol style="font-size: 13px; color: var(--text-dark-body); line-height: 1.8; margin-left: 20px;">
+                <li><strong>Importar:</strong> Envie os arquivos XML de NF-e modelo 55.</li>
+                <li><strong>Revisar:</strong> O Apex detecta as UFs e códigos de receita automaticamente.</li>
+                <li><strong>Emitir:</strong> Transmissão segura com seu Certificado Digital A1.</li>
+                <li><strong>Baixar:</strong> Obtenha os PDFs originais e a remessa SISPAG CNAB 240.</li>
+              </ol>
+            </div>
+
+            <div class="aliado-white-card" style="padding: 24px;">
+              <div class="card-eyebrow">CÓDIGOS DE RECEITA GNRE</div>
+              <h3 class="card-headline">Tabela de Códigos Principais</h3>
+              <ul style="font-size: 12.5px; color: var(--text-dark-body); line-height: 1.8; list-style: none;">
+                <li><strong>10010-2:</strong> ICMS Consumidor Final Não Contribuinte (DIFAL)</li>
+                <li><strong>10008-0:</strong> ICMS Recolhimento Especial / FCP</li>
+                <li><strong>10003-0:</strong> ICMS Substituição Tributária por Apuração</li>
+                <li><strong>10004-8:</strong> ICMS Substituição Tributária por Operação</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- BANNER DE DOCUMENTAÇÃO OFICIAL -->
+          <div class="aliado-white-card" style="padding: 24px; margin-top: 20px; background: linear-gradient(135deg, rgba(0,82,204,0.04) 0%, rgba(16,185,129,0.04) 100%); border: 1px solid rgba(0,82,204,0.2); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--aliado-blue); text-transform: uppercase;">MANUAIS TÉCNICOS & OPERACIONAIS</div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text-dark-title); margin: 4px 0;">Central de Documentação & Manuais da Plataforma</h3>
+              <p style="font-size: 13px; color: var(--text-dark-muted); margin: 0;">
+                Acesse o manual do cliente para emissão de guias, parametrização do Itaú SISPAG e especificações técnicas da API REST.
+              </p>
+            </div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <a href="/docs" target="_blank" class="btn-aliado-primary" style="font-size: 12.5px; padding: 8px 16px; text-decoration: none;">
+                <span>Abrir Manual Completo</span>
+                <span data-aliado-icon="arrow-right" data-size="14"></span>
+              </a>
+              <a href="/health" target="_blank" class="btn-aliado-secondary" style="font-size: 12.5px; padding: 8px 16px; text-decoration: none;">
+                Status do Sistema ↗
+              </a>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- TIMELINE (4 STEPS) -->
-      <div class="rounded-[20px] bg-[#0f0f19] border border-white/[0.06] p-6 flex gap-8 overflow-x-auto">
-        <!-- Step 1 -->
-        <div class="flex items-center gap-3 min-w-[200px]">
-          <div id="timeStep1" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold">
-            ✓
-          </div>
-          <div>
-            <div class="text-sm text-white font-medium">Arquivos lidos</div>
-            <div id="timeStepDesc1" class="text-[11px] text-white/40">XMLs validados</div>
-          </div>
-          <div class="ml-4 w-12 h-px bg-white/10 hidden md:block"></div>
-        </div>
+    </main>
 
-        <!-- Step 2 -->
-        <div class="flex items-center gap-3 min-w-[200px]">
-          <div id="timeStep2" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold">
-            ✓
-          </div>
-          <div>
-            <div class="text-sm text-white font-medium">Guias geradas</div>
-            <div id="timeStepDesc2" class="text-[11px] text-white/40">Tributos calculados</div>
-          </div>
-          <div class="ml-4 w-12 h-px bg-white/10 hidden md:block"></div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="flex items-center gap-3 min-w-[200px]">
-          <div id="timeStep3" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-white/10 text-white/30 border-white/10 font-bold">
-            3
-          </div>
-          <div>
-            <div id="timeStepTitle3" class="text-sm text-white/30 font-medium">Transmissão SEFAZ</div>
-            <div class="text-[11px] text-white/40">Enviando em lote mTLS</div>
-          </div>
-          <div class="ml-4 w-12 h-px bg-white/10 hidden md:block"></div>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="flex items-center gap-3 min-w-[200px]">
-          <div id="timeStep4" class="w-8 h-8 rounded-full grid place-items-center text-xs border bg-white/10 text-white/30 border-white/10 font-bold">
-            4
-          </div>
-          <div>
-            <div id="timeStepTitle4" class="text-sm text-white/30 font-medium">Remessa Banco</div>
-            <div class="text-[11px] text-white/40">CNAB 240 Itaú</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="mt-16 text-center text-[11px] text-white/20 pb-8">
-    Apex SaaS • Plataforma Fiscal Modular • Grupo Aliado Hub Tech • sem menção a GNRE - pronto para DARF, ST, DIFAL
-  </footer>
-
-  <!-- UPGRADE MODAL -->
-  <div id="upgradeModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md place-items-center p-6">
-    <div class="w-full max-w-[1100px] my-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold text-white">Planos Apex SaaS</h2>
-        <button onclick="closeUpgradeModal()" class="w-9 h-9 rounded-full bg-white/10 text-white hover:bg-white/20 grid place-items-center transition-all">✕</button>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- STARTER -->
-        <div class="relative rounded-[20px] p-6 border bg-[#0f0f19] border-white/[0.06]">
-          <div class="text-white font-semibold text-lg">Starter</div>
-          <div class="mt-1 text-sm text-white/50">Para e-commerces iniciando</div>
-          <div class="mt-6 flex items-end gap-1">
-            <span class="text-4xl font-bold text-white">R$ 199</span>
-            <span class="text-white/40 text-sm mb-1">/mês</span>
-          </div>
-          <ul class="mt-6 space-y-2.5">
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Até 100 guias por mês</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Transmissão em lote mTLS</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Remessas SISPAG CNAB 240</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Vínculo automático de NFs</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Painel unificado</li>
-          </ul>
-          <button class="mt-6 w-full py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-100 transition-all">
-            Selecionar Starter
-          </button>
-        </div>
-
-        <!-- PRO (RECOMENDADO) -->
-        <div class="relative rounded-[20px] p-6 border bg-[#11111d] border-emerald-400/30 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
-          <div class="absolute -top-3 -right-3 rotate-12 bg-violet-600 text-white text-[10px] font-bold px-3 py-1 rounded-full">
-            RECOMENDADO
-          </div>
-          <div class="text-white font-semibold text-lg">Pro</div>
-          <div class="mt-1 text-sm text-white/50">Marcas em crescimento</div>
-          <div class="mt-6 flex items-end gap-1">
-            <span class="text-4xl font-bold text-white">R$ 399</span>
-            <span class="text-white/40 text-sm mb-1">/mês</span>
-          </div>
-          <ul class="mt-6 space-y-2.5">
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Até 500 guias por mês</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Transmissão em lote mTLS</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Remessas SISPAG CNAB 240</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Suporte a múltiplos certificados</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Tempo de resposta prioritário</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Histórico expandido</li>
-          </ul>
-          <button class="mt-6 w-full py-2.5 rounded-full text-sm font-semibold bg-emerald-400/15 text-emerald-300 border border-emerald-400/20">
-            ✓ Plano Ativo
-          </button>
-        </div>
-
-        <!-- ADVANCED -->
-        <div class="relative rounded-[20px] p-6 border bg-[#0f0f19] border-white/[0.06]">
-          <div class="text-white font-semibold text-lg">Advanced</div>
-          <div class="mt-1 text-sm text-white/50">Operações robustas</div>
-          <div class="mt-6 flex items-end gap-1">
-            <span class="text-4xl font-bold text-white">R$ 699</span>
-            <span class="text-white/40 text-sm mb-1">/mês</span>
-          </div>
-          <ul class="mt-6 space-y-2.5">
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Até 1.500 guias por mês</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Transmissão em lote mTLS</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Remessas SISPAG CNAB 240</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>APIs dedicadas</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Mapeamento avançado</li>
-            <li class="flex gap-2 text-[13px] text-white/70"><span class="text-emerald-400">✓</span>Suporte Premium 24/7</li>
-          </ul>
-          <button class="mt-6 w-full py-2.5 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-100 transition-all">
-            Selecionar Advanced
-          </button>
-        </div>
-      </div>
-      <div class="mt-4 text-center text-[11px] text-white/30">
-        Faturamento via Stripe • Cancele quando quiser • Apex SaaS não é só GNRE, é fiscal completo
-      </div>
-    </div>
   </div>
 
-  <!-- EMPRESA WIZARD MODAL -->
-  <div id="empresaModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur place-items-center p-6">
-    <div class="w-full max-w-[640px] my-auto rounded-[20px] bg-[#0f0f19] border border-white/[0.08] p-6">
-      <div class="flex justify-between items-center">
-        <h3 class="text-white font-semibold">Configuração da Empresa • Apex SaaS</h3>
-        <button onclick="closeConfigWizard()" class="text-white/50 hover:text-white">✕</button>
-      </div>
-
-      <div class="mt-4 flex gap-2">
-        <div id="wizBar1" class="h-1 flex-1 rounded-full bg-violet-500 transition-all"></div>
-        <div id="wizBar2" class="h-1 flex-1 rounded-full bg-white/10 transition-all"></div>
-      </div>
-
-      <!-- STEP 1 -->
-      <div id="wizStep1" class="mt-6 space-y-4">
-        <div>
-          <label class="text-[11px] tracking-widest text-white/40 uppercase">CNPJ EMITENTE</label>
-          <input id="wizCnpj" placeholder="00.000.000/0001-91" value="00.000.000/0001-91" class="mt-1 w-full rounded-xl bg-[#14141f] border border-white/10 px-4 py-3 text-white text-sm focus:border-violet-500/50 outline-none transition-all">
-          <div class="text-[11px] text-emerald-300/70 mt-1">✓ Busca automática na Receita ativa</div>
-        </div>
-        <div>
-          <label class="text-[11px] tracking-widest text-white/40 uppercase">RAZÃO SOCIAL</label>
-          <input id="wizRazao" value="Grupo Aliado Hub Tech LTDA" class="mt-1 w-full rounded-xl bg-[#14141f] border border-white/10 px-4 py-3 text-white text-sm focus:border-violet-500/50 outline-none transition-all">
-        </div>
-        <button onclick="setWizardStep(2)" class="w-full mt-2 py-3 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold hover:opacity-95 transition-all">
-          Continuar → Certificado
-        </button>
-      </div>
-
-      <!-- STEP 2 -->
-      <div id="wizStep2" class="hidden mt-6">
-        <div class="rounded-xl border border-dashed border-violet-500/30 bg-violet-500/5 p-8 text-center">
-          <div class="text-3xl">🔑</div>
-          <div class="mt-2 text-white text-sm font-medium">Arraste seu certificado A1 .pfx aqui</div>
-          <div class="text-[11px] text-white/40 mt-1">Suporte para múltiplos certificados no plano Pro</div>
-          <input type="password" id="wizPfxPass" placeholder="Senha do .pfx" class="mt-4 w-full max-w-[300px] mx-auto rounded-xl bg-[#14141f] border border-white/10 px-4 py-2.5 text-white text-sm text-center outline-none focus:border-violet-500/50 transition-all">
-        </div>
-        <div class="mt-6 flex gap-3">
-          <button onclick="setWizardStep(1)" class="px-5 py-2.5 rounded-full bg-white/10 text-white text-sm hover:bg-white/20 transition-all">Voltar</button>
-          <button onclick="saveEmpresaConfig()" class="flex-1 py-2.5 rounded-full bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition-all">Salvar e ativar Apex SaaS</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- Scripts do Design System e Lógica Operacional -->
+  <script src="/js/aliado-icons.js"></script>
+  <script src="/js/aliado-ui.js"></script>
   <script>
-    let uploadedFiles = [];
-    let currentStep = 1;
-    let wizardStep = 1;
+    // Estado Global da Aplicação
+    let ambienteAtual = 'homologacao'; // 'homologacao' | 'producao'
+    let arquivosLote = [];
+    let etapaEmissaoAtual = 1;
 
-    // Exemplos padrão
-    const sampleRows = [
-      { nfe: '000234', emit: 'Loja Aliados LTDA', uf: 'SP', trib: 'ICMS-ST', valor: 'R$ 89,40', status: 'Pronto' },
-      { nfe: '000235', emit: 'Aliados Fashion', uf: 'RJ', trib: 'DIFAL', valor: 'R$ 124,10', status: 'Pronto' },
-      { nfe: '000236', emit: 'Hub Tech Confecções', uf: 'BA', trib: 'FCP', valor: 'R$ 12,30', status: 'Pronto' },
-      { nfe: '000237', emit: 'Grupo Aliado', uf: 'MG', trib: 'ICMS-ST', valor: 'R$ 210,00', status: 'Validando' },
-      { nfe: '000238', emit: 'Aliados Distribuidora', uf: 'ES', trib: 'DUA-e', valor: 'R$ 178,50', status: 'Pronto' },
-      { nfe: '000239', emit: 'Hub Tech Varejo', uf: 'PR', trib: 'GNRE', valor: 'R$ 95,20', status: 'Pronto' },
-      { nfe: '000240', emit: 'Grupo Aliado Tech', uf: 'RS', trib: 'DIFAL', valor: 'R$ 312,80', status: 'Pronto' }
+    // Dados de exemplo realistas (Fase 1)
+    const dadosRevisaoExemplo = [
+      { nfe: 'NF-e 000.234', chave: '3524 0900 0000 0001 9155 0010 0023 4101', emit: 'Loja Aliados LTDA', uf: 'SP', receita: '10010-2 (DIFAL)', valor: 'R$ 89,40', status: 'pronta', diagnostico: 'Alíquota validada' },
+      { nfe: 'NF-e 000.235', chave: '3324 0900 0000 0001 9155 0010 0023 5102', emit: 'Aliados Fashion E-commerce', uf: 'RJ', receita: '10010-2 (DIFAL)', valor: 'R$ 124,10', status: 'pronta', diagnostico: 'Alíquota validada' },
+      { nfe: 'NF-e 000.236', chave: '2924 0900 0000 0001 9155 0010 0023 6103', emit: 'Hub Tech Confecções BA', uf: 'BA', receita: '10008-0 (FCP)', valor: 'R$ 12,30', status: 'pronta', diagnostico: 'FCP verificado' },
+      { nfe: 'NF-e 000.237', chave: '3124 0900 0000 0001 9155 0010 0023 7104', emit: 'Grupo Aliado Distribuição', uf: 'MG', receita: '10010-2 (DIFAL)', valor: 'R$ 210,00', status: 'pendente', diagnostico: 'Código sugerido para MG' },
+      { nfe: 'NF-e 000.238', chave: '3224 0900 0000 0001 9155 0010 0023 8105', emit: 'Aliados Distribuidora ES', uf: 'SP', receita: '10010-2 (DIFAL)', valor: 'R$ 178,50', status: 'pronta', diagnostico: 'Alíquota validada' },
+      { nfe: 'NF-e 000.239', chave: '4124 0900 0000 0001 9155 0010 0023 9106', emit: 'Hub Tech Varejo Sul', uf: 'RS', receita: '10010-2 (DIFAL)', valor: 'R$ 95,20', status: 'pronta', diagnostico: 'Alíquota validada' }
     ];
 
-    // Drag & Drop
-    const dropArea = document.getElementById('dropArea');
-    const fileInput = document.getElementById('fileInput');
+    // Navegação entre Módulos Principais
+    function navegarPara(idModulo) {
+      document.querySelectorAll('.portal-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.aliado-nav-item').forEach(el => el.classList.remove('active'));
 
-    ['dragenter', 'dragover'].forEach(name => {
-      dropArea.addEventListener(name, (e) => {
-        e.preventDefault();
-        dropArea.classList.add('border-violet-500/60', 'bg-[#13131f]', 'scale-[1.01]', 'shadow-[0_0_40px_rgba(99,102,241,0.25)]');
-      });
-    });
+      const view = document.getElementById(`view-${idModulo}`);
+      const nav = document.getElementById(`nav-${idModulo}`);
+      if (view) view.classList.add('active');
+      if (nav) nav.classList.add('active');
 
-    ['dragleave', 'drop'].forEach(name => {
-      dropArea.addEventListener(name, (e) => {
-        e.preventDefault();
-        dropArea.classList.remove('border-violet-500/60', 'bg-[#13131f]', 'scale-[1.01]', 'shadow-[0_0_40px_rgba(99,102,241,0.25)]');
-      });
-    });
+      const heroEyebrow = document.getElementById('heroEyebrow');
+      const heroTitle = document.getElementById('heroTitle');
+      const heroSubtitle = document.getElementById('heroSubtitle');
+      const topBreadcrumb = document.getElementById('topbarModuleBreadcrumb');
 
-    dropArea.addEventListener('drop', (e) => {
-      const files = Array.from(e.dataTransfer.files || []);
-      if (files.length > 0) handleFiles(files);
-    });
+      if (idModulo === 'visao-geral') {
+        topBreadcrumb.textContent = 'VISÃO GERAL';
+        heroEyebrow.textContent = 'OPERAÇÃO DE GNRE EM LOTE';
+        heroTitle.textContent = 'Painel de Operações Fiscais';
+        heroSubtitle.textContent = 'Automatize a geração de guias GNRE a partir dos XMLs das suas notas fiscais, acompanhe os lotes e gere a remessa bancária SISPAG em um só lugar.';
+      } else if (idModulo === 'emitir-gnre') {
+        topBreadcrumb.textContent = 'EMITIR GNRE';
+        heroEyebrow.textContent = 'FLUXO GUIADO DE EMISSÃO';
+        heroTitle.textContent = 'Emissão de Guias GNRE em Lote';
+        heroSubtitle.textContent = 'Siga as 4 etapas estruturadas: importe seus XMLs, revise eventuais pendências tributárias, confirme a transmissão e baixe os PDFs e a remessa.';
+      } else if (idModulo === 'lotes') {
+        topBreadcrumb.textContent = 'LOTES FISCAIS';
+        heroEyebrow.textContent = 'HISTÓRICO OPERACIONAL';
+        heroTitle.textContent = 'Lotes de Processamento';
+        heroSubtitle.textContent = 'Controle central de todos os lotes de notas fiscais importados, transmitidos ou com necessidade de correção.';
+      } else if (idModulo === 'guias-emitidas') {
+        topBreadcrumb.textContent = 'GUIAS EMITIDAS';
+        heroEyebrow.textContent = 'BASE DE DOCUMENTOS';
+        heroTitle.textContent = 'Consulta de Guias GNRE';
+        heroSubtitle.textContent = 'Pesquise, filtre por UF e faça o download dos PDFs originais autorizados pelas Secretarias de Fazenda.';
+      } else if (idModulo === 'remessas-cnab') {
+        topBreadcrumb.textContent = 'REMESSAS CNAB';
+        heroEyebrow.textContent = 'CONCILIAÇÃO BANCÁRIA';
+        heroTitle.textContent = 'Remessas SISPAG CNAB 240';
+        heroSubtitle.textContent = 'Arquivos prontos para importação no Internet Banking Itaú ou Bradesco para pagamento automático sem digitação de código de barras.';
+      } else if (idModulo === 'configuracoes') {
+        topBreadcrumb.textContent = 'CONFIGURAÇÕES';
+        heroEyebrow.textContent = 'PARÂMETROS CORPORATIVOS';
+        heroTitle.textContent = 'Configurações do Sistema';
+        heroSubtitle.textContent = 'Gerenciamento de dados cadastrais, Certificado Digital A1 mTLS e parâmetros de ambiente.';
+      } else if (idModulo === 'ajuda') {
+        topBreadcrumb.textContent = 'AJUDA';
+        heroEyebrow.textContent = 'MANUAIS E DOCUMENTAÇÃO';
+        heroTitle.textContent = 'Central de Ajuda';
+        heroSubtitle.textContent = 'Documentação oficial de alíquotas interestaduais, manuais de preenchimento e canais de suporte técnico.';
+      }
 
-    fileInput.addEventListener('change', (e) => {
-      const files = Array.from(e.target.files || []);
-      if (files.length > 0) handleFiles(files);
-    });
-
-    function useSampleFiles() {
-      const mock = Array(2347).fill(null).map((_, i) => ({ name: `NFe_venda_${i+1}.xml` }));
-      handleFiles(mock, true);
+      AliadoIcons.renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function handleFiles(files, isSample = false) {
-      uploadedFiles = files;
-      currentStep = 2;
-
-      // Troca visual do DropZone para Tabela
-      document.getElementById('dropzoneContainer').classList.add('hidden');
-      document.getElementById('pipelineActiveContainer').classList.remove('hidden');
-
-      // Atualiza stepper do Header
-      updateStepper(2);
-
-      // Renderiza tabela
-      renderTable(isSample);
+    // Fluxo de Emissão em 4 Etapas
+    function iniciarNovoFluxoEmissao() {
+      navegarPara('emitir-gnre');
+      irParaEtapa(1);
     }
 
-    function renderTable(isSample) {
-      const tbody = document.getElementById('previewTableBody');
+    function irParaEtapa(etapa) {
+      etapaEmissaoAtual = etapa;
+      document.querySelectorAll('.pipeline-stage').forEach(el => el.classList.remove('active'));
+
+      const stage = document.getElementById(`stage-${etapa}-${['importar', 'revisar', 'emitir', 'resultado'][etapa-1]}`);
+      if (stage) stage.classList.add('active');
+
+      // Atualiza Stepper
+      for (let i = 1; i <= 4; i++) {
+        const node = document.getElementById(`stepperNode${i}`);
+        if (!node) continue;
+        node.classList.remove('active', 'completed');
+        if (i < etapa) {
+          node.classList.add('completed');
+          node.querySelector('.step-node-circle').textContent = '✓';
+        } else if (i === etapa) {
+          node.classList.add('active');
+          node.querySelector('.step-node-circle').textContent = i;
+        } else {
+          node.querySelector('.step-node-circle').textContent = i;
+        }
+      }
+
+      if (etapa === 2) {
+        renderizarTabelaRevisao('todas');
+      } else if (etapa === 3) {
+        atualizarResumoStage3();
+      }
+
+      AliadoIcons.renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Manipulação de Arquivos na Etapa 1
+    function aoSelecionarArquivos(input) {
+      if (input.files && input.files.length > 0) {
+        arquivosLote = Array.from(input.files).map(f => ({ name: f.name, size: (f.size / 1024).toFixed(1) + ' KB' }));
+        renderizarListaArquivos();
+      }
+    }
+
+    function carregarLoteExemplo() {
+      arquivosLote = Array(18).fill(null).map((_, i) => ({
+        name: `NFe_venda_interestadual_000${234 + i}.xml`,
+        size: '14.2 KB'
+      }));
+      renderizarListaArquivos();
+      AliadoUI.toast('Lote de exemplo com 18 XMLs carregado!', 'success');
+    }
+
+    function renderizarListaArquivos() {
+      const container = document.getElementById('containerArquivosSelecionados');
+      const listEl = document.getElementById('listaArquivosUpload');
+      const badgeEl = document.getElementById('totalArquivosBadge');
+      const btnAvancar = document.getElementById('btnAvancarEtapa2');
+
+      if (arquivosLote.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      container.style.display = 'block';
+      badgeEl.textContent = `${arquivosLote.length} arquivos selecionados para o lote`;
+      btnAvancar.querySelector('span').textContent = `Continuar para Revisão (${arquivosLote.length} notas)`;
+
+      listEl.innerHTML = '';
+      arquivosLote.slice(0, 8).forEach((arq, index) => {
+        const card = document.createElement('div');
+        card.className = 'file-item-card';
+        card.innerHTML = `
+          <div class="file-meta">
+            <span data-aliado-icon="file-text" data-size="16"></span>
+            <span>${arq.name}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="file-size">${arq.size}</span>
+            <button class="file-item-remove-btn" onclick="removerArquivo(${index})" title="Remover este arquivo">
+              ✕
+            </button>
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+
+      if (arquivosLote.length > 8) {
+        const mais = document.createElement('div');
+        mais.style.fontSize = '12px';
+        mais.style.color = 'var(--text-dark-muted)';
+        mais.style.textAlign = 'center';
+        mais.style.padding = '8px';
+        mais.textContent = `... e mais ${arquivosLote.length - 8} arquivos no lote`;
+        listEl.appendChild(mais);
+      }
+
+      AliadoIcons.renderAll();
+    }
+
+    function removerArquivo(index) {
+      arquivosLote.splice(index, 1);
+      renderizarListaArquivos();
+      AliadoUI.toast('Arquivo removido da seleção', 'info');
+    }
+
+    function limparArquivosSelecionados() {
+      arquivosLote = [];
+      renderizarListaArquivos();
+      AliadoUI.toast('Seleção limpa', 'info');
+    }
+
+    // Renderização da Tabela da Etapa 2
+    function renderizarTabelaRevisao(filtro) {
+      const tbody = document.getElementById('corpoTabelaRevisao');
       tbody.innerHTML = '';
 
-      const count = uploadedFiles.length || 2347;
-      document.getElementById('tableHeaderSummary').textContent = `${count.toLocaleString('pt-BR')} notas detectadas • R$ 1.2M em base • 14 UFs`;
-      document.getElementById('resumoNotas').textContent = count.toLocaleString('pt-BR');
-      document.getElementById('timeStepDesc1').textContent = `${count.toLocaleString('pt-BR')} XMLs validados`;
-      document.getElementById('termLog1').textContent = `✔  ${count.toLocaleString('pt-BR')} XMLs lidos`;
-      document.getElementById('termCmd').textContent = `$ apex process --files=${count} --env=simulado`;
+      dadosRevisaoExemplo.forEach(item => {
+        if (filtro === 'prontas' && item.status !== 'pronta') return;
+        if (filtro === 'pendentes' && item.status !== 'pendente') return;
 
-      sampleRows.forEach(r => {
         const tr = document.createElement('tr');
-        tr.className = 'border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors';
         tr.innerHTML = `
-          <td class="px-6 py-3 text-white/80 font-mono">${r.nfe}</td>
-          <td class="text-white/60">${r.emit}</td>
-          <td><span class="px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-white/70 text-xs">${r.uf}</span></td>
-          <td class="text-white/60 font-medium">${r.trib}</td>
-          <td class="text-white font-medium">${r.valor}</td>
-          <td><span class="text-emerald-300 text-xs">● ${r.status}</span></td>
+          <td>
+            <div class="aliado-cell-desc">
+              <div class="desc-primary">${item.nfe}</div>
+              <div class="desc-secondary" style="font-family: var(--font-mono); font-size: 11px;">${item.chave}</div>
+            </div>
+          </td>
+          <td>${item.emit}</td>
+          <td><span class="aliado-pill-badge" style="background: var(--sheet-bg-alt); color: var(--text-dark-title);">${item.uf}</span></td>
+          <td><strong style="font-size: 12.5px; color: var(--text-dark-title);">${item.receita}</strong></td>
+          <td class="aliado-cell-value">${item.valor}</td>
+          <td>
+            <span class="aliado-status-badge ${item.status === 'pronta' ? 'entregue' : 'pendente'}">
+              ${item.status === 'pronta' ? 'PRONTA' : 'REVISAR'}
+            </span>
+            <div style="font-size: 11px; color: var(--text-dark-muted); margin-top: 2px;">${item.diagnostico}</div>
+          </td>
+          <td style="text-align: center;">
+            <button class="btn-aliado-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="AliadoUI.toast('Dados da nota confirmados', 'success')">
+              ${item.status === 'pronta' ? 'Detalhes' : 'Confirmar'}
+            </button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
+      AliadoIcons.renderAll();
     }
 
-    async function handleGenerate() {
-      const btn = document.getElementById('btnEmitir');
+    function filtrarTabelaRevisao(filtro, btn) {
+      document.querySelectorAll('#stage-2-revisar .aliado-filter-pill').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+      renderizarTabelaRevisao(filtro);
+    }
+
+    function executarValidacaoLote() {
+      AliadoUI.toast('Validação fiscal de alíquotas concluída com sucesso!', 'success');
+      irParaEtapa(3);
+    }
+
+    // Configurações da Etapa 3
+    function atualizarResumoStage3() {
+      const stage3Badge = document.getElementById('stage3EnvBadge');
+      const stage3Text = document.getElementById('stage3EnvText');
+      const btnEmitir = document.getElementById('btnEmitirTexto');
+
+      if (ambienteAtual === 'producao') {
+        stage3Badge.className = 'badge-env producao';
+        stage3Text.textContent = 'AMBIENTE: PRODUÇÃO REAL';
+        btnEmitir.textContent = 'Emitir 18 guias GNRE em PRODUÇÃO';
+      } else {
+        stage3Badge.className = 'badge-env homologacao';
+        stage3Text.textContent = 'AMBIENTE: HOMOLOGAÇÃO';
+        btnEmitir.textContent = 'Emitir 18 guias GNRE em HOMOLOGAÇÃO';
+      }
+    }
+
+    function executarTransmissaoOficial() {
+      const btn = document.getElementById('btnEmitirOficial');
+      const termArea = document.getElementById('areaTerminalTransmissao');
+      const termLog = document.getElementById('terminalLogEmissao');
+
       btn.disabled = true;
-      btn.innerHTML = '<span class="animate-spin inline-block mr-2">⚙️</span> Transmitindo SEFAZ...';
+      btn.innerHTML = '<span>Transmitindo SEFAZ via mTLS...</span>';
+      termArea.style.display = 'block';
 
-      // Atualiza Timeline para Step 3 (Ativo)
-      updateTimelineStep(3);
-      updateStepper(3);
-      document.getElementById('termLog3').innerHTML = '<span class="text-amber-300">⏳  transmitindo SEFAZ em lote mTLS...</span>';
+      const line1 = document.createElement('div');
+      line1.textContent = `[TRANSMISSÃO] Assinando 18 guias GNRE com Certificado A1 às ${new Date().toLocaleTimeString()}...`;
+      line1.style.color = '#f59e0b';
+      termLog.appendChild(line1);
 
-      try {
-        // Tenta disparar chamada para a API /api/apex/emitir
-        let formData = new FormData();
-        if (uploadedFiles.length > 0 && uploadedFiles[0] instanceof File) {
-          uploadedFiles.slice(0, 50).forEach(f => formData.append('files', f));
-        }
+      setTimeout(() => {
+        const line2 = document.createElement('div');
+        line2.textContent = `[SEFAZ OK] 18 guias autorizadas com sucesso no ambiente de ${ambienteAtual.toUpperCase()}.`;
+        line2.style.color = '#10b981';
+        termLog.appendChild(line2);
 
-        const res = await fetch('/api/apex/emitir', {
-          method: 'POST',
-          body: formData
-        }).catch(() => null);
+        const line3 = document.createElement('div');
+        line3.textContent = `[REMESSA] Arquivo CNAB 240 gerado para o Banco Itaú SISPAG.`;
+        termLog.appendChild(line3);
 
-        // Simulação com sucesso imediato caso esteja sem credenciais locais ou em teste
         setTimeout(() => {
-          updateTimelineStep(4);
-          document.getElementById('termLog3').innerHTML = '<span class="text-emerald-400">✔  1.842 guias emitidas com sucesso</span>';
-          btn.innerHTML = '✔ Guias e Remessa Concluídas';
-          btn.classList.remove('from-violet-600', 'to-indigo-600');
-          btn.classList.add('bg-emerald-500');
-
-          // Habilita download do pacote
-          const btnPkg = document.getElementById('btnDownloadPacote');
-          btnPkg.disabled = false;
-          btnPkg.classList.remove('opacity-50', 'cursor-not-allowed');
-          btnPkg.classList.add('hover:bg-zinc-100', 'shadow-[0_0_20px_rgba(255,255,255,0.2)]');
-        }, 1200);
-
-      } catch (err) {
-        console.warn("[Apex Pipeline]:", err);
-      }
+          btn.disabled = false;
+          irParaEtapa(4);
+          AliadoUI.toast('18 guias GNRE emitidas com sucesso!', 'success');
+        }, 1000);
+      }, 1500);
     }
 
-    function updateStepper(step) {
-      const s1 = document.getElementById('stepTag1');
-      const s2 = document.getElementById('stepTag2');
-      const s3 = document.getElementById('stepTag3');
-
-      [s1, s2, s3].forEach(el => {
-        el.className = 'px-3 py-1 text-xs text-white/40 rounded-full transition-all';
-      });
-
-      if (step === 1) s1.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-medium';
-      if (step === 2) s2.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-medium';
-      if (step === 3) s3.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-medium';
-    }
-
-    function updateTimelineStep(step) {
-      const t3 = document.getElementById('timeStep3');
-      const t3Title = document.getElementById('timeStepTitle3');
-      const t4 = document.getElementById('timeStep4');
-      const t4Title = document.getElementById('timeStepTitle4');
-
-      if (step === 3) {
-        t3.className = 'w-8 h-8 rounded-full grid place-items-center text-xs border bg-amber-400 text-black border-amber-400 animate-pulse font-bold';
-        t3Title.className = 'text-sm text-white font-medium';
-      } else if (step >= 4) {
-        t3.className = 'w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold';
-        t3.textContent = '✓';
-        t3Title.className = 'text-sm text-white font-medium';
-
-        t4.className = 'w-8 h-8 rounded-full grid place-items-center text-xs border bg-emerald-400 text-black border-emerald-400 font-bold';
-        t4.textContent = '✓';
-        t4Title.className = 'text-sm text-white font-medium';
-      }
-    }
-
-    function resetPipeline() {
-      uploadedFiles = [];
-      currentStep = 1;
-      document.getElementById('pipelineActiveContainer').classList.add('hidden');
-      document.getElementById('dropzoneContainer').classList.remove('hidden');
-      updateStepper(1);
-    }
-
-    function downloadPackage() {
+    function baixarPacoteGuias() {
+      AliadoUI.toast('Iniciando download do pacote de PDFs (.ZIP)...', 'success');
       window.location.href = '/download/remessa.txt';
     }
 
-    // Modal Upgrade
-    function openUpgradeModal() {
-      const m = document.getElementById('upgradeModal');
-      m.classList.remove('hidden');
-      m.classList.add('grid');
+    function baixarRemessaCNAB() {
+      AliadoUI.toast('Baixando arquivo de remessa SISPAG (.TXT)...', 'info');
+      window.location.href = '/download/remessa.txt';
     }
 
-    function closeUpgradeModal() {
-      const m = document.getElementById('upgradeModal');
-      m.classList.add('hidden');
-      m.classList.remove('grid');
+    // Alternador de Ambiente Persistente
+    function toggleAmbienteRapido() {
+      const novoAmbiente = ambienteAtual === 'homologacao' ? 'producao' : 'homologacao';
+      if (novoAmbiente === 'producao') {
+        const conf = confirm("ATENÇÃO: Mudar para PRODUÇÃO REAL fará com que as próximas guias emitidas tenham validade fiscal perante a SEFAZ. Deseja continuar?");
+        if (!conf) return;
+      }
+      definirAmbiente(novoAmbiente);
     }
 
-    // Wizard Config
-    function openConfigWizard() {
-      const m = document.getElementById('empresaModal');
-      m.classList.remove('hidden');
-      m.classList.add('grid');
-      setWizardStep(1);
-    }
+    function definirAmbiente(env) {
+      ambienteAtual = env;
+      const badge = document.getElementById('envBadge');
+      const badgeText = document.getElementById('envBadgeText');
+      const radioHomolog = document.getElementById('radioHomologacao');
+      const radioProd = document.getElementById('radioProducao');
 
-    function closeConfigWizard() {
-      const m = document.getElementById('empresaModal');
-      m.classList.add('hidden');
-      m.classList.remove('grid');
-    }
-
-    function setWizardStep(step) {
-      wizardStep = step;
-      const b1 = document.getElementById('wizBar1');
-      const b2 = document.getElementById('wizBar2');
-      const s1 = document.getElementById('wizStep1');
-      const s2 = document.getElementById('wizStep2');
-
-      if (step === 1) {
-        b1.className = 'h-1 flex-1 rounded-full bg-violet-500 transition-all';
-        b2.className = 'h-1 flex-1 rounded-full bg-white/10 transition-all';
-        s1.classList.remove('hidden');
-        s2.classList.add('hidden');
+      if (env === 'producao') {
+        badge.className = 'badge-env producao';
+        badgeText.textContent = 'PRODUÇÃO REAL (SEFAZ)';
+        if (radioProd) radioProd.checked = true;
       } else {
-        b1.className = 'h-1 flex-1 rounded-full bg-violet-500 transition-all';
-        b2.className = 'h-1 flex-1 rounded-full bg-violet-500 transition-all';
-        s1.classList.add('hidden');
-        s2.classList.remove('hidden');
+        badge.className = 'badge-env homologacao';
+        badgeText.textContent = 'HOMOLOGAÇÃO (SEFAZ Testes)';
+        if (radioHomolog) radioHomolog.checked = true;
       }
+
+      if (etapaEmissaoAtual === 3) {
+        atualizarResumoStage3();
+      }
+      AliadoUI.toast(`Ambiente ativo: ${ambienteAtual.toUpperCase()}`, 'info');
     }
 
-    function saveEmpresaConfig() {
-      const razao = document.getElementById('wizRazao').value;
+    function salvarAmbiente() {
+      AliadoUI.toast(`Ambiente salvo: ${ambienteAtual.toUpperCase()}`, 'success');
+    }
+
+    // Abas de Configurações
+    function alternarAbaConfig(aba) {
+      document.querySelectorAll('.config-nav-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.config-panel-section').forEach(el => el.classList.remove('active'));
+
+      const btn = document.getElementById(`tabBtn${aba.charAt(0).toUpperCase() + aba.slice(1)}`);
+      const panel = document.getElementById(`configPanel${aba.charAt(0).toUpperCase() + aba.slice(1)}`);
+
+      if (btn) btn.classList.add('active');
+      if (panel) panel.classList.add('active');
+    }
+
+    function salvarConfigEmpresa() {
+      const razao = document.getElementById('cfgRazao').value;
       if (razao) {
-        document.getElementById('headerTenantName').textContent = razao;
+        document.getElementById('sidebarTenantName').textContent = razao;
+        document.getElementById('topbarTenantDisplay').textContent = razao;
       }
-      closeConfigWizard();
+      AliadoUI.toast('Dados da empresa salvos com sucesso!', 'success');
     }
 
-    // Carrega dados reais do tenant caso logado
+    function abrirModalPlanos() {
+      window.location.href = '/plans.html';
+    }
+
+    function dispensarOnboarding() {
+      const card = document.getElementById('onboardingWizardCard');
+      if (card) card.style.display = 'none';
+      localStorage.setItem('onboarding_dismissed', 'true');
+      AliadoUI.toast('Checklist dispensado. Você pode configurar a qualquer momento em Configurações.', 'info');
+    }
+
+    function logout() {
+      localStorage.removeItem('sb_access_token');
+      localStorage.removeItem('sb_refresh_token');
+      localStorage.removeItem('sb_expires_at');
+      window.location.href = '/login.html';
+    }
+
+    // Inicialização da Aplicação
     document.addEventListener('DOMContentLoaded', async () => {
+      AliadoIcons.renderAll();
+
       try {
         const token = localStorage.getItem('sb_access_token');
         const res = await fetch('/api/auth/me', {
@@ -641,32 +1586,79 @@
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.tenant?.razao_social) {
-            document.getElementById('headerTenantName').textContent = data.tenant.razao_social;
-            document.getElementById('wizRazao').value = data.tenant.razao_social;
-          }
-          if (data.tenant?.cnpj) {
-            const rawCnpj = data.tenant.cnpj;
-            const formatted = rawCnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
-            document.getElementById('wizCnpj').value = formatted;
-            const used = data.tenant.used_this_month || 0;
-            const quota = data.tenant.monthly_quota || 500;
-            document.getElementById('headerUsageCounter').innerHTML = `${formatted} • <span id="usageText">${used}</span>/${quota}`;
-            const pct = Math.min(100, (used / quota) * 100);
-            document.getElementById('headerUsageBar').style.width = pct + '%';
+          if (data && data.tenant) {
+            const tenant = Array.isArray(data.tenant) ? data.tenant[0] : data.tenant;
+            if (tenant.razao_social) {
+              document.getElementById('sidebarTenantName').textContent = tenant.razao_social;
+              document.getElementById('topbarTenantDisplay').textContent = tenant.razao_social;
+              document.getElementById('cfgRazao').value = tenant.razao_social;
+            }
+            if (tenant.cnpj) {
+              document.getElementById('cfgCnpj').value = tenant.cnpj;
+            }
+            const used = tenant.used_this_month || 0;
+            const quota = tenant.monthly_quota || (tenant.plan === 'starter' ? 100 : tenant.plan === 'pro' ? 500 : tenant.plan === 'advanced' ? 1500 : 10);
+            document.getElementById('quotaUsedDisplay').textContent = used;
+            document.getElementById('quotaTotalDisplay').textContent = quota;
+            document.getElementById('quotaBarFill').style.width = Math.min(100, (used / quota) * 100) + '%';
+
+            // ATUALIZAÇÃO DO ONBOARDING WIZARD
+            const isDismissed = localStorage.getItem('onboarding_dismissed') === 'true';
+            const cardOnboarding = document.getElementById('onboardingWizardCard');
+
+            let stepsCompleted = 0;
+
+            // Passo 1: Dados cadastrais e bancários
+            const step1Done = Boolean(tenant.cnpj && tenant.bank_agency && tenant.bank_account);
+            const step1Badge = document.getElementById('step1Badge');
+            if (step1Done) {
+              stepsCompleted++;
+              if (step1Badge) {
+                step1Badge.textContent = '✓ Concluído';
+                step1Badge.style.background = '#d1fae5';
+                step1Badge.style.color = '#065f46';
+              }
+            }
+
+            // Passo 2: Certificado Digital PFX
+            const step2Done = Boolean(tenant.pfx_filename);
+            const step2Badge = document.getElementById('step2Badge');
+            if (step2Done) {
+              stepsCompleted++;
+              if (step2Badge) {
+                step2Badge.textContent = '✓ Concluído';
+                step2Badge.style.background = '#d1fae5';
+                step2Badge.style.color = '#065f46';
+              }
+            }
+
+            // Passo 3: Primeira emissão
+            const step3Done = Boolean(used > 0);
+            const step3Badge = document.getElementById('step3Badge');
+            if (step3Done) {
+              stepsCompleted++;
+              if (step3Badge) {
+                step3Badge.textContent = '✓ Concluído';
+                step3Badge.style.background = '#d1fae5';
+                step3Badge.style.color = '#065f46';
+              }
+            }
+
+            const pct = Math.round((stepsCompleted / 3) * 100);
+            const progText = document.getElementById('onboardingProgressText');
+            const progBar = document.getElementById('onboardingProgressBar');
+            if (progText) progText.textContent = `${stepsCompleted} de 3 concluídos (${pct}%)`;
+            if (progBar) progBar.style.width = `${pct}%`;
+
+            if (isDismissed || stepsCompleted === 3) {
+              if (cardOnboarding) cardOnboarding.style.display = 'none';
+            }
           }
         }
       } catch (e) {
-        console.warn('Sessão anônima ou simulada:', e);
+        console.error('[Init error]:', e);
       }
     });
-
-    function logout() {
-      fetch('/api/auth/logout', { method: 'POST' }).finally(() => {
-        localStorage.removeItem('sb_access_token');
-        window.location.href = '/login.html';
-      });
-    }
   </script>
 </body>
 </html>

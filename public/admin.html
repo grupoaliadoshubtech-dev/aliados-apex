@@ -1,200 +1,484 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apex SaaS - Admin Financeiro | Grupo Aliado Hub Tech</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>body{font-family:Inter,sans-serif;background:#08080f} .mono{font-family:'JetBrains Mono',monospace}</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex SaaS - Admin Financeiro | Grupo Aliado Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    body {
+      background-color: var(--color-cream-canvas);
+      color: var(--color-bark);
+      font-family: var(--font-sans);
+    }
+
+    .admin-header {
+      height: 60px;
+      border-bottom: 1px solid var(--color-linen-border);
+      background-color: #fbfaf8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .admin-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1200px) {
+      .admin-kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 680px) {
+      .admin-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .admin-kpi-card {
+      background-color: var(--color-pure-paper);
+      border: 1px solid var(--color-linen-border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .admin-kpi-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-driftwood);
+    }
+
+    .admin-kpi-val {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-espresso);
+      letter-spacing: -0.31px;
+      margin-top: 4px;
+    }
+
+    .admin-kpi-sub {
+      font-size: 11.5px;
+      color: var(--color-driftwood);
+      margin-top: 6px;
+    }
+
+    .admin-tabs-row {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .admin-tab-btn {
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--color-bark);
+      transition: all var(--transition-fast);
+    }
+
+    .admin-tab-btn:hover {
+      background-color: rgba(227, 223, 213, 0.4);
+      color: var(--color-espresso);
+    }
+
+    .admin-tab-btn.active {
+      background-color: var(--color-espresso);
+      color: var(--color-pure-paper);
+      font-weight: 600;
+    }
+
+    .admin-tab-btn.tab-inad.active {
+      background-color: var(--color-terracotta);
+      color: #fff;
+    }
+
+    .admin-table-container {
+      margin-top: 16px;
+      background-color: var(--color-pure-paper);
+      border: 1px solid var(--color-linen-border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .admin-table-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-linen-border);
+      background-color: #faf9f7;
+    }
+
+    .admin-search-input {
+      width: 280px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--color-linen-border);
+      font-size: 12px;
+      outline: none;
+      background: #fff;
+      color: var(--color-espresso);
+    }
+
+    .admin-search-input:focus {
+      border-color: var(--color-espresso);
+    }
+  </style>
 </head>
-<body class="bg-[#08080f] text-white min-h-screen">
-<header class="h-[56px] border-b border-white/[0.06] bg-[#0a0a12] flex items-center justify-between px-6 sticky top-0 z-50">
-  <div class="flex items-center gap-4">
-    <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center font-bold text-xs">A</div>
-    <div><div class="font-bold text-sm leading-none">Apex SaaS • ADMIN FINANCEIRO STRIPE LIVE</div><div class="text-[9px] text-white/30 tracking-widest">GRUPO ALIADO HUB TECH LTDA • <span class="text-emerald-400">DONO</span></div></div>
-    <div class="ml-4 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/20 text-red-300 text-[10px] flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>AO VIVO ADMIN</div>
-    <div class="ml-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-300 text-[10px] mono">sk_live_...<span id="stripeMode">LIVE</span></div>
-  </div>
-  <div class="flex items-center gap-3">
-    <a href="/app" class="px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-[11px] text-white/70 hover:text-white hover:bg-white/10">Ir para o App →</a>
-    <span id="lastUpdate" class="text-[10px] text-white/30 mono"></span>
-    <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs">👑</div>
-    <span class="text-xs text-white/50">admin@aliadohub.tech</span>
-  </div>
-</header>
+<body>
 
-<main class="max-w-[1450px] mx-auto p-6">
-  <!-- KPIs -->
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">MRR Stripe</div><div id="kpiMRR" class="text-xl font-bold mt-1">R$ --</div><div class="mt-2 text-[10px] text-emerald-400">recorrência real</div></div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Vendas Mês</div><div id="kpiVendas" class="text-xl font-bold mt-1">R$ --</div><div id="kpiVendasQtd" class="mt-2 text-[10px] text-white/40">-- assinaturas</div></div>
-    <div class="rounded-[16px] bg-[#12121f] border border-red-500/20 p-5"><div class="text-[10px] text-red-300/70 uppercase tracking-widest">Inadimplência</div><div id="kpiInad" class="text-xl font-bold mt-1 text-red-300">R$ --</div><div id="kpiInadQtd" class="mt-2 text-[10px] text-red-300/60">-- faturas failed</div></div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Taxa Sucesso</div><div id="kpiTaxa" class="text-xl font-bold mt-1">--%</div><div class="mt-2 h-1.5 bg-white/10 rounded-full"><div id="kpiTaxaBar" class="h-full bg-emerald-400 rounded-full" style="width:0%"></div></div></div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Clientes Ativos</div><div id="kpiClientes" class="text-xl font-bold mt-1">--</div><div id="kpiClientesDetalhe" class="mt-2 text-[10px] text-white/30">--</div></div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><div class="text-[10px] text-white/40 uppercase tracking-widest">Próx. Cobrança</div><div id="kpiProx" class="text-xl font-bold mt-1">R$ --</div><div class="mt-2 text-[10px] text-white/30">7 dias</div></div>
-  </div>
+  <!-- HEADER INSTITUCIONAL ADMIN -->
+  <header class="admin-header">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="aliado-logo-box">A</div>
+      <div>
+        <div style="font-size: 14px; font-weight: 600; color: var(--color-espresso); line-height: 1.2;">Apex SaaS &bull; ADMIN FINANCEIRO</div>
+        <div style="font-size: 9px; font-weight: 600; letter-spacing: 0.1em; color: var(--color-driftwood); text-transform: uppercase;">GRUPO ALIADO HUB TECH &bull; PAINEL OPERACIONAL</div>
+      </div>
 
-  <!-- TABS -->
-  <div class="mt-6 flex flex-wrap gap-2 text-[12px] items-center">
-    <button onclick="setTab('vendas')" id="tab-vendas" class="px-4 py-2 rounded-full bg-violet-600 text-white font-semibold transition-all">Vendas & Pagamentos</button>
-    <button onclick="setTab('inad')" id="tab-inad" class="px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all">Inadimplentes 🔴 <span id="badgeInad" class="ml-1 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px]">0</span></button>
-    <button onclick="setTab('tenants')" id="tab-tenants" class="px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all">Tenants / Empresas</button>
-    <button onclick="reload()" class="ml-auto px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 hover:text-white text-[11px] transition-all">↻ Atualizar agora</button>
-  </div>
+      <!-- BADGES SEGUROS RUNWAY -->
+      <div class="badge-env producao" style="margin-left: 12px;">
+        <span class="dot"></span>
+        <span>PRODUÇÃO &mdash; STRIPE LIVE</span>
+      </div>
 
-  <!-- TABELA VENDAS -->
-  <div id="view-vendas" class="mt-4 rounded-[16px] bg-[#0f0f19] border border-white/[0.06] overflow-hidden">
-    <div class="p-4 flex flex-wrap gap-3 justify-between items-center border-b border-white/[0.06]"><h2 class="font-semibold text-sm">Vendas & Pagamentos - Stripe Live</h2><input id="searchVendas" placeholder="Buscar CNPJ, empresa ou Stripe ID" class="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-xs w-[300px] outline-none focus:border-violet-500/50"/></div>
-    <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead class="text-white/30 text-[10px] uppercase tracking-widest bg-white/[0.02]"><tr><th class="p-3 text-left">Data</th><th class="p-3 text-left">Empresa</th><th class="p-3">Plano</th><th class="p-3">Valor</th><th class="p-3">Stripe ID</th><th class="p-3">Status</th><th class="p-3">Fatura</th><th class="p-3">Ações</th></tr></thead><tbody id="tbodyVendas" class="divide-y divide-white/[0.04]"><tr><td colspan="8" class="p-8 text-center text-white/30">Carregando Stripe...</td></tr></tbody></table></div>
-  </div>
+      <div class="badge-env homologacao">
+        <span class="dot" style="background: #1e6b37;"></span>
+        <span style="color: #1e6b37;">Stripe Conectado &bull; Live</span>
+      </div>
+    </div>
 
-  <!-- TABELA INADIMPLENTES -->
-  <div id="view-inad" class="mt-4 rounded-[16px] bg-[#12121f] border border-red-500/20 overflow-hidden hidden">
-    <div class="p-4 border-b border-white/[0.06] bg-red-500/5"><h2 class="font-semibold text-sm text-red-200">🚨 Inadimplentes - Dunning Stripe (recuperar dinheiro)</h2><p class="text-[11px] text-white/40 mt-1">Stripe tenta cobrar 4x automaticamente. Envie link manual quando falhar.</p></div>
-    <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead class="text-red-200/50 text-[10px] uppercase tracking-widest bg-red-500/5"><tr><th class="p-3 text-left">Empresa</th><th class="p-3">Valor</th><th class="p-3">Dias Atraso</th><th class="p-3">Tentativas</th><th class="p-3">Motivo</th><th class="p-3">Link Pagamento</th><th class="p-3">Ação</th></tr></thead><tbody id="tbodyInad" class="divide-y divide-white/[0.04]"></tbody></table></div>
-  </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="/app" class="btn-aliado-secondary" style="padding: 4px 12px; font-size: 12px;">Ir para o Portal GNRE &rarr;</a>
+      <span id="lastUpdate" style="font-family: var(--font-mono); font-size: 11px; color: var(--color-driftwood);"></span>
+      <span style="font-size: 12px; color: var(--color-bark); font-weight: 500;">admin@aliadohub.tech</span>
+    </div>
+  </header>
 
-  <!-- TABELA TENANTS -->
-  <div id="view-tenants" class="mt-4 rounded-[16px] bg-[#0f0f19] border border-white/[0.06] overflow-hidden hidden">
-    <div class="p-4 border-b border-white/[0.06]"><h2 class="font-semibold text-sm">Tenants / Empresas</h2></div>
-    <div class="overflow-x-auto"><table class="w-full text-[11px]"><thead class="text-white/30 text-[10px] uppercase tracking-widest bg-white/[0.02]"><tr><th class="p-3 text-left">Empresa</th><th class="p-3">CNPJ</th><th class="p-3">Plano</th><th class="p-3">Uso mês</th><th class="p-3">Status</th><th class="p-3">MRR</th></tr></thead><tbody id="tbodyTenants" class="divide-y divide-white/[0.04]"></tbody></table></div>
-  </div>
+  <main class="admin-container">
+    <!-- 6 CARDS KPIS RUNWAY -->
+    <div class="admin-kpi-grid">
+      <div class="admin-kpi-card">
+        <div class="admin-kpi-label">MRR Stripe</div>
+        <div id="kpiMRR" class="admin-kpi-val">R$ --</div>
+        <div class="admin-kpi-sub" style="color: #1e6b37; font-weight: 500;">recorrência real</div>
+      </div>
 
-  <div class="mt-6 grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-4">
-    <div class="rounded-[16px] bg-[#0a0a12] border border-white/[0.06] p-5"><h3 class="text-[11px] font-semibold tracking-widest text-white/60">WEBHOOKS STRIPE AO VIVO</h3><div id="webhookList" class="mt-4 font-mono text-[11px] bg-black/40 rounded-lg p-4 space-y-1.5 leading-5 max-h-[220px] overflow-auto"><div class="text-white/20">Aguardando eventos...</div></div></div>
-    <div class="rounded-[16px] bg-[#0f0f19] border border-white/[0.06] p-5"><h3 class="text-[11px] font-semibold tracking-widest text-white/60">DUNNING - RECUPERAÇÃO</h3><div class="mt-4"><div class="flex justify-between text-[11px] text-white/50"><span>Recuperado Stripe</span><span class="text-emerald-300">R$ 840 este mês</span></div><div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px]"><span class="text-amber-300 font-semibold">⚠ Ação:</span> <span id="upsellText" class="text-white/60">Carregando...</span></div></div></div>
-  </div>
-</main>
+      <div class="admin-kpi-card">
+        <div class="admin-kpi-label">Vendas Mês</div>
+        <div id="kpiVendas" class="admin-kpi-val">R$ --</div>
+        <div id="kpiVendasQtd" class="admin-kpi-sub">-- assinaturas</div>
+      </div>
 
-<script>
-const ADMIN_KEY = new URLSearchParams(location.search).get('key') || localStorage.getItem('admin_key') || '';
-if(ADMIN_KEY) localStorage.setItem('admin_key', ADMIN_KEY);
+      <div class="admin-kpi-card" style="border-left: 3px solid var(--color-terracotta);">
+        <div class="admin-kpi-label" style="color: var(--color-terracotta);">Inadimplência</div>
+        <div id="kpiInad" class="admin-kpi-val" style="color: #a82315;">R$ --</div>
+        <div id="kpiInadQtd" class="admin-kpi-sub">-- faturas failed</div>
+      </div>
 
-let allData = { invoices: [], inadimplentes: [], tenants: [], webhooks: [] };
-let currentTab = 'vendas';
+      <div class="admin-kpi-card">
+        <div class="admin-kpi-label">Taxa Sucesso</div>
+        <div id="kpiTaxa" class="admin-kpi-val">--%</div>
+        <div style="margin-top: 8px; height: 5px; background: var(--color-linen-border); border-radius: 4px; overflow: hidden;">
+          <div id="kpiTaxaBar" style="height: 100%; width: 0%; background: #1e6b37; border-radius: 4px;"></div>
+        </div>
+      </div>
 
-function setTab(t){
-  currentTab = t;
-  document.getElementById('view-vendas').classList.toggle('hidden', t!=='vendas');
-  document.getElementById('view-inad').classList.toggle('hidden', t!=='inad');
-  document.getElementById('view-tenants').classList.toggle('hidden', t!=='tenants');
-  document.getElementById('tab-vendas').className = t==='vendas' ? 'px-4 py-2 rounded-full bg-violet-600 text-white font-semibold transition-all' : 'px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all';
-  document.getElementById('tab-inad').className = t==='inad' ? 'px-4 py-2 rounded-full bg-red-500 text-white font-semibold transition-all' : 'px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all';
-  document.getElementById('tab-tenants').className = t==='tenants' ? 'px-4 py-2 rounded-full bg-violet-600 text-white font-semibold transition-all' : 'px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white/60 transition-all';
-}
+      <div class="admin-kpi-card">
+        <div class="admin-kpi-label">Clientes Ativos</div>
+        <div id="kpiClientes" class="admin-kpi-val">--</div>
+        <div id="kpiClientesDetalhe" class="admin-kpi-sub">--</div>
+      </div>
 
-async function reload(){
-  const keyParam = ADMIN_KEY ? `?key=${ADMIN_KEY}` : '';
-  document.getElementById('lastUpdate').textContent = 'carregando...';
-  try{
-    const res = await fetch(`/api/admin/financeiro${keyParam}`, { headers: ADMIN_KEY ? {'x-admin-key': ADMIN_KEY} : {} });
-    const data = await res.json();
-    if(data.error){ document.getElementById('tbodyVendas').innerHTML = `<tr><td colspan=8 class="p-8 text-center text-red-300">${data.error}</td></tr>`; return; }
-    allData = data;
-    render();
-    document.getElementById('lastUpdate').textContent = 'atualizado ' + new Date().toLocaleTimeString();
-  }catch(e){
-    document.getElementById('tbodyVendas').innerHTML = `<tr><td colspan=8 class="p-8 text-center text-red-300">Erro: ${e.message}<br/><span class="text-white/30 text-[10px]">Verifique /api/admin/financeiro e ENV vars na Vercel</span></td></tr>`;
+      <div class="admin-kpi-card">
+        <div class="admin-kpi-label">Próx. Cobrança</div>
+        <div id="kpiProx" class="admin-kpi-val">R$ --</div>
+        <div class="admin-kpi-sub">Ciclo 7 dias</div>
+      </div>
+    </div>
+
+    <!-- TABS RUNWAY -->
+    <div class="admin-tabs-row">
+      <button onclick="setTab('vendas')" id="tab-vendas" class="admin-tab-btn active">Vendas &amp; Pagamentos</button>
+      <button onclick="setTab('inad')" id="tab-inad" class="admin-tab-btn tab-inad">
+        Inadimplentes <span id="badgeInad" style="margin-left: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(240, 98, 79, 0.15); color: #a82315; font-size: 10px;">0</span>
+      </button>
+      <button onclick="setTab('tenants')" id="tab-tenants" class="admin-tab-btn">Tenants / Empresas</button>
+      <button onclick="reload()" class="btn-aliado-secondary" style="margin-left: auto; padding: 5px 12px; font-size: 12px;">&circlearrowright; Atualizar agora</button>
+    </div>
+
+    <!-- TABELA VENDAS -->
+    <div id="view-vendas" class="admin-table-container">
+      <div class="admin-table-header">
+        <div style="font-size: 14px; font-weight: 600; color: var(--color-espresso);">Vendas &amp; Pagamentos &mdash; Stripe Live</div>
+        <input id="searchVendas" placeholder="Buscar CNPJ, empresa ou Stripe ID" class="admin-search-input"/>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="aliado-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Empresa</th>
+              <th>Plano</th>
+              <th>Valor</th>
+              <th>Stripe ID</th>
+              <th>Status</th>
+              <th>Fatura</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyVendas">
+            <tr><td colspan="8" style="padding: 32px; text-align: center; color: var(--color-driftwood);">Carregando Stripe...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABELA INADIMPLENTES -->
+    <div id="view-inad" class="admin-table-container" style="display: none; border-left: 4px solid var(--color-terracotta);">
+      <div class="admin-table-header" style="background: #fdf5f4;">
+        <div>
+          <div style="font-size: 14px; font-weight: 600; color: #a82315;">Inadimplentes &mdash; Dunning Stripe</div>
+          <div style="font-size: 12px; color: var(--color-bark); margin-top: 2px;">O Stripe tenta cobrar até 4x automaticamente. Envie link manual quando falhar.</div>
+        </div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="aliado-table">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Valor</th>
+              <th>Dias Atraso</th>
+              <th>Tentativas</th>
+              <th>Motivo</th>
+              <th>Link Pagamento</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyInad"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABELA TENANTS -->
+    <div id="view-tenants" class="admin-table-container" style="display: none;">
+      <div class="admin-table-header">
+        <div style="font-size: 14px; font-weight: 600; color: var(--color-espresso);">Tenants / Empresas Cadastradas</div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="aliado-table">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>CNPJ</th>
+              <th>Plano</th>
+              <th>Uso mês</th>
+              <th>Status</th>
+              <th>MRR</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyTenants"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- GRID INFERIOR: WEBHOOKS + RECUPERAÇÃO -->
+    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-top: 20px;">
+      <div class="aliado-card">
+        <div class="admin-kpi-label" style="margin-bottom: 12px;">Webhooks Stripe ao Vivo</div>
+        <div id="webhookList" style="font-family: var(--font-mono); font-size: 12px; background: #faf9f7; border: 1px solid var(--color-linen-border); border-radius: 8px; padding: 14px; max-height: 200px; overflow-y: auto;">
+          <div style="color: var(--color-driftwood);">Aguardando eventos...</div>
+        </div>
+      </div>
+
+      <div class="aliado-card">
+        <div class="admin-kpi-label" style="margin-bottom: 12px;">Dunning &mdash; Recuperação</div>
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--color-bark);">
+          <span>Recuperado Stripe</span>
+          <strong style="color: #1e6b37;">R$ 840 este mês</strong>
+        </div>
+        <div class="fiscal-callout warning" style="margin-top: 14px; padding: 12px 14px;">
+          <div>
+            <div style="font-size: 12px; font-weight: 600; color: var(--color-espresso);">Alerta de Upsell</div>
+            <div id="upsellText" style="font-size: 12px; color: var(--color-bark); margin-top: 2px;">Carregando...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+  const ADMIN_KEY = new URLSearchParams(location.search).get('key') || localStorage.getItem('admin_key') || '';
+  if(ADMIN_KEY) localStorage.setItem('admin_key', ADMIN_KEY);
+
+  let allData = { invoices: [], inadimplentes: [], tenants: [], webhooks: [] };
+  let currentTab = 'vendas';
+
+  function setTab(t){
+    currentTab = t;
+    document.getElementById('view-vendas').style.display = t==='vendas' ? 'block' : 'none';
+    document.getElementById('view-inad').style.display = t==='inad' ? 'block' : 'none';
+    document.getElementById('view-tenants').style.display = t==='tenants' ? 'block' : 'none';
+
+    document.getElementById('tab-vendas').className = t==='vendas' ? 'admin-tab-btn active' : 'admin-tab-btn';
+    document.getElementById('tab-inad').className = t==='inad' ? 'admin-tab-btn tab-inad active' : 'admin-tab-btn tab-inad';
+    document.getElementById('tab-tenants').className = t==='tenants' ? 'admin-tab-btn active' : 'admin-tab-btn';
   }
-}
 
-function render(){
-  const { invoices=[], inadimplentes=[], tenants=[], webhooks=[], kpis={} } = allData;
-  
-  // KPIs
-  document.getElementById('kpiMRR').textContent = 'R$ ' + (kpis.mrr||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
-  document.getElementById('kpiInad').textContent = 'R$ ' + (kpis.totalInadimplencia||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
-  document.getElementById('kpiInadQtd').textContent = (kpis.inadimplentes||0) + ' faturas failed';
-  document.getElementById('badgeInad').textContent = (kpis.inadimplentes||0);
-  document.getElementById('kpiClientes').textContent = kpis.totalClientes||0;
-  document.getElementById('kpiVendas').textContent = 'R$ ' + (invoices.filter(i=>i.status==='paid').reduce((a,i)=>a+Number(i.valor||0),0)).toLocaleString('pt-BR');
-  document.getElementById('kpiVendasQtd').textContent = invoices.length + ' faturas no mês';
-  
-  const paid = invoices.filter(i=>i.status==='paid').length;
-  const total = invoices.length || 1;
-  const taxa = Math.round(paid/total*100);
-  document.getElementById('kpiTaxa').textContent = taxa + '%';
-  document.getElementById('kpiTaxaBar').style.width = taxa + '%';
-  
-  const ativos = tenants.filter(t=> (t.status||t.subscription_status)==='ativo').length;
-  const inads = tenants.filter(t=> (t.status||t.subscription_status)==='inadimplente').length;
-  document.getElementById('kpiClientesDetalhe').textContent = ativos + ' ativos • ' + inads + ' inadimplentes';
-  document.getElementById('kpiProx').textContent = 'R$ ' + (kpis.mrr||0).toLocaleString('pt-BR');
-  
-  const upsellCount = tenants.filter(t=> {
-    const quota = t.limite_guias_mes || t.monthly_quota || 500;
-    const used = t.guias_usadas_mes || t.used_this_month || 0;
-    return (used / quota) > 0.8;
-  }).length;
-  document.getElementById('upsellText').textContent = `${upsellCount} clientes acima de 80% do limite. Enviar upsell?`;
+  async function reload(){
+    const keyParam = ADMIN_KEY ? `?key=${ADMIN_KEY}` : '';
+    document.getElementById('lastUpdate').textContent = 'carregando...';
+    try{
+      const res = await fetch(`/api/admin/financeiro${keyParam}`, { headers: ADMIN_KEY ? {'x-admin-key': ADMIN_KEY} : {} });
+      const data = await res.json();
+      if(data.error){
+        document.getElementById('tbodyVendas').innerHTML = `
+          <tr>
+            <td colspan=8 style="padding: 32px; text-align: center;">
+              <div style="max-width: 440px; margin: 0 auto; padding: 24px; background: #fffcf5; border: 1px solid var(--color-linen-border); border-radius: 8px;">
+                <div style="font-weight: 600; color: var(--color-espresso); font-size: 14px;">Acesso Administrativo Não Autorizado</div>
+                <p style="font-size: 13px; color: var(--color-bark); margin: 8px 0 16px 0;">Sua sessão expirou ou a chave administrativa não foi fornecida nesta requisição.</p>
+                <form onsubmit="event.preventDefault(); const k=document.getElementById('inputKeyAdmin').value; if(k){ localStorage.setItem('admin_key', k); location.search='?key='+encodeURIComponent(k); }">
+                  <input id="inputKeyAdmin" type="password" placeholder="Digite a chave admin" style="width: 100%; box-sizing: border-box; padding: 8px 12px; border-radius: 8px; background: #fff; border: 1px solid var(--color-linen-border); color: var(--color-espresso); margin-bottom: 10px; font-size: 13px;" />
+                  <button type="submit" class="btn-aliado-primary" style="width: 100%;">Autenticar no Painel</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        `;
+        document.getElementById('lastUpdate').textContent = 'não autenticado';
+        return;
+      }
+      allData = data;
+      render();
+      document.getElementById('lastUpdate').textContent = 'atualizado ' + new Date().toLocaleTimeString();
+    }catch(e){
+      document.getElementById('tbodyVendas').innerHTML = `<tr><td colspan=8 style="padding: 32px; text-align: center; color: var(--color-terracotta);">Erro: ${e.message}</td></tr>`;
+    }
+  }
 
-  // Tabela vendas
-  const search = (document.getElementById('searchVendas').value||'').toLowerCase();
-  const filtered = invoices.filter(i=> !search || (i.empresa_razao||i.razao_social||'').toLowerCase().includes(search) || (i.cnpj||'').includes(search) || (i.stripe_invoice_id||'').toLowerCase().includes(search));
-  
-  document.getElementById('tbodyVendas').innerHTML = filtered.map(inv=>{
-    const isPaid = inv.status==='paid';
-    const isFailed = ['failed','uncollectible','past_due','open'].includes(inv.status);
-    const statusClass = isPaid ? 'bg-emerald-400/15 text-emerald-300' : isFailed ? 'bg-red-400/15 text-red-300' : 'bg-amber-400/15 text-amber-300';
-    const statusLabel = isPaid ? '● SUCCEEDED' : isFailed ? '● FAILED' : '● PENDING';
-    return `<tr class="hover:bg-white/[0.02]">
-      <td class="p-3 mono text-white/40">${inv.created_at ? new Date(inv.created_at).toLocaleDateString('pt-BR') : '--'}</td>
-      <td class="p-3"><div class="font-semibold">${inv.empresa_razao||inv.razao_social||'--'}</div><div class="text-[10px] text-white/30 mono">${inv.cnpj||''}</div></td>
-      <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] uppercase">${inv.plano||'--'}</span></td>
-      <td class="p-3 font-semibold">R$ ${Number(inv.valor||0).toFixed(2)}</td>
-      <td class="p-3 mono text-[10px] text-white/40">${(inv.stripe_invoice_id||'').slice(0,18)}...</td>
-      <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] ${statusClass}">${statusLabel}</span></td>
-      <td class="p-3"><a href="${inv.pdf_url||'#'}" target="_blank" class="text-violet-300 hover:underline text-[10px]">PDF</a> ${inv.link_pagamento ? `• <a href="${inv.link_pagamento}" target="_blank" class="text-emerald-300 hover:underline text-[10px]">Link</a>` : ''}</td>
-      <td class="p-3"><button onclick="navigator.clipboard.writeText('${inv.stripe_invoice_id}')" class="px-2 py-1 rounded bg-white/[0.06] text-[10px] hover:bg-white/10">Copiar ID</button> ${inv.link_pagamento && isFailed ? `<a href="${inv.link_pagamento}" target="_blank" class="ml-1 px-2 py-1 rounded bg-red-500/20 text-red-300 text-[10px]">Cobrar</a>` : ''}</td>
-    </tr>`;
-  }).join('') || `<tr><td colspan=8 class="p-8 text-center text-white/20">Nenhuma fatura ainda - faça uma venda teste no Stripe</td></tr>`;
+  function render(){
+    const { invoices=[], inadimplentes=[], tenants=[], webhooks=[], kpis={} } = allData;
+    
+    // KPIs
+    document.getElementById('kpiMRR').textContent = 'R$ ' + (kpis.mrr||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
+    document.getElementById('kpiInad').textContent = 'R$ ' + (kpis.totalInadimplencia||0).toLocaleString('pt-BR', {minimumFractionDigits:2});
+    document.getElementById('kpiInadQtd').textContent = (kpis.inadimplentes||0) + ' faturas failed';
+    document.getElementById('badgeInad').textContent = (kpis.inadimplentes||0);
+    document.getElementById('kpiClientes').textContent = kpis.totalClientes||0;
+    document.getElementById('kpiVendas').textContent = 'R$ ' + (invoices.filter(i=>i.status==='paid').reduce((a,i)=>a+Number(i.valor||0),0)).toLocaleString('pt-BR');
+    document.getElementById('kpiVendasQtd').textContent = invoices.length + ' faturas no mês';
+    
+    const paid = invoices.filter(i=>i.status==='paid').length;
+    const total = invoices.length || 1;
+    const taxa = Math.round(paid/total*100);
+    document.getElementById('kpiTaxa').textContent = taxa + '%';
+    document.getElementById('kpiTaxaBar').style.width = taxa + '%';
+    
+    const ativos = tenants.filter(t=> (t.status||t.subscription_status)==='ativo').length;
+    const inads = tenants.filter(t=> (t.status||t.subscription_status)==='inadimplente').length;
+    document.getElementById('kpiClientesDetalhe').textContent = ativos + ' ativos • ' + inads + ' inadimplentes';
+    document.getElementById('kpiProx').textContent = 'R$ ' + (kpis.mrr||0).toLocaleString('pt-BR');
+    
+    const upsellCount = tenants.filter(t=> {
+      const quota = t.limite_guias_mes || t.monthly_quota || 500;
+      const used = t.guias_usadas_mes || t.used_this_month || 0;
+      return (used / quota) > 0.8;
+    }).length;
+    document.getElementById('upsellText').textContent = `${upsellCount} clientes acima de 80% do limite. Enviar upsell?`;
 
-  // Tabela inadimplentes
-  document.getElementById('tbodyInad').innerHTML = inadimplentes.map(inv=>{
-    const dias = Math.round(inv.dias_atraso||0);
-    return `<tr class="hover:bg-red-500/5">
-      <td class="p-3"><div class="font-semibold">${inv.razao_social||inv.empresa_razao||'--'}</div><div class="text-[10px] text-white/30">${inv.email_admin||''}</div></td>
-      <td class="p-3 font-bold text-red-300">R$ ${Number(inv.valor||0).toFixed(2)}</td>
-      <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-200 text-[10px]">${dias} dias</span></td>
-      <td class="p-3 mono">${inv.tentativas_cobranca||0}/${inv.max_tentativas||4}</td>
-      <td class="p-3 text-[10px] text-white/50">${inv.motivo_falha||'card_declined'}</td>
-      <td class="p-3">${inv.link_pagamento ? `<a href="${inv.link_pagamento}" target="_blank" class="text-emerald-300 underline text-[10px]">Abrir link Stripe</a>` : '<span class="text-white/20">--</span>'}</td>
-      <td class="p-3"><a href="${inv.link_pagamento||'#'}" target="_blank" class="px-2 py-1 rounded-full bg-red-500 text-white text-[10px] font-bold hover:opacity-90">Enviar cobrança</a></td>
-    </tr>`;
-  }).join('') || `<tr><td colspan=7 class="p-8 text-center text-white/30">🎉 Nenhum inadimplente! Todos pagos.</td></tr>`;
+    // Tabela vendas
+    const search = (document.getElementById('searchVendas').value||'').toLowerCase();
+    const filtered = invoices.filter(i=> !search || (i.empresa_razao||i.razao_social||'').toLowerCase().includes(search) || (i.cnpj||'').includes(search) || (i.stripe_invoice_id||'').toLowerCase().includes(search));
+    
+    document.getElementById('tbodyVendas').innerHTML = filtered.map(inv=>{
+      const isPaid = inv.status==='paid';
+      const isFailed = ['failed','uncollectible','past_due','open'].includes(inv.status);
+      const badgeClass = isPaid ? 'concluido' : isFailed ? 'danger' : 'validado';
+      const statusLabel = isPaid ? '● PAGO' : isFailed ? '● FALHOU' : '● PENDENTE';
+      return `<tr>
+        <td style="font-family: var(--font-mono); color: var(--color-driftwood);">${inv.created_at ? new Date(inv.created_at).toLocaleDateString('pt-BR') : '--'}</td>
+        <td><strong style="color: var(--color-espresso);">${inv.empresa_razao||inv.razao_social||'--'}</strong><div style="font-size: 11px; color: var(--color-driftwood); font-family: var(--font-mono);">${inv.cnpj||''}</div></td>
+        <td><span class="badge-tonal neutral">${inv.plano||'--'}</span></td>
+        <td><strong>R$ ${Number(inv.valor||0).toFixed(2)}</strong></td>
+        <td style="font-family: var(--font-mono); font-size: 11px; color: var(--color-driftwood);">${(inv.stripe_invoice_id||'').slice(0,18)}...</td>
+        <td><span class="badge-tonal ${badgeClass}">${statusLabel}</span></td>
+        <td><a href="${inv.pdf_url||'#'}" target="_blank" style="text-decoration: underline; color: var(--color-espresso);">PDF</a> ${inv.link_pagamento ? `&bull; <a href="${inv.link_pagamento}" target="_blank" style="text-decoration: underline; color: #1e6b37;">Link</a>` : ''}</td>
+        <td><button onclick="navigator.clipboard.writeText('${inv.stripe_invoice_id}')" class="btn-aliado-secondary" style="padding: 3px 8px; font-size: 11px;">Copiar</button></td>
+      </tr>`;
+    }).join('') || `<tr><td colspan=8 style="padding: 32px; text-align: center; color: var(--color-driftwood);">Nenhuma fatura encontrada.</td></tr>`;
 
-  // Tenants
-  document.getElementById('tbodyTenants').innerHTML = tenants.map(t=>{
-    const limite = t.limite_guias_mes || t.monthly_quota || 500;
-    const usadas = t.guias_usadas_mes || t.used_this_month || 0;
-    const uso = limite ? Math.round(usadas/limite*100) : 0;
-    const barColor = uso>85 ? 'bg-red-400' : uso>60 ? 'bg-amber-400' : 'bg-emerald-400';
-    const planoNome = t.plano || t.plan || 'pro';
-    const planoValor = t.plano_valor || (planoNome === 'starter' ? 199 : planoNome === 'pro' ? 399 : planoNome === 'advanced' ? 699 : 0);
-    const status = t.status || t.subscription_status || 'ativo';
-    return `<tr class="hover:bg-white/[0.02]">
-      <td class="p-3"><div class="font-semibold">${t.razao_social}</div><div class="text-[10px] text-white/30">${t.email_admin||t.email||''}</div></td>
-      <td class="p-3 mono">${t.cnpj}</td>
-      <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-white/10 text-[10px] uppercase">${planoNome} R$${planoValor}</span></td>
-      <td class="p-3"><div class="w-[90px] h-1.5 bg-white/10 rounded-full"><div class="h-full ${barColor} rounded-full" style="width:${Math.min(uso,100)}%"></div></div><div class="text-[10px] mt-1">${usadas}/${limite} (${uso}%)</div></td>
-      <td class="p-3"><span class="text-[11px] ${status==='ativo' ? 'text-emerald-400' : status==='inadimplente' ? 'text-red-400' : 'text-white/50'}">● ${status}</span></td>
-      <td class="p-3 font-semibold">R$ ${planoValor}</td>
-    </tr>`;
-  }).join('');
+    // Tabela inadimplentes
+    document.getElementById('tbodyInad').innerHTML = inadimplentes.map(inv=>{
+      const dias = Math.round(inv.dias_atraso||0);
+      return `<tr>
+        <td><strong>${inv.razao_social||inv.empresa_razao||'--'}</strong><div style="font-size: 11px; color: var(--color-driftwood);">${inv.email_admin||''}</div></td>
+        <td style="color: #a82315; font-weight: 600;">R$ ${Number(inv.valor||0).toFixed(2)}</td>
+        <td><span class="badge-tonal danger">${dias} dias</span></td>
+        <td style="font-family: var(--font-mono);">${inv.tentativas_cobranca||0}/${inv.max_tentativas||4}</td>
+        <td style="font-size: 12px;">${inv.motivo_falha||'card_declined'}</td>
+        <td>${inv.link_pagamento ? `<a href="${inv.link_pagamento}" target="_blank" style="text-decoration: underline; color: #1e6b37;">Abrir link Stripe</a>` : '&mdash;'}</td>
+        <td><a href="${inv.link_pagamento||'#'}" target="_blank" class="btn-aliado-primary" style="padding: 4px 10px; font-size: 11px;">Enviar cobrança</a></td>
+      </tr>`;
+    }).join('') || `<tr><td colspan=7 style="padding: 32px; text-align: center; color: var(--color-driftwood);">Nenhum inadimplente! Todos os clientes em dia.</td></tr>`;
 
-  // Webhooks
-  if(webhooks && webhooks.length > 0){
-    document.getElementById('webhookList').innerHTML = webhooks.map(w => {
-      const hora = new Date(w.created_at).toLocaleTimeString('pt-BR');
-      const cor = w.erro ? 'text-red-400' : 'text-emerald-400';
-      return `<div><span class="text-white/40">${hora}</span> <span class="${cor}">● ${w.tipo}</span> <span class="text-white/30 text-[9px]">${w.stripe_event_id}</span></div>`;
+    // Tenants
+    document.getElementById('tbodyTenants').innerHTML = tenants.map(t=>{
+      const limite = t.limite_guias_mes || t.monthly_quota || 500;
+      const usadas = t.guias_usadas_mes || t.used_this_month || 0;
+      const uso = limite ? Math.round(usadas/limite*100) : 0;
+      const barColor = uso>85 ? 'var(--color-terracotta)' : uso>60 ? 'var(--color-amber-signal)' : '#1e6b37';
+      const planoNome = t.plano || t.plan || 'pro';
+      const planoValor = t.plano_valor || (planoNome === 'starter' ? 199 : planoNome === 'pro' ? 399 : planoNome === 'advanced' ? 699 : 0);
+      const status = t.status || t.subscription_status || 'ativo';
+      return `<tr>
+        <td><strong>${t.razao_social}</strong><div style="font-size: 11px; color: var(--color-driftwood);">${t.email_admin||t.email||''}</div></td>
+        <td style="font-family: var(--font-mono);">${t.cnpj}</td>
+        <td><span class="badge-tonal neutral">${planoNome.toUpperCase()} R$${planoValor}</span></td>
+        <td>
+          <div style="width: 100px; height: 5px; background: var(--color-linen-border); border-radius: 4px; overflow: hidden;">
+            <div style="height: 100%; width: ${Math.min(uso,100)}%; background: ${barColor}; border-radius: 4px;"></div>
+          </div>
+          <div style="font-size: 11px; color: var(--color-driftwood); margin-top: 3px;">${usadas}/${limite} (${uso}%)</div>
+        </td>
+        <td><span class="badge-tonal ${status==='ativo' ? 'concluido' : 'danger'}">● ${status}</span></td>
+        <td><strong>R$ ${planoValor}</strong></td>
+      </tr>`;
     }).join('');
-  }
-}
 
-document.getElementById('searchVendas').addEventListener('input', render);
-reload();
-setInterval(reload, 30000);
-</script>
+    // Webhooks
+    if(webhooks && webhooks.length > 0){
+      document.getElementById('webhookList').innerHTML = webhooks.map(w => {
+        const hora = new Date(w.created_at).toLocaleTimeString('pt-BR');
+        const cor = w.erro ? 'var(--color-terracotta)' : '#1e6b37';
+        return `<div style="padding: 4px 0; border-bottom: 1px solid var(--color-linen-border);"><span style="color: var(--color-driftwood);">${hora}</span> <span style="color: ${cor}; font-weight: 600;">● ${w.tipo}</span> <span style="font-size: 10px; color: var(--color-driftwood);">${w.stripe_event_id}</span></div>`;
+      }).join('');
+    }
+  }
+
+  document.getElementById('searchVendas').addEventListener('input', render);
+  reload();
+  setInterval(reload, 30000);
+  </script>
 </body>
 </html>

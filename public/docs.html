@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentação Oficial — Grupo Aliados Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    body {
+      background-color: var(--color-cream-canvas, #fbfaf8);
+      color: var(--color-bark, #44403c);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .docs-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--sheet-border, #e2e8f0);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .docs-header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .docs-layout {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px 24px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      flex: 1;
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .docs-layout { grid-template-columns: 1fr; gap: 24px; }
+      .docs-sidebar { display: none; }
+    }
+
+    .docs-sidebar {
+      position: sticky;
+      top: 96px;
+      height: fit-content;
+      background: #ffffff;
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      border-radius: var(--radius-lg, 12px);
+      padding: 24px;
+    }
+
+    .docs-sidebar-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dark-muted, #64748b);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+
+    .docs-nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .docs-nav-link {
+      display: block;
+      font-size: 13.5px;
+      color: var(--text-dark-main, #334155);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm, 6px);
+      transition: all 0.15s ease;
+    }
+
+    .docs-nav-link:hover {
+      background: var(--sheet-bg-alt, #f8fafc);
+      color: var(--aliado-blue, #0052cc);
+    }
+
+    .docs-content {
+      background: #ffffff;
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      border-radius: var(--radius-lg, 12px);
+      padding: 48px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    @media (max-width: 600px) {
+      .docs-content { padding: 24px 20px; }
+    }
+
+    .docs-content h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-dark-title, #0f172a);
+      margin: 0 0 12px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .docs-content h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-dark-title, #0f172a);
+      margin: 40px 0 16px 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--sheet-border, #e2e8f0);
+    }
+
+    .docs-content h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-dark-title, #0f172a);
+      margin: 24px 0 10px 0;
+    }
+
+    .docs-content p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text-dark-body, #334155);
+      margin: 0 0 16px 0;
+    }
+
+    .docs-content ul, .docs-content ol {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-dark-body, #334155);
+      margin: 0 0 20px 24px;
+    }
+
+    .docs-callout {
+      background: var(--sheet-bg-alt, #f8fafc);
+      border-left: 4px solid var(--aliado-blue, #0052cc);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0;
+      margin: 20px 0;
+    }
+
+    .docs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 13.5px;
+    }
+
+    .docs-table th, .docs-table td {
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    .docs-table th {
+      background: var(--sheet-bg-alt, #f8fafc);
+      font-weight: 700;
+      color: var(--text-dark-title, #0f172a);
+    }
+
+    code {
+      font-family: var(--font-mono, monospace);
+      font-size: 13px;
+      background: rgba(0, 82, 204, 0.08);
+      color: var(--aliado-blue, #0052cc);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="docs-header">
+    <div class="docs-header-inner">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div class="aliado-logo-box" style="width: 38px; height: 38px; font-size: 13px;">A//T</div>
+        <div class="aliado-brand-info">
+          <span class="aliado-brand-title" style="font-size: 14px;">Aliado Hub Tech</span>
+          <span class="aliado-brand-subtitle" style="font-size: 10px;">CENTRAL DE DOCUMENTAÇÃO & AJUDA</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="/app" class="btn-aliado-secondary" style="font-size: 12.5px; padding: 6px 14px;">Acessar Painel ↗</a>
+        <a href="/health" class="btn-aliado-primary" style="font-size: 12.5px; padding: 6px 14px;">Status do Sistema</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <!-- NAVEGAÇÃO LATERAL -->
+    <aside class="docs-sidebar">
+      <div class="docs-sidebar-title">Guia de Operação</div>
+      <ul class="docs-nav-list">
+        <li><a href="#intro" class="docs-nav-link">1. Visão Geral</a></li>
+        <li><a href="#cadastro" class="docs-nav-link">2. Primeiro Acesso & LGPD</a></li>
+        <li><a href="#certificado" class="docs-nav-link">3. Certificado Digital A1</a></li>
+        <li><a href="#banco" class="docs-nav-link">4. Conta Itaú SISPAG</a></li>
+        <li><a href="#emissao" class="docs-nav-link">5. Emissão em Lote</a></li>
+        <li><a href="#remessa" class="docs-nav-link">6. Pagamento no Itaú</a></li>
+        <li><a href="#codigos" class="docs-nav-link">7. Códigos de Receita</a></li>
+        <li><a href="#faturamento" class="docs-nav-link">8. Faturamento & Planos</a></li>
+        <li><a href="#faq" class="docs-nav-link">9. Perguntas Frequentes</a></li>
+      </ul>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="docs-content">
+      <section id="intro">
+        <div style="font-size: 12px; font-weight: 700; color: var(--aliado-blue); text-transform: uppercase; margin-bottom: 6px;">MANUAL DO CLIENTE • VERSÃO 2.1.0</div>
+        <h1>Guia Completo de Operação da Plataforma</h1>
+        <p>
+          Bem-vindo à documentação oficial do <strong>Apex GNRE SaaS</strong>. Este guia instrui sua equipe fiscal e financeira sobre como importar notas fiscais, autorizar guias de tributos interestaduais e gerar arquivos de remessa bancária de ponta a ponta.
+        </p>
+
+        <div class="docs-callout">
+          <strong>Objetivo da Plataforma:</strong> Eliminar o trabalho manual de preenchimento individual de guias GNRE e a digitação de códigos de barras no Internet Banking, garantindo agilidade no despacho de mercadorias interestaduais.
+        </div>
+      </section>
+
+      <section id="cadastro">
+        <h2>2. Primeiro Acesso & Conformidade LGPD</h2>
+        <p>
+          O cadastro da sua empresa pode ser feito diretamente pela tela de registro corporativo.
+        </p>
+        <ol>
+          <li>Acesse <a href="/register.html" style="color: var(--aliado-blue); font-weight: 600;">Criar Conta</a>.</li>
+          <li>Preencha a Razão Social, CNPJ (14 dígitos), Nome e E-mail Corporativo.</li>
+          <li>Assinale obrigatoriamente os termos da LGPD (Termos de Uso e Política de Privacidade). A plataforma registra seu consentimento com timestamp e IP em conformidade com a legislação brasileira.</li>
+          <li>Após o cadastro, você receberá um e-mail transacional de boas-vindas com confirmação dos seus dados.</li>
+        </ol>
+      </section>
+
+      <section id="certificado">
+        <h2>3. Certificado Digital A1 (.pfx / .p12)</h2>
+        <p>
+          O Certificado Digital da sua empresa é utilizado exclusivamente para assinar os lotes fiscais e estabelecer a comunicação segura <code>mTLS</code> perante as Secretarias de Fazenda estaduais.
+        </p>
+        <ul>
+          <li><strong>Formato Aceito:</strong> Arquivos modelo A1 com extensão <code>.pfx</code> ou <code>.p12</code>.</li>
+          <li><strong>Criptografia em Repouso:</strong> A senha do seu certificado é gravada com cifra simétrica <code>AES-256</code> em repouso.</li>
+          <li><strong>Como Enviar:</strong> Acesse a aba <strong>Empresa ➔ Certificado Digital</strong>, selecione o arquivo do computador, digite a senha e clique em <em>Fazer Upload e Salvar</em>.</li>
+        </ul>
+      </section>
+
+      <section id="banco">
+        <h2>4. Parametrização da Conta Itaú SISPAG</h2>
+        <p>
+          Para que o sistema monte automaticamente o arquivo de remessa <code>CNAB 240</code> que será debitado na sua conta corporativa:
+        </p>
+        <ul>
+          <li><strong>Agência:</strong> 4 dígitos numéricos (ex: <code>0334</code>).</li>
+          <li><strong>Conta Corrente:</strong> Até 5 dígitos numéricos (ex: <code>98775</code>).</li>
+          <li><strong>Dígito (DAC):</strong> 1 dígito numérico (ex: <code>7</code>).</li>
+          <li><strong>Ambiente:</strong> Mantenha em <em>Homologação (Testes)</em> durante a implantação e alterne para <em>Produção Real</em> quando for efetuar recolhimentos fiscais com valor financeiro aos cofres públicos.</li>
+        </ul>
+      </section>
+
+      <section id="emissao">
+        <h2>5. Emissão de Guias GNRE em Lote</h2>
+        <p>
+          O fluxo de processamento foi desenhado para agilidade:
+        </p>
+        <ol>
+          <li><strong>Importação:</strong> Arraste ou selecione os arquivos XML das Notas Fiscais Eletrônicas (modelo 55). O sistema aceita envios individuais ou pacotes compactados em <code>.zip</code>.</li>
+          <li><strong>Revisão de Regras Fiscais:</strong> O motor tributário detecta automaticamente as alíquotas de DIFAL e FCP por estado de destino, separando eventuais divergências cadastrais.</li>
+          <li><strong>Transmissão:</strong> Com um clique, os lotes são transmitidos para o Portal Nacional da GNRE ou webservices dedicados estaduais.</li>
+          <li><strong>Download:</strong> Baixe o arquivo <code>remessa.txt</code> e o pacote <code>.zip</code> contendo todas as guias em PDF autorizadas.</li>
+        </ol>
+      </section>
+
+      <section id="remessa">
+        <h2>6. Pagamento no Itaú via Remessa CNAB 240</h2>
+        <p>
+          Com o arquivo <code>remessa.txt</code> em mãos:
+        </p>
+        <ol>
+          <li>Acesse o <strong>Internet Banking Corporativo do Itaú</strong>.</li>
+          <li>Navegue até: <code>Transmissão de Arquivos ➔ Enviar Arquivo ➔ SISPAG Pagamentos</code>.</li>
+          <li>Selecione o arquivo baixado e confirme a transmissão.</li>
+          <li>Todas as guias do lote serão agendadas e liquidadas de forma automática na data correta.</li>
+        </ol>
+      </section>
+
+      <section id="codigos">
+        <h2>7. Tabela de Códigos de Receita</h2>
+        <table class="docs-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome da Receita</th>
+              <th>Aplicação Típica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>10010-2</strong></td>
+              <td>ICMS Consumidor Final Não Contribuinte</td>
+              <td>DIFAL interestadual conforme Emenda Constitucional 87/2015.</td>
+            </tr>
+            <tr>
+              <td><strong>10008-0</strong></td>
+              <td>ICMS Fundo Estadual de Combate à Pobreza</td>
+              <td>Adicional de 1% a 2% incidente em mercadorias estipuladas por lei estadual.</td>
+            </tr>
+            <tr>
+              <td><strong>10003-0</strong></td>
+              <td>ICMS Substituição Tributária por Apuração</td>
+              <td>Contribuintes com inscrição estadual de substituto tributário.</td>
+            </tr>
+            <tr>
+              <td><strong>10004-8</strong></td>
+              <td>ICMS Substituição Tributária por Operação</td>
+              <td>Recolhimento pontual de ICMS-ST para estados sem inscrição prévia.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="faturamento">
+        <h2>8. Gestão da Assinatura & Faturamento Stripe</h2>
+        <p>
+          A gestão de cobrança do Apex SaaS é realizada pelo <strong>Stripe Billing</strong>:
+        </p>
+        <ul>
+          <li><strong>Troca de Plano:</strong> Pode ser solicitada a qualquer momento na tela de <a href="/plans.html" style="color: var(--aliado-blue); font-weight: 600;">Planos</a>.</li>
+          <li><strong>Portal do Cliente Stripe:</strong> Acesse a tela de <strong>Empresa</strong> e clique no botão <em>"Gerenciar Assinatura / Cancelar (Portal Stripe)"</em> para obter segunda via de recibos em PDF, alterar cartão ou encerrar o plano sem burocracia.</li>
+        </ul>
+      </section>
+
+      <section id="faq">
+        <h2>9. Perguntas Frequentes</h2>
+        <p><strong>P: O sistema emite guias para São Paulo e Rio de Janeiro?</strong><br>
+        R: Sim. A plataforma suporta todas as 27 UFs do Brasil, inclusive estados com portais próprios (SP e RJ).</p>
+
+        <p><strong>P: Como saber se o sistema está online?</strong><br>
+        R: Você pode consultar a <a href="/health" style="color: var(--aliado-blue); font-weight: 600;">Central de Status ao Vivo</a> em tempo real.</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/aliado-icons.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AliadoIcons.renderAll();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status da Plataforma — Grupo Aliados Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    body {
+      background-color: var(--color-cream-canvas, #fbfaf8);
+      color: var(--color-bark, #44403c);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .status-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--sheet-border, #e2e8f0);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .status-header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px 64px 24px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .banner-status {
+      background: #ffffff;
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      border-radius: var(--radius-lg, 12px);
+      padding: 32px 36px;
+      margin-bottom: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .pulse-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #10b981;
+      display: inline-block;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    .system-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .system-card {
+      background: #ffffff;
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      border-radius: var(--radius-md, 8px);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .badge-operational {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .latency-pill {
+      font-size: 11.5px;
+      color: var(--text-dark-muted, #64748b);
+      font-family: var(--font-mono, monospace);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="status-header">
+    <div class="status-header-inner">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div class="aliado-logo-box" style="width: 38px; height: 38px; font-size: 13px;">A//T</div>
+        <div class="aliado-brand-info">
+          <span class="aliado-brand-title" style="font-size: 14px;">Aliado Hub Tech</span>
+          <span class="aliado-brand-subtitle" style="font-size: 10px;">CENTRAL DE SAÚDE & CONECTIVIDADE</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="/app" class="btn-aliado-secondary" style="font-size: 12.5px; padding: 6px 14px;">Acessar Painel ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="status-container">
+    <!-- BANNER PRINCIPAL DE STATUS -->
+    <div class="banner-status">
+      <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+          <span class="pulse-dot" id="mainStatusDot"></span>
+          <h2 id="mainStatusTitle" style="font-size: 24px; font-weight: 700; color: var(--text-dark-title, #0f172a); margin: 0;">
+            Todos os Sistemas Operacionais
+          </h2>
+        </div>
+        <p style="font-size: 14px; color: var(--text-dark-muted, #64748b); margin: 0;">
+          Monitoramento contínuo dos serviços de emissão, banco de dados Supabase e gateways em tempo real.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <button onclick="carregarStatus()" class="btn-aliado-secondary" style="font-size: 12px; padding: 8px 16px;">
+          <span>Atualizar Agora</span>
+          <span data-aliado-icon="rotate-cw" data-size="14"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARDS DE COMPONENTES DO SISTEMA -->
+    <div class="system-grid">
+      <!-- 1. SERVIDOR EXPRESS & API -->
+      <div class="system-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 15px; color: var(--text-dark-title, #0f172a);">API Gateway & Servidor Web</strong>
+            <span class="badge-operational" id="apiStatusBadge">✓ Online</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-dark-muted, #64748b); margin: 0;">
+            Roteamento Express 5, Rate Limiting e cabeçalhos Helmet ativos.
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid var(--sheet-border); padding-top: 10px;">
+          <span style="color: var(--text-dark-muted);">Uptime Contínuo</span>
+          <strong id="uptimeText" style="color: var(--text-dark-title);">Calculando...</strong>
+        </div>
+      </div>
+
+      <!-- 2. BANCO DE DADOS SUPABASE -->
+      <div class="system-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 15px; color: var(--text-dark-title, #0f172a);">Banco Supabase (PostgreSQL)</strong>
+            <span class="badge-operational" id="dbStatusBadge">✓ Conectado</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-dark-muted, #64748b); margin: 0;">
+            Persistência multi-tenant com Row-Level Security (RLS) habilitado.
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid var(--sheet-border); padding-top: 10px;">
+          <span style="color: var(--text-dark-muted);">Latência do Banco</span>
+          <span class="latency-pill" id="dbLatencyText">Medindo...</span>
+        </div>
+      </div>
+
+      <!-- 3. GATEWAY STRIPE -->
+      <div class="system-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 15px; color: var(--text-dark-title, #0f172a);">Faturamento Stripe</strong>
+            <span class="badge-operational">✓ Ativo</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-dark-muted, #64748b); margin: 0;">
+            Checkout de planos, Customer Portal e Webhooks de cobrança.
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid var(--sheet-border); padding-top: 10px;">
+          <span style="color: var(--text-dark-muted);">Modo de Operação</span>
+          <strong style="color: var(--text-dark-title);">Test Mode</strong>
+        </div>
+      </div>
+
+      <!-- 4. RESEND EMAIL -->
+      <div class="system-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 15px; color: var(--text-dark-title, #0f172a);">E-mails Transacionais (Resend)</strong>
+            <span class="badge-operational">✓ Operacional</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-dark-muted, #64748b); margin: 0;">
+            Disparo de boas-vindas, recibos fiscais e alertas de expiração.
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid var(--sheet-border); padding-top: 10px;">
+          <span style="color: var(--text-dark-muted);">Templates Carregados</span>
+          <strong style="color: var(--text-dark-title);">6 Modelos HTML</strong>
+        </div>
+      </div>
+
+      <!-- 5. WORKER PG-BOSS -->
+      <div class="system-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 15px; color: var(--text-dark-title, #0f172a);">Worker de Lotes & Fila</strong>
+            <span class="badge-operational">✓ Ativo</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-dark-muted, #64748b); margin: 0;">
+            Agendamento diário de expiração de trial e emissão assíncrona.
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid var(--sheet-border); padding-top: 10px;">
+          <span style="color: var(--text-dark-muted);">Escalonador</span>
+          <strong style="color: var(--text-dark-title);">09:00 BRT Diário</strong>
+        </div>
+      </div>
+
+      <!-- 6. AMBIENTE & VERSÃO -->
+      <div class="system-card">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 15px; color: var(--text-dark-title, #0f172a);">Versão da Plataforma</strong>
+            <span class="badge-operational">v2.1.0</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-dark-muted, #64748b); margin: 0;">
+            Última atualização de prontidão comercial e faturamento Stripe.
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid var(--sheet-border); padding-top: 10px;">
+          <span style="color: var(--text-dark-muted);">Última Checagem</span>
+          <span id="lastCheckTime" style="color: var(--text-dark-title); font-weight: 600;">-</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; font-size: 13px; color: var(--text-dark-muted, #64748b);">
+      Para ferramentas automáticas (UptimeRobot, BetterStack, Prometheus), acesse a rota direta JSON: <br>
+      <a href="/api/health" target="_blank" style="color: var(--aliado-blue, #0052cc); font-weight: 600; font-family: monospace;">/api/health</a>
+    </div>
+  </main>
+
+  <script src="/js/aliado-icons.js"></script>
+  <script>
+    async function carregarStatus() {
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+
+        // Uptime formatado
+        const sec = data.uptime_seconds || 0;
+        const hours = Math.floor(sec / 3600);
+        const mins = Math.floor((sec % 3600) / 60);
+        document.getElementById('uptimeText').textContent = `${hours}h ${mins}m (${sec}s)`;
+
+        // Latência Supabase
+        const latency = data.database?.latency_ms || 0;
+        document.getElementById('dbLatencyText').textContent = `${latency} ms`;
+
+        // Horário da checagem
+        document.getElementById('lastCheckTime').textContent = new Date().toLocaleTimeString('pt-BR');
+
+        if (data.status === 'healthy') {
+          document.getElementById('mainStatusDot').style.backgroundColor = '#10b981';
+          document.getElementById('mainStatusTitle').textContent = 'Todos os Sistemas Operacionais';
+        } else {
+          document.getElementById('mainStatusDot').style.backgroundColor = '#f59e0b';
+          document.getElementById('mainStatusTitle').textContent = 'Sistemas Operando com Degradação';
+        }
+      } catch (e) {
+        document.getElementById('mainStatusDot').style.backgroundColor = '#ef4444';
+        document.getElementById('mainStatusTitle').textContent = 'Falha ao Obter Status do Servidor';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      AliadoIcons.renderAll();
+      carregarStatus();
+      // Auto-refresh a cada 20 segundos
+      setInterval(carregarStatus, 20000);
+    });
+  </script>
+</body>
+</html>

@@ -7,17 +7,16 @@ const multer = require('multer');
 const { supabaseAdmin } = require('../utils/supabase');
 const { getEncryptionKey, encrypt } = require('../utils/encryption');
 const { requireAuth } = require('../middlewares/auth');
+const { validateBody } = require('../middlewares/validate');
+const { tenantSettingsSchema } = require('../schemas');
 
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 10 * 1024 * 1024 } // 10 MB max para PFX
 });
 
-router.post('/settings', requireAuth, async (req, res) => {
+router.post('/settings', requireAuth, validateBody(tenantSettingsSchema), async (req, res) => {
     const { cnpj, razao_social, bank_agency, bank_account, bank_dac, environment } = req.body;
-    if (!cnpj || !razao_social || !bank_agency || !bank_account || !bank_dac) {
-        return res.status(400).json({ error: "Todos os dados cadastrais e bancários são obrigatórios." });
-    }
 
     try {
         const { error } = await supabaseAdmin

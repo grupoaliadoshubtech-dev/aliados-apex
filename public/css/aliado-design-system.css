@@ -1,0 +1,1324 @@
+/**
+ * ALIADO DESIGN SYSTEM v3.0 — RUNWAY EDITION
+ * Referência Oficial: Refero Styles — Runway (#874aaea0-c718-454e-8a58-f3beed1284ec)
+ * Filosofia: "Kraft paper ledger under amber desk lamp. Every screen should feel like opening
+ * a well-organized financial notebook: cream paper, espresso ink, one warm highlight color, no cold digital surfaces."
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ==========================================================================
+   1. DESIGN TOKENS & CSS VARIABLES (RUNWAY OFFICIAL SPEC)
+   ========================================================================== */
+:root {
+  /* --- Palette Oficial Runway --- */
+  --color-cream-canvas:   #f8f7f5; /* Page background, hero wash, warm paper */
+  --color-pure-paper:     #ffffff; /* Card surfaces, button ghost fills, clean top layer */
+  --color-linen-border:   #e3dfd5; /* Primary divider, card borders, section lines */
+  --color-stone-mist:     #d5d2cd; /* Subtle button borders, secondary dividers */
+  --color-warm-ash:       #aca89f; /* Shadow tint base, muted icon strokes */
+  --color-driftwood:      #8f897e; /* Muted body text, nav borders, labels */
+  --color-bark:           #61594a; /* Body text, secondary content, warm dark gray */
+  --color-espresso:       #261b07; /* Primary text, headings, icons, deep warm black */
+  --color-amber-signal:   #f9a600; /* Yellow/Amber action for filled buttons & selected states */
+  --color-burnished-gold: #e89b01; /* Yellow accent for outlined borders, links */
+  --color-terracotta:     #f0624f; /* Decorative accent, alerts, warm icon stroke */
+  --color-wisteria:       #d5befa; /* Soft cool badge wash, tag differentiation */
+  --color-honey-wash:     #f8da9d; /* Warm amber badge background */
+
+  /* --- Aliases Legados para Compatibilidade Perfeita --- */
+  --aliado-navy-dark:     var(--color-cream-canvas);
+  --aliado-navy-sidebar:  #f5f3ee;
+  --aliado-navy-surface:  var(--color-pure-paper);
+  --aliado-navy-card:     var(--color-pure-paper);
+  --aliado-navy-border:   var(--color-linen-border);
+  --aliado-navy-hover:    rgba(227, 223, 213, 0.4);
+
+  --aliado-blue:          var(--color-espresso);
+  --aliado-blue-hover:    #3d2e14;
+  --aliado-blue-active:   #1a1204;
+  --aliado-blue-light:    var(--color-honey-wash);
+  --aliado-blue-border:   var(--color-linen-border);
+  --aliado-blue-shadow:   0 4px 12px rgba(38, 27, 7, 0.08);
+
+  --aliado-cyan:          var(--color-amber-signal);
+  --aliado-cyan-hover:    var(--color-burnished-gold);
+  --aliado-cyan-glow:     0 0 10px rgba(249, 166, 0, 0.35);
+
+  --sheet-bg:             var(--color-pure-paper);
+  --sheet-bg-alt:         #faf9f7;
+  --sheet-bg-subtle:      var(--color-cream-canvas);
+  --sheet-border:         var(--color-linen-border);
+  --sheet-border-light:   var(--color-stone-mist);
+  --sheet-shadow:         0px 4px 8px 0px rgba(38, 27, 7, 0.06);
+
+  --text-dark-title:      var(--color-espresso);
+  --text-dark-body:       var(--color-bark);
+  --text-dark-muted:      var(--color-driftwood);
+  --text-dark-subtle:     var(--color-warm-ash);
+
+  --text-light-title:     var(--color-espresso);
+  --text-light-body:      var(--color-bark);
+  --text-light-muted:     var(--color-driftwood);
+  --text-light-subtle:    var(--color-warm-ash);
+
+  /* --- Badges Semânticos (Warm Ledger Wash) --- */
+  --status-paid-bg:       var(--color-honey-wash);
+  --status-paid-text:     var(--color-espresso);
+  --status-paid-border:   #ebd090;
+
+  --status-success-bg:    #eaf5ed;
+  --status-success-text:  #1e6b37;
+  --status-success-border:#c5e3cc;
+
+  --status-pending-bg:    #fff8e6;
+  --status-pending-text:  #8c5800;
+  --status-pending-border:#fae4b0;
+
+  --status-danger-bg:     rgba(240, 98, 79, 0.12);
+  --status-danger-text:   #a82315;
+  --status-danger-border: rgba(240, 98, 79, 0.3);
+
+  /* --- Tipografia Humanista & Escala Tensa --- */
+  --font-sans:            'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:            'JetBrains Mono', monospace;
+
+  /* Pesos Estritos Runway: 400 (regular), 492/500 (medium/cta), 584/600 (semibold) */
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+
+  /* --- Dimensões & Raios (Estritos: 8px cards/buttons, 4px badges) --- */
+  --sidebar-w:            240px;
+  --radius-sm:            4px;
+  --radius-md:            8px;
+  --radius-lg:            8px;
+  --radius-xl:            8px;
+  --radius-pill:          9999px;
+
+  /* --- Elevação & Sombras Quentes (Espresso Brown Tint) --- */
+  --shadow-card:          0px 4px 8px 0px rgba(38, 27, 7, 0.06);
+  --shadow-card-elevated: 0px 8px 16px 0px rgba(38, 27, 7, 0.08);
+  --shadow-amber-cta:     inset 0px 2px 4px 0px rgba(255, 255, 255, 0.56), 0px 4px 8px 0px rgba(38, 27, 7, 0.06), 0px 1px 2px 0px rgba(38, 27, 7, 0.36);
+  --shadow-ghost:         0px 4px 8px 0px rgba(38, 27, 7, 0.06);
+
+  --transition-fast:      140ms ease;
+  --transition-normal:    220ms ease;
+}
+
+/* ==========================================================================
+   2. RESET & BASE
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream-canvas);
+  color: var(--color-bark);
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: -0.14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* ==========================================================================
+   3. SHELL LAYOUT RUNWAY (Sidebar + Cream Canvas + Pure Paper Cards)
+   ========================================================================== */
+.aliado-app-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-cream-canvas);
+}
+
+/* --- SIDEBAR RUNWAY --- */
+.aliado-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background-color: #f5f3ee;
+  border-right: 1px solid var(--color-linen-border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  user-select: none;
+  z-index: 30;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Marca & Header da Sidebar */
+.aliado-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding: 0 4px;
+}
+
+.aliado-logo-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: var(--color-espresso);
+  color: var(--color-pure-paper);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(38, 27, 7, 0.2);
+  flex-shrink: 0;
+}
+
+.aliado-brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.aliado-brand-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.22px;
+  line-height: 1.2;
+}
+
+.aliado-brand-subtitle {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+  margin-top: 2px;
+}
+
+/* Seções de Navegação da Sidebar */
+.aliado-nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+  margin: 20px 0 8px 8px;
+}
+
+.aliado-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.aliado-nav-item a,
+.aliado-nav-item button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--color-bark);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.14px;
+  transition: all var(--transition-fast);
+  background: transparent;
+  border: 1px solid transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.aliado-nav-item a:hover,
+.aliado-nav-item button:hover {
+  color: var(--color-espresso);
+  background-color: rgba(227, 223, 213, 0.5);
+}
+
+/* Item Ativo Runway: Fundo Linen #e3dfd5 suave, texto Espresso, acento discreto */
+.aliado-nav-item.active a,
+.aliado-nav-item.active button {
+  background-color: var(--color-linen-border);
+  color: var(--color-espresso);
+  font-weight: 500;
+  position: relative;
+}
+
+.aliado-nav-item.active a::after,
+.aliado-nav-item.active button::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-amber-signal);
+}
+
+.aliado-sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-linen-border);
+}
+
+/* --- ÁREA PRINCIPAL MAIN --- */
+.aliado-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--color-cream-canvas);
+}
+
+/* Topbar Header Runway */
+.aliado-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  background-color: #fbfaf8;
+  border-bottom: 1px solid var(--color-linen-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.aliado-topbar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-driftwood);
+  letter-spacing: -0.14px;
+}
+
+.aliado-topbar-breadcrumb strong {
+  color: var(--color-espresso);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.aliado-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Badges de Ambiente (Runway Style: 4px radius, papel quente) */
+.badge-env {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.badge-env.homologacao {
+  background-color: var(--color-honey-wash);
+  color: var(--color-espresso);
+  border: 1px solid #ebd090;
+}
+
+.badge-env.homologacao .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-burnished-gold);
+}
+
+.badge-env.producao {
+  background-color: rgba(240, 98, 79, 0.12);
+  color: #a82315;
+  border: 1px solid rgba(240, 98, 79, 0.3);
+}
+
+.badge-env.producao .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-terracotta);
+}
+
+/* Banner Superior Contextual Runway (Texto Espresso sobre Cream Canvas) */
+.aliado-hero-banner {
+  padding: 32px 32px 20px 32px;
+  background-color: var(--color-cream-canvas);
+}
+
+.aliado-hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+  margin-bottom: 6px;
+}
+
+.aliado-hero-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.45px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+.aliado-hero-subtitle {
+  font-size: 15px;
+  color: var(--color-bark);
+  line-height: 1.35;
+  letter-spacing: -0.14px;
+  max-width: 820px;
+}
+
+/* ==========================================================================
+   4. CANVAS & CARDS RUNWAY (Pure Paper sobre Cream Canvas)
+   ========================================================================== */
+.aliado-sheet-canvas {
+  padding: 12px 32px 64px 32px;
+  background-color: var(--color-cream-canvas);
+}
+
+.aliado-sheet-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.aliado-sheet-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+  margin-bottom: 4px;
+}
+
+.aliado-sheet-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.31px;
+}
+
+/* Dashboard Card Runway: Pure Paper (#ffffff), 8px radius, Linen Border, Warm Brown Shadow */
+.aliado-card,
+.aliado-white-card,
+.aliado-telemetry-card {
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  border-radius: 8px;
+  padding: 24px 28px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Cards Interativos de Métricas (4 Colunas) */
+.aliado-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1200px) {
+  .aliado-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .aliado-grid-4 { grid-template-columns: 1fr; }
+}
+
+.aliado-action-card {
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  border-radius: 8px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 108px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+}
+
+.aliado-action-card:hover {
+  border-color: var(--color-warm-ash);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-elevated);
+}
+
+.aliado-action-card .card-top-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+}
+
+.aliado-action-card .card-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.aliado-action-card .card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.22px;
+}
+
+.aliado-action-card .card-arrow {
+  color: var(--color-driftwood);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.aliado-action-card:hover .card-arrow {
+  transform: translateX(3px);
+  color: var(--color-espresso);
+}
+
+.aliado-action-card .card-subtext {
+  font-size: 12px;
+  color: var(--color-bark);
+  margin-top: 6px;
+}
+
+/* Grid Secundário 2 Colunas */
+.aliado-grid-2-asymmetric {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .aliado-grid-2-asymmetric { grid-template-columns: 1fr; }
+}
+
+/* Card de Status de Comunicação Fiscal (Pure Paper Runway) */
+.aliado-telemetry-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.aliado-telemetry-header .telemetry-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+}
+
+.aliado-telemetry-header .telemetry-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.22px;
+  margin-top: 2px;
+}
+
+.aliado-telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 18px;
+  column-gap: 28px;
+}
+
+.telemetry-metric-item .metric-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+  margin-bottom: 4px;
+}
+
+.telemetry-metric-item .metric-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.22px;
+}
+
+.telemetry-metric-item .metric-value.light-val {
+  color: var(--color-espresso);
+}
+
+/* ==========================================================================
+   5. BOTÕES & CTAS RUNWAY (Amber Signal #f9a600 é a ÚNICA cor de preenchimento)
+   ========================================================================== */
+/* Botão Primário: Amber Signal #f9a600, texto Espresso #261b07, raio 8px */
+.btn-aliado-primary,
+.btn-runway-amber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-amber-signal);
+  color: var(--color-espresso);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-amber-cta);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-aliado-primary:hover,
+.btn-runway-amber:hover {
+  background-color: #f79f00;
+  transform: translateY(-1px);
+}
+
+.btn-aliado-primary:active,
+.btn-runway-amber:active {
+  transform: translateY(0);
+}
+
+/* Botão Secundário / Ghost Runway: Fundo transparente, borda Espresso, texto Espresso */
+.btn-aliado-secondary,
+.btn-ghost-runway {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: transparent;
+  color: var(--color-espresso);
+  border: 1px solid var(--color-espresso);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-ghost);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-aliado-secondary:hover,
+.btn-ghost-runway:hover {
+  background-color: var(--color-linen-border);
+}
+
+/* Botão Pill Nav Runway (Talk to human / Conversão no Topo) */
+.btn-pill-amber {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-amber-signal);
+  color: var(--color-espresso);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-amber-cta);
+}
+
+/* ==========================================================================
+   6. STEPPER FISCAL RUNWAY (1. Importar -> 2. Revisar -> 3. Emitir -> 4. Concluir)
+   ========================================================================== */
+.fiscal-stepper-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 12px 0 28px 0;
+  padding: 0 16px;
+}
+
+.fiscal-stepper-progress::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 48px;
+  right: 48px;
+  height: 2px;
+  background-color: var(--color-linen-border);
+  z-index: 1;
+}
+
+.step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.step-circle,
+.step-node-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-stone-mist);
+  color: var(--color-driftwood);
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+}
+
+.step-node.active .step-circle,
+.step-node.active .step-node-circle {
+  background-color: var(--color-amber-signal);
+  border-color: var(--color-amber-signal);
+  color: var(--color-espresso);
+  box-shadow: var(--shadow-amber-cta);
+}
+
+.step-node.completed .step-circle,
+.step-node.completed .step-node-circle {
+  background-color: var(--color-espresso);
+  border-color: var(--color-espresso);
+  color: var(--color-pure-paper);
+}
+
+.step-label,
+.step-node-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-driftwood);
+  letter-spacing: -0.14px;
+}
+
+.step-node.active .step-label,
+.step-node.active .step-node-label {
+  color: var(--color-espresso);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   7. DROPZONE & FORMULÁRIOS RUNWAY
+   ========================================================================== */
+.fiscal-dropzone-box {
+  background-color: #faf9f7;
+  border: 2px dashed var(--color-linen-border);
+  border-radius: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.fiscal-dropzone-box:hover {
+  border-color: var(--color-amber-signal);
+  background-color: #fcfbf9;
+}
+
+.fiscal-dropzone-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  color: var(--color-espresso);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-card);
+}
+
+/* Formulários & Inputs Runway */
+.form-group,
+.aliado-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-label,
+.aliado-form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-espresso);
+  letter-spacing: -0.14px;
+}
+
+.form-control,
+.aliado-input,
+.aliado-select {
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--color-espresso);
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.aliado-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.aliado-input-icon-right {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--color-driftwood);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aliado-input-icon-right:hover {
+  color: var(--color-espresso);
+}
+
+.form-control:focus,
+.aliado-input:focus,
+.aliado-select:focus {
+  border-color: var(--color-espresso);
+}
+
+.form-control::placeholder,
+.aliado-input::placeholder {
+  color: var(--color-driftwood);
+}
+
+/* ==========================================================================
+   8. DATA TABLES RUNWAY (Pure Paper, Linen Dividers, Espresso Text)
+   ========================================================================== */
+.aliado-table-wrapper {
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
+  overflow-x: auto;
+}
+
+.aliado-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.aliado-table th {
+  background-color: #faf9f7;
+  color: var(--color-driftwood);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-linen-border);
+  white-space: nowrap;
+}
+
+.aliado-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--color-espresso);
+  border-bottom: 1px solid var(--color-linen-border);
+  white-space: nowrap;
+}
+
+.aliado-table tr:last-child td {
+  border-bottom: none;
+}
+
+.aliado-table tbody tr:hover td {
+  background-color: #fcfbfa;
+}
+
+/* Badges e Status Runway: 4px radius */
+.badge-tonal {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.badge-tonal.concluido,
+.badge-tonal.paid,
+.badge-tonal.em-dia {
+  background-color: var(--color-honey-wash);
+  color: var(--color-espresso);
+}
+
+.badge-tonal.validado,
+.badge-tonal.pending {
+  background-color: var(--color-wisteria);
+  color: var(--color-espresso);
+}
+
+.badge-tonal.inadimplente,
+.badge-tonal.danger,
+.badge-tonal.erro {
+  background-color: rgba(240, 98, 79, 0.12);
+  color: #a82315;
+  border: 1px solid rgba(240, 98, 79, 0.3);
+}
+
+.badge-tonal.neutral {
+  background-color: var(--color-linen-border);
+  color: var(--color-bark);
+}
+
+/* ==========================================================================
+   9. CALLOUTS FISCAIS & NOTIFICAÇÕES RUNWAY
+   ========================================================================== */
+.fiscal-callout {
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--color-linen-border);
+  background-color: var(--color-pure-paper);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.fiscal-callout.warning {
+  border-left: 4px solid var(--color-amber-signal);
+  background-color: #fffcf5;
+}
+
+.fiscal-callout.error {
+  border-left: 4px solid var(--color-terracotta);
+  background-color: #fdf5f4;
+}
+
+.fiscal-callout.info {
+  border-left: 4px solid var(--color-driftwood);
+  background-color: #faf9f7;
+}
+
+.fiscal-callout.success {
+  border-left: 4px solid var(--color-espresso);
+  background-color: #fafaf8;
+}
+
+/* ==========================================================================
+   10. ABAS DE CONFIGURAÇÃO RUNWAY
+   ========================================================================== */
+.config-nav-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--color-linen-border);
+  padding-bottom: 2px;
+  margin-bottom: 24px;
+}
+
+.config-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-bark);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.config-tab-btn:hover {
+  color: var(--color-espresso);
+  background-color: rgba(227, 223, 213, 0.4);
+}
+
+.config-tab-btn.active {
+  color: var(--color-espresso);
+  background-color: var(--color-linen-border);
+  font-weight: 600;
+}
+
+.config-panel-section {
+  display: none;
+}
+
+.config-panel-section.active {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Toasts Runway */
+.aliado-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aliado-toast {
+  background-color: var(--color-espresso);
+  color: var(--color-pure-paper);
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(38, 27, 7, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastSlideUp 200ms ease;
+}
+
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   11. AUTH VIEWPORT RUNWAY (Login & Split Screen)
+   ========================================================================== */
+.aliado-auth-viewport {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-cream-canvas);
+}
+
+.aliado-auth-brand-pane {
+  flex: 1.1;
+  background-color: #f3f1ec;
+  border-right: 1px solid var(--color-linen-border);
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.auth-brand-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.auth-brand-logo-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--color-espresso);
+  color: var(--color-pure-paper);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(38, 27, 7, 0.2);
+}
+
+.auth-brand-text .title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.22px;
+}
+
+.auth-brand-text .sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+}
+
+.auth-brand-hero {
+  max-width: 520px;
+}
+
+.auth-brand-hero h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.61px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.auth-brand-hero p {
+  font-size: 15px;
+  color: var(--color-bark);
+  line-height: 1.4;
+  letter-spacing: -0.14px;
+  margin-bottom: 32px;
+}
+
+.auth-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-espresso);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.auth-feature-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-espresso);
+  box-shadow: var(--shadow-card);
+}
+
+.auth-brand-footer {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--color-driftwood);
+  text-transform: uppercase;
+}
+
+.aliado-auth-form-pane {
+  flex: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background-color: var(--color-cream-canvas);
+}
+
+.aliado-auth-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  border-radius: 8px;
+  padding: 40px 36px;
+  box-shadow: var(--shadow-card-elevated);
+}
+
+.auth-card-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-driftwood);
+  margin-bottom: 6px;
+}
+
+.auth-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -0.31px;
+  margin-bottom: 8px;
+}
+
+.auth-card-subtitle {
+  font-size: 14px;
+  color: var(--color-bark);
+  line-height: 1.35;
+  margin-bottom: 28px;
+}
+
+.auth-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 24px 0;
+  font-size: 13px;
+}
+
+.auth-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-bark);
+  cursor: pointer;
+}
+
+.auth-forgot-link {
+  color: var(--color-espresso);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+}
+
+.auth-card-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-driftwood);
+}
+
+/* ==========================================================================
+   12. LANDING PAGE RUNWAY (Editorial & Financial Ledger)
+   ========================================================================== */
+.landing-body {
+  background-color: var(--color-cream-canvas);
+  color: var(--color-bark);
+}
+
+.landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.landing-hero-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 24px 72px 24px;
+  text-align: center;
+}
+
+.landing-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background-color: var(--color-honey-wash);
+  color: var(--color-espresso);
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.landing-hero-title {
+  font-size: 56px;
+  font-weight: 600;
+  color: var(--color-espresso);
+  letter-spacing: -1.12px;
+  line-height: 1.13;
+  margin-bottom: 20px;
+}
+
+.landing-hero-title .highlight {
+  color: var(--color-burnished-gold);
+}
+
+.landing-hero-desc {
+  font-size: 18px;
+  color: var(--color-bark);
+  line-height: 1.4;
+  letter-spacing: -0.16px;
+  max-width: 720px;
+  margin: 0 auto 36px auto;
+}
+
+.landing-hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 64px;
+}
+
+.landing-terminal-mockup {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: var(--color-pure-paper);
+  border: 1px solid var(--color-linen-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card-elevated);
+  text-align: left;
+  overflow: hidden;
+}
+
+.landing-terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background-color: #faf9f7;
+  border-bottom: 1px solid var(--color-linen-border);
+}
+
+.landing-terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.landing-terminal-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-stone-mist);
+}
+
+.landing-terminal-body {
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-espresso);
+  background-color: #faf9f7;
+}
+

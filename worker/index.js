@@ -5,6 +5,7 @@ require('dotenv').config();
 const { QUEUE_NAME, getBossInstance } = require('./queue');
 const { processGnreBatch } = require('./processors/gnreProcessor');
 const { supabaseAdmin } = require('../api/utils/supabase');
+const { JOB_NAME: EXPIRE_TRIALS_JOB, handler: expireTrialsHandler } = require('./jobs/expire_trials');
 
 console.log("==================================================");
 console.log("🚀 Apex GNRE Worker Inicializando...");
@@ -111,6 +112,23 @@ async function startWorker() {
         });
 
         console.log(`👂 Worker ouvindo a fila '${QUEUE_NAME}'. Aguardando novos lotes...`);
+
+        // ─── Jobs Agendados ───────────────────────────────────────
+        // Expira trials todos os dias às 09:00 (horário UTC)
+        await boss.schedule(EXPIRE_TRIALS_JOB, '0 12 * * *', {}, { tz: 'America/Sao_Paulo' });
+        await boss.work(EXPIRE_TRIALS_JOB, async (jobs) => {
+            const job = Array.isArray(jobs) ? jobs[0] : jobs;
+            console.log(`\n🕘 [Worker] Executando job agendado: ${EXPIRE_TRIALS_JOB}`);
+            try {
+                const result = await expireTrialsHandler(job);
+                console.log(`✔ [${EXPIRE_TRIALS_JOB}] Concluído:`, result);
+                return result;
+            } catch (err) {
+                console.error(`❌ [${EXPIRE_TRIALS_JOB}] Erro:`, err.message);
+                throw err;
+            }
+        });
+        console.log(`⏰ Job '${EXPIRE_TRIALS_JOB}' agendado para 09:00 BRT diário.`);
     } catch (err) {
         console.error("❌ Falha na inicialização do pg-boss:", err.message);
         console.log("🔄 Alternando para modo de polling local...");

@@ -106,6 +106,23 @@ async function carregarDados() {
             }
         }
 
+        // Preenche dados da Assinatura / Stripe
+        const planNameEl = document.getElementById('sub-plan-name');
+        const statusBadgeEl = document.getElementById('sub-status-badge');
+        const quotaEl = document.getElementById('sub-quota-display');
+
+        const planName = (tenant && tenant.plan) || 'trial';
+        const subStatus = (tenant && tenant.subscription_status) || 'ativo';
+        const used = (tenant && tenant.used_this_month) || 0;
+        const quota = (tenant && tenant.monthly_quota) || (planName === 'starter' ? 100 : planName === 'pro' ? 500 : planName === 'advanced' ? 1500 : 10);
+
+        if (planNameEl) planNameEl.textContent = planName;
+        if (quotaEl) quotaEl.textContent = `${used} / ${quota} guias`;
+        if (statusBadgeEl) {
+            statusBadgeEl.textContent = subStatus === 'ativo' ? '✔ Ativo' : subStatus === 'trial' ? '⏳ Em Teste Grátis' : subStatus;
+            statusBadgeEl.style.color = subStatus === 'ativo' ? 'var(--success)' : '#f59e0b';
+        }
+
         if (data.profile && data.profile.is_admin) {
             const adminLink = document.getElementById('admin-nav-link');
             if (adminLink) adminLink.classList.remove('d-none');
@@ -114,3 +131,31 @@ async function carregarDados() {
         showToast("Erro ao carregar dados do assinante: " + e.message, 'error');
     }
 }
+
+/**
+ * Redireciona o usuário para o portal seguro do cliente Stripe
+ */
+async function abrirPortalStripe() {
+    try {
+        showToast("Abrindo Portal do Cliente Stripe...", "warning");
+
+        const res = await fetch('/api/stripe/create-portal-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.error || 'Nenhuma assinatura ativa encontrada no Stripe.');
+        }
+
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            throw new Error("URL do portal não retornada.");
+        }
+    } catch (e) {
+        showToast("Portal de cobrança: " + e.message, 'error');
+    }
+}
+

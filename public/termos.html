@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Termos de Uso — Apex GNRE SaaS | Grupo Aliado Hub Tech</title>
+    <meta name="description" content="Termos de Uso da plataforma Apex GNRE SaaS. Condições de contratação, responsabilidades, SLA e política de cancelamento." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #08080f; --surface: #0f0f1a; --border: rgba(255,255,255,0.07);
+            --text: rgba(255,255,255,0.9); --muted: rgba(255,255,255,0.5);
+            --accent: #6366f1; --accent-light: rgba(99,102,241,0.12);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+        header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 0; position: sticky; top: 0; z-index: 10; }
+        .header-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+        .logo span { color: var(--accent); }
+        .back-btn { color: var(--muted); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .back-btn:hover { color: var(--text); }
+        main { max-width: 860px; margin: 0 auto; padding: 60px 24px 100px; }
+        .page-header { border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 48px; }
+        .badge { display: inline-block; background: var(--accent-light); color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 16px; }
+        h1 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+        .meta { color: var(--muted); font-size: 13px; }
+        h2 { font-size: 18px; font-weight: 600; color: var(--text); margin: 40px 0 16px; padding-left: 16px; border-left: 3px solid var(--accent); }
+        p { color: rgba(255,255,255,0.75); margin-bottom: 14px; }
+        ul { padding-left: 24px; margin-bottom: 14px; color: rgba(255,255,255,0.75); }
+        li { margin-bottom: 8px; }
+        a { color: var(--accent); }
+        .info-box { background: var(--accent-light); border: 1px solid rgba(99,102,241,0.2); border-radius: 12px; padding: 20px 24px; margin: 32px 0; color: rgba(255,255,255,0.85); }
+        .info-box strong { color: var(--accent); }
+        .warn-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 20px 24px; margin: 32px 0; color: rgba(255,255,255,0.85); }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { color: rgba(255,255,255,0.75); }
+        footer { text-align: center; padding: 32px 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <a href="/" class="logo">Apex<span>.</span></a>
+        <a href="/login" class="back-btn">← Voltar ao sistema</a>
+    </div>
+</header>
+
+<main>
+    <div class="page-header">
+        <div class="badge">Contrato de Adesão</div>
+        <h1>Termos de Uso</h1>
+        <p class="meta">Versão 1.0 &nbsp;·&nbsp; Vigência: Setembro de 2026 &nbsp;·&nbsp; Grupo Aliado Hub Tech LTDA</p>
+    </div>
+
+    <div class="info-box">
+        <strong>Ao utilizar a plataforma Apex GNRE SaaS, você declara ter lido, compreendido e concordado integralmente com estes Termos de Uso.</strong> Caso não concorde com qualquer disposição, não utilize o serviço.
+    </div>
+
+    <h2>1. Das Partes</h2>
+    <p><strong>Contratada:</strong> Grupo Aliado Hub Tech LTDA, inscrita no CNPJ sob o nº a ser preenchido, doravante denominada "Apex".</p>
+    <p><strong>Contratante:</strong> A pessoa jurídica ou física que aceitar estes termos no momento do cadastro, denominada "Cliente" ou "Tenant".</p>
+
+    <h2>2. Do Objeto</h2>
+    <p>A Apex disponibiliza ao Cliente, em regime de Software como Serviço (SaaS), a plataforma <strong>Apex GNRE</strong>, cujas funcionalidades incluem:</p>
+    <ul>
+        <li>Processamento de XMLs de NF-e para extração de dados fiscais</li>
+        <li>Emissão automatizada de guias GNRE junto às SEFAZ Estaduais</li>
+        <li>Geração de arquivos de remessa bancária CNAB 240 (Itaú SISPAG)</li>
+        <li>Armazenamento seguro de certificados digitais A1 (.PFX)</li>
+        <li>Painel de controle e histórico de emissões</li>
+    </ul>
+
+    <h2>3. Dos Planos e Valores</h2>
+    <table>
+        <thead><tr><th>Plano</th><th>Guias/mês</th><th>Valor mensal</th></tr></thead>
+        <tbody>
+            <tr><td>Trial</td><td>10 guias</td><td>Gratuito (30 dias)</td></tr>
+            <tr><td>Starter</td><td>100 guias</td><td>R$ 199,00</td></tr>
+            <tr><td>Pro</td><td>500 guias</td><td>R$ 399,00</td></tr>
+            <tr><td>Advanced</td><td>1.500 guias</td><td>R$ 699,00</td></tr>
+        </tbody>
+    </table>
+    <p>Os valores são cobrados mensalmente via cartão de crédito, processados pela Stripe Inc. Faturas são emitidas no início de cada período de cobrança.</p>
+
+    <h2>4. Do Trial e Conversão</h2>
+    <p>O período de trial é de <strong>30 (trinta) dias corridos</strong> a contar da data do cadastro, ou até o limite de 10 guias emitidas, o que ocorrer primeiro. Ao término do trial sem contratação de plano pago, o acesso às funcionalidades de emissão será suspenso automaticamente.</p>
+
+    <h2>5. Das Obrigações do Cliente</h2>
+    <ul>
+        <li>Manter dados cadastrais atualizados (CNPJ, e-mail, dados bancários)</li>
+        <li>Ser o legítimo titular ou ter autorização para uso do certificado digital PFX fornecido</li>
+        <li>Utilizar a plataforma exclusivamente para fins legítimos e em conformidade com a legislação fiscal vigente</li>
+        <li>Não compartilhar credenciais de acesso com terceiros não autorizados</li>
+        <li>Manter o pagamento da assinatura em dia para continuidade do serviço</li>
+    </ul>
+
+    <h2>6. Das Obrigações da Apex</h2>
+    <ul>
+        <li>Disponibilizar a plataforma com disponibilidade mínima de <strong>99% ao mês</strong> (SLA)</li>
+        <li>Manter sigilo sobre os dados do Cliente conforme a Política de Privacidade</li>
+        <li>Notificar o Cliente com antecedência mínima de 30 dias sobre alterações de preço</li>
+        <li>Manter backup diário dos dados por período mínimo de 30 dias</li>
+    </ul>
+
+    <h2>7. Do Nível de Serviço (SLA)</h2>
+    <p>Disponibilidade contratada: <strong>99% mensal</strong> (equivalente a até ~7h de indisponibilidade/mês).</p>
+    <p>Excludentes de SLA: manutenções programadas (com aviso prévio de 24h), falhas em sistemas de terceiros (SEFAZ, Stripe, Supabase), casos fortuitos ou força maior.</p>
+
+    <h2>8. Da Limitação de Responsabilidade</h2>
+    <div class="warn-box">
+        <p><strong>⚠️ Importante:</strong> A Apex é uma ferramenta de automação. A responsabilidade pela corretude dos dados fiscais contidos nos XMLs enviados é exclusivamente do Cliente. A Apex não se responsabiliza por erros nas informações fornecidas, por rejeições da SEFAZ decorrentes de dados incorretos, nem por consequências fiscais de guias emitidas com informações equivocadas.</p>
+    </div>
+    <p>Em nenhuma hipótese a responsabilidade da Apex excederá o valor pago pelo Cliente nos últimos 3 (três) meses de assinatura.</p>
+
+    <h2>9. Do Cancelamento</h2>
+    <ul>
+        <li><strong>Pelo Cliente:</strong> A qualquer momento pelo Portal do Cliente (Stripe Billing Portal), com efeito ao final do período já pago. Não há reembolso de períodos parciais.</li>
+        <li><strong>Pela Apex:</strong> Em caso de inadimplência superior a 15 dias, uso fraudulento ou violação destes Termos, com notificação prévia por e-mail.</li>
+    </ul>
+    <p>Após o cancelamento, os dados do Cliente ficam disponíveis para exportação por <strong>30 dias</strong>. Após esse prazo, são excluídos conforme a Política de Privacidade.</p>
+
+    <h2>10. Da Propriedade Intelectual</h2>
+    <p>Todos os direitos sobre a plataforma Apex, incluindo código-fonte, design e marca, são de propriedade exclusiva do Grupo Aliado Hub Tech LTDA. O Cliente recebe apenas uma licença de uso não exclusiva e intransferível.</p>
+
+    <h2>11. Das Disposições Gerais</h2>
+    <ul>
+        <li>Estes Termos regem-se pela legislação brasileira</li>
+        <li>Foro: Comarca de São Paulo/SP para dirimir eventuais controvérsias</li>
+        <li>Alterações serão comunicadas por e-mail com antecedência de 30 dias</li>
+    </ul>
+
+    <h2>12. Contato</h2>
+    <p>📧 <a href="mailto:contato@grupoaliado.com.br">contato@grupoaliado.com.br</a></p>
+    <p>📧 Privacidade: <a href="mailto:privacidade@grupoaliado.com.br">privacidade@grupoaliado.com.br</a></p>
+</main>
+
+<footer>
+    © 2026 Grupo Aliado Hub Tech LTDA · Todos os direitos reservados ·
+    <a href="/termos">Termos de Uso</a> ·
+    <a href="/privacidade">Política de Privacidade</a>
+</footer>
+</body>
+</html>

@@ -1,59 +1,128 @@
-<!-- public/login.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex SaaS - Entrar</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso à Plataforma — Grupo Aliados Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    /* Estilo do toast integrado */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #fff;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .toast.show { display: block; }
+    .toast-success { background: #059669; }
+    .toast-error { background: #dc2626; }
+  </style>
 </head>
 <body>
 
-    <div class="auth-wrapper">
-        <div class="card auth-card">
-            <div class="auth-header">
-                <h2>Apex SaaS</h2>
-                <p>Plataforma de Automação Fiscal</p>
-            </div>
-
-            <form id="login-form">
-                <div class="grid-form" style="grid-template-columns: 1fr;">
-                    <div class="form-group">
-                        <label for="email">E-mail Corporativo</label>
-                        <input type="email" id="email" required placeholder="seuemail@empresa.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Senha de Acesso</label>
-                        <input type="password" id="password" required placeholder="••••••••">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary mt-4" style="width: 100%;">
-                    Entrar no Painel
-                </button>
-            </form>
-
-            <div class="auth-footer">
-                Não tem uma conta? <a href="/register.html">Cadastre sua empresa</a>
-            </div>
+  <div class="aliado-auth-viewport">
+    <!-- LADO ESQUERDO: MARCA & DESTAQUES DARK NAVY -->
+    <section class="aliado-auth-brand-pane">
+      <div class="auth-brand-logo-area">
+        <div class="auth-brand-logo-box">A//T</div>
+        <div class="auth-brand-text">
+          <div class="title">Aliado Hub Tech</div>
+          <div class="sub">PLATAFORMA CORPORATIVA</div>
         </div>
-    </div>
+      </div>
 
-    <div id="toast" class="toast"></div>
+      <div class="auth-brand-hero">
+        <h1>Plataforma Central Aliados Hub Tech</h1>
+        <p>Gerencie integrações fiscais, processamento de guias e conciliações financeiras com máxima segurança, agilidade e total conformidade.</p>
 
-    <script src="/js/auth.js?v=4"></script>
-    <script>
-        // Prevenir acesso caso já esteja logado
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('sb_access_token');
-            if (token) {
-                const res = await fetch('/api/auth/me');
-                if (res.ok) {
-                    window.location.href = '/app';
-                }
-            }
-        });
-    </script>
+        <div class="auth-features-list">
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" data-aliado-icon="shield"></div>
+            <div class="auth-feature-text">Isolamento multitenant criptografado</div>
+          </div>
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" data-aliado-icon="bar-chart"></div>
+            <div class="auth-feature-text">Ciclo automatizado de emissão e remessa</div>
+          </div>
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon" data-aliado-icon="users"></div>
+            <div class="auth-feature-text">Controle hierárquico: Operador, Auditor e Admin</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-brand-footer">
+        GRUPO ALIADOS HUB TECH LTDA
+      </div>
+    </section>
+
+    <!-- LADO DIREITO: CARD FLUTUANTE DE LOGIN -->
+    <section class="aliado-auth-form-pane">
+      <div class="aliado-auth-card">
+        <div class="auth-card-eyebrow">ACESSO SEGURO</div>
+        <h2 class="auth-card-title">Entrar na plataforma</h2>
+        <p class="auth-card-subtitle">Insira suas credenciais corporativas para acessar o painel e acompanhar suas operações.</p>
+
+        <form id="login-form">
+          <div class="aliado-form-group">
+            <label class="aliado-form-label" for="email">E-mail Corporativo</label>
+            <input type="email" id="email" class="aliado-input" required placeholder="admin@grupoaliados.com.br" autocomplete="email">
+          </div>
+
+          <div class="aliado-form-group">
+            <label class="aliado-form-label" for="password">Senha de Acesso</label>
+            <div class="aliado-input-wrapper">
+              <input type="password" id="password" class="aliado-input" required placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="aliado-input-icon-right" onclick="AliadoUI.togglePassword('password', this)" title="Mostrar senha" data-aliado-icon="eye"></button>
+            </div>
+          </div>
+
+          <div class="auth-options-row">
+            <label class="auth-checkbox-label">
+              <input type="checkbox" id="remember-me" checked style="accent-color: var(--aliado-blue);">
+              <span>Manter-me conectado</span>
+            </label>
+            <a href="#" class="auth-forgot-link" onclick="alert('Entre em contato com o administrador do Grupo Aliados.'); return false;">Esqueci minha senha</a>
+          </div>
+
+          <button type="submit" class="btn-aliado-primary auth-submit-btn">
+            <span>Entrar na plataforma</span>
+            <span data-aliado-icon="arrow-right" data-size="16"></span>
+          </button>
+        </form>
+
+        <div class="auth-card-footer">
+          Desenvolvido por <strong>Grupo Aliados Hub Tech</strong>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Scripts -->
+  <script src="/js/aliado-icons.js"></script>
+  <script src="/js/aliado-ui.js"></script>
+  <script src="/js/auth.js?v=5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('sb_access_token');
+      if (token) {
+        try {
+          const res = await fetch('/api/auth/me');
+          if (res.ok) {
+            window.location.href = '/dashboard.html';
+          }
+        } catch (e) {}
+      }
+    });
+  </script>
 </body>
 </html>

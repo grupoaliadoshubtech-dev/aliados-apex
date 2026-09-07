@@ -2,308 +2,448 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex GNRE - Planos de Assinatura</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
-            margin-top: 10px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planos de Assinatura — Grupo Aliados Hub Tech</title>
+  <link rel="stylesheet" href="/css/aliado-design-system.css">
+  <style>
+    body {
+      background-color: var(--color-cream-canvas, #fbfaf8);
+      color: var(--color-bark, #44403c);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .pricing-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
+    .plans-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--sheet-border, #e2e8f0);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
 
-        .pricing-card.recommended {
-            border-color: var(--secondary);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15), var(--card-shadow);
-        }
+    .plans-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        .pricing-card.recommended::before {
-            content: 'RECOMENDADO';
-            position: absolute;
-            top: 20px;
-            right: -35px;
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 35px;
-            transform: rotate(45deg);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            letter-spacing: 0.5px;
-        }
+    .plans-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
 
-        .pricing-card.active-plan {
-            border-color: var(--success);
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.15), var(--card-shadow);
-        }
+    .plans-nav-links a {
+      color: var(--text-dark-muted, #64748b);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
 
-        .plan-header {
-            margin-bottom: 24px;
-        }
+    .plans-nav-links a:hover,
+    .plans-nav-links a.active {
+      color: var(--aliado-blue, #0052cc);
+    }
 
-        .plan-name {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
+    .plans-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 48px 24px 64px 24px;
+      flex: 1;
+      width: 100%;
+    }
 
-        .plan-desc {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
+    .plans-hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
 
-        .plan-price-box {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-            margin-bottom: 24px;
-        }
+    .plans-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      background-color: rgba(0, 82, 204, 0.08);
+      color: var(--aliado-blue, #0052cc);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
 
-        .plan-price {
-            font-size: 40px;
-            font-weight: 800;
-            color: var(--text-main);
-            background: linear-gradient(135deg, #fff 60%, var(--text-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .plans-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-dark-title, #0f172a);
+      letter-spacing: -0.5px;
+      margin: 0 0 12px 0;
+    }
 
-        .plan-period {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+    .plans-subtitle {
+      font-size: 15px;
+      color: var(--text-dark-muted, #64748b);
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
 
-        .plan-features {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
 
-        .plan-features li {
-            font-size: 14px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .pricing-card {
+      background: #ffffff;
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      border-radius: var(--radius-lg, 12px);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
 
-        .plan-features li::before {
-            content: '✔';
-            color: var(--success);
-            font-weight: bold;
-        }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    }
 
-        .plan-badge-active {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            justify-content: center;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            width: 100%;
-        }
+    .pricing-card.recommended {
+      border: 2px solid var(--aliado-blue, #0052cc);
+      box-shadow: 0 8px 24px rgba(0, 82, 204, 0.12);
+    }
 
-        /* CARD DO SETUP */
-        .setup-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.04) 0%, rgba(168, 85, 247, 0.04) 100%), var(--bg-card);
-            border-color: rgba(99, 102, 241, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-            padding: 24px 30px;
-            margin-top: 10px;
-        }
+    .pricing-card.recommended::before {
+      content: 'MAIS ESCOLHIDO';
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      background: var(--aliado-blue, #0052cc);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
 
-        .setup-info h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .pricing-card.active-plan {
+      border-color: #10b981;
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    }
 
-        .setup-info p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+    .plan-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark-title, #0f172a);
+      margin-bottom: 6px;
+    }
 
-        .setup-price {
-            text-align: right;
-            min-width: 180px;
-        }
+    .plan-desc {
+      font-size: 13px;
+      color: var(--text-dark-muted, #64748b);
+      line-height: 1.4;
+      margin-bottom: 24px;
+      min-height: 38px;
+    }
 
-        .setup-price .price-tag {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-main);
-        }
+    .plan-price-box {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--sheet-border, #e2e8f0);
+    }
 
-        .setup-price .price-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
+    .plan-price {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-dark-title, #0f172a);
+      letter-spacing: -1px;
+    }
 
-        @media (max-width: 768px) {
-            .setup-card {
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: left;
-            }
-            .setup-price {
-                text-align: left;
-                min-width: unset;
-                margin-top: 10px;
-            }
-        }
-    </style>
+    .plan-period {
+      font-size: 13.5px;
+      color: var(--text-dark-muted, #64748b);
+      font-weight: 500;
+    }
+
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .plan-features li {
+      font-size: 13.5px;
+      color: var(--text-dark-main, #334155);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: #10b981;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .plan-badge-active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #d1fae5;
+      color: #065f46;
+      padding: 10px 16px;
+      border-radius: var(--radius-md, 8px);
+      font-size: 13.5px;
+      font-weight: 700;
+      width: 100%;
+    }
+
+    .setup-card {
+      background: #ffffff;
+      border: 1px solid var(--sheet-border, #e2e8f0);
+      border-radius: var(--radius-lg, 12px);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .setup-info h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-dark-title, #0f172a);
+      margin: 0 0 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setup-info p {
+      font-size: 13px;
+      color: var(--text-dark-muted, #64748b);
+      margin: 0;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    .setup-price {
+      text-align: right;
+    }
+
+    .price-tag {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-dark-title, #0f172a);
+    }
+
+    .price-desc {
+      font-size: 11.5px;
+      color: var(--text-dark-muted, #64748b);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- HEADER -->
-        <header>
-            <div class="logo-area">
-                <h1>Apex GNRE SaaS</h1>
-                <p>Planos de Emissões Interestaduais e Automação Fiscal</p>
-            </div>
-            <div class="nav-links">
-                <a href="/dashboard.html" class="nav-btn">Faturamento</a>
-                <a href="/profile.html" class="nav-btn">Empresa</a>
-                <a href="/plans.html" class="nav-btn active">Planos</a>
-                <a href="/admin.html" id="admin-nav-link" class="nav-btn d-none">Administração</a>
-                <button onclick="logout()" class="nav-btn" style="cursor: pointer; border: none; background: transparent;">Sair</button>
-            </div>
-        </header>
-
-        <!-- PLANOS DE ASSINATURA -->
-        <div class="pricing-grid">
-            <!-- STARTER -->
-            <div class="card pricing-card" id="card-starter">
-                <div class="plan-content">
-                    <div class="plan-header">
-                        <div class="plan-name">Starter</div>
-                        <div class="plan-desc">Indicado para pequenos e-commerces que estão iniciando suas vendas interestaduais.</div>
-                    </div>
-                    <div class="plan-price-box">
-                        <span class="plan-price">R$ 199</span>
-                        <span class="plan-period">/mês</span>
-                    </div>
-                    <ul class="plan-features">
-                        <li>Até <strong>100 guias</strong> por mês</li>
-                        <li>Transmissão em lote mTLS</li>
-                        <li>Remessas SISPAG CNAB 240</li>
-                        <li>Vínculo automático de NFs</li>
-                        <li>Painel de controle unificado</li>
-                    </ul>
-                </div>
-                <div class="plan-action">
-                    <button onclick="selecionarPlano('starter')" id="btn-starter" class="btn btn-secondary" style="width: 100%;">
-                        Selecionar Plano Starter
-                    </button>
-                </div>
-            </div>
-
-            <!-- PRO -->
-            <div class="card pricing-card recommended" id="card-pro">
-                <div class="plan-content">
-                    <div class="plan-header">
-                        <div class="plan-name">Pro</div>
-                        <div class="plan-desc">Ideal para marcas de moda, confecções e lojas virtuais de médio porte em crescimento.</div>
-                    </div>
-                    <div class="plan-price-box">
-                        <span class="plan-price">R$ 399</span>
-                        <span class="plan-period">/mês</span>
-                    </div>
-                    <ul class="plan-features">
-                        <li>Até <strong>500 guias</strong> por mês</li>
-                        <li>Transmissão em lote mTLS</li>
-                        <li>Remessas SISPAG CNAB 240</li>
-                        <li>Suporte a múltiplos certificados</li>
-                        <li>Tempo de resposta prioritário</li>
-                        <li>Histórico expandido</li>
-                    </ul>
-                </div>
-                <div class="plan-action">
-                    <button onclick="selecionarPlano('pro')" id="btn-pro" class="btn btn-primary" style="width: 100%;">
-                        Selecionar Plano Pro
-                    </button>
-                </div>
-            </div>
-
-            <!-- ADVANCED -->
-            <div class="card pricing-card" id="card-advanced">
-                <div class="plan-content">
-                    <div class="plan-header">
-                        <div class="plan-name">Advanced</div>
-                        <div class="plan-desc">Para operações robustas com alto volume de faturamento e fluxo intenso de guias.</div>
-                    </div>
-                    <div class="plan-price-box">
-                        <span class="plan-price">R$ 699</span>
-                        <span class="plan-period">/mês</span>
-                    </div>
-                    <ul class="plan-features">
-                        <li>Até <strong>1.500 guias</strong> por mês</li>
-                        <li>Transmissão em lote mTLS</li>
-                        <li>Remessas SISPAG CNAB 240</li>
-                        <li>APIs dedicadas do sistema</li>
-                        <li>Mapeamento avançado</li>
-                        <li>Suporte Premium 24/7</li>
-                    </ul>
-                </div>
-                <div class="plan-action">
-                    <button onclick="selecionarPlano('advanced')" id="btn-advanced" class="btn btn-secondary" style="width: 100%;">
-                        Selecionar Plano Advanced
-                    </button>
-                </div>
-            </div>
+  <!-- HEADER CORPORATIVO ALIADOS HUB TECH -->
+  <header class="plans-header">
+    <div class="plans-header-inner">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div class="aliado-logo-box" style="width: 38px; height: 38px; font-size: 13px;">A//T</div>
+        <div class="aliado-brand-info">
+          <span class="aliado-brand-title" style="font-size: 14px;">Aliado Hub Tech</span>
+          <span class="aliado-brand-subtitle" style="font-size: 10px;">TABELA DE PLANOS CORPORATIVOS</span>
         </div>
+      </div>
 
-        <!-- DETALHE ADICIONAL: SETUP -->
-        <div class="card setup-card">
-            <div class="setup-info">
-                <h3><span>🛠</span> Taxa de Setup / Implantação e Homologação</h3>
-                <p>Taxa única cobrada exclusivamente para a prestação do suporte inicial. Inclui a parametrização segura do Certificado Digital A1 (.pfx) no servidor e o acompanhamento de ponta a ponta na homologação do primeiro arquivo de remessa de pagamentos de tributos no Itaú SISPAG da sua empresa.</p>
-            </div>
-            <div class="setup-price">
-                <div class="price-tag">R$ 600,00</div>
-                <div class="price-desc">Taxa Única de Setup</div>
-            </div>
-        </div>
+      <nav class="plans-nav-links">
+        <a href="/app">Visão Geral</a>
+        <a href="/plans.html" class="active">Planos</a>
+        <a href="/profile.html">Empresa</a>
+        <a href="/admin.html" id="admin-nav-link" class="d-none">Administração</a>
+        <a href="/login.html" id="login-link">Entrar</a>
+        <button onclick="logout()" id="logout-btn" style="display: none; background: transparent; border: none; font-size: 13.5px; color: #ef4444; font-weight: 600; cursor: pointer;">Sair</button>
+      </nav>
+    </div>
+  </header>
 
-        <div style="text-align: center; font-size: 13px; color: var(--text-secondary); margin-top: -10px; margin-bottom: 15px;">
-            💡 <strong>Nota:</strong> Novas empresas cadastradas iniciam automaticamente no <strong>Plano Trial</strong> gratuito (limite de 10 guias/mês).
-        </div>
+  <main class="plans-container">
+    <div class="plans-hero">
+      <div class="plans-eyebrow">EMISSÃO EM LOTE • CONCILIAÇÃO SISPAG • MTLS SEFAZ</div>
+      <h1 class="plans-title">Escolha o plano ideal para o volume da sua empresa</h1>
+      <p class="plans-subtitle">
+        Automação de guias GNRE para e-commerces, indústrias e distribuidoras. Sem limite de usuários por CNPJ e com transmissão segura via certificado A1.
+      </p>
     </div>
 
-    <div id="toast" class="toast"></div>
+    <!-- BANNER DE CLIENTE COM ASSINATURA STRIPE -->
+    <div id="stripe-portal-banner" class="aliado-white-card" style="display: none; background: linear-gradient(135deg, rgba(0, 82, 204, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%); border: 1px solid rgba(0, 82, 204, 0.25); margin-bottom: 32px; padding: 20px 24px; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div>
+        <h4 style="margin: 0 0 4px 0; font-size: 16px; color: var(--text-dark-title, #0f172a); font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          💳 <span>Sua Assinatura Corporativa</span>
+        </h4>
+        <p style="margin: 0; font-size: 13px; color: var(--text-dark-muted, #64748b);">
+          Plano ativo: <strong id="portal-plan-name" style="color: var(--text-dark-title, #0f172a); text-transform: uppercase;">-</strong> • Status: <span id="portal-plan-status" style="color: #10b981; font-weight: 700;">Ativo</span>. Altere seu plano, atualize cartão ou cancele a qualquer momento com total transparência.
+        </p>
+      </div>
+      <button onclick="abrirPortalStripe()" id="btn-portal-stripe" class="btn-aliado-primary" style="white-space: nowrap;">
+        <span>Gerenciar Assinatura / Cancelar</span>
+        <span data-aliado-icon="arrow-right" data-size="14"></span>
+      </button>
+    </div>
 
-    <script src="/js/auth.js?v=3"></script>
-    <script src="/js/plans.js"></script>
+    <!-- GRID DE PLANOS -->
+    <div class="pricing-grid">
+      <!-- STARTER -->
+      <div class="pricing-card" id="card-starter">
+        <div>
+          <div class="plan-name">Starter</div>
+          <div class="plan-desc">Indicado para pequenos e-commerces que estão iniciando suas vendas interestaduais.</div>
+          
+          <div class="plan-price-box">
+            <span class="plan-price">R$ 199</span>
+            <span class="plan-period">/mês</span>
+          </div>
+
+          <ul class="plan-features">
+            <li>Até <strong>100 guias</strong> por mês</li>
+            <li>Transmissão em lote mTLS (todas as SEFAZs)</li>
+            <li>Geração de remessa Itaú SISPAG CNAB 240</li>
+            <li>Vínculo automático com XMLs de NF-e</li>
+            <li>Download de PDFs de guias em lote (.zip)</li>
+            <li>Suporte por e-mail em horário comercial</li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <button onclick="selecionarPlano('starter')" id="btn-starter" class="btn-aliado-secondary" style="width: 100%; justify-content: center;">
+            Assinar Plano Starter
+          </button>
+        </div>
+      </div>
+
+      <!-- PRO (RECOMENDADO) -->
+      <div class="pricing-card recommended" id="card-pro">
+        <div>
+          <div class="plan-name">Pro</div>
+          <div class="plan-desc">Ideal para marcas de moda, confecções e lojas virtuais de médio porte em crescimento acelerado.</div>
+          
+          <div class="plan-price-box">
+            <span class="plan-price">R$ 399</span>
+            <span class="plan-period">/mês</span>
+          </div>
+
+          <ul class="plan-features">
+            <li>Até <strong>500 guias</strong> por mês</li>
+            <li>Transmissão em lote mTLS (todas as SEFAZs)</li>
+            <li>Geração de remessa Itaú SISPAG CNAB 240</li>
+            <li>Suporte a múltiplos certificados A1</li>
+            <li>Fila de processamento prioritária</li>
+            <li>Histórico completo de auditoria e logs</li>
+            <li>Suporte prioritário via WhatsApp</li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <button onclick="selecionarPlano('pro')" id="btn-pro" class="btn-aliado-primary" style="width: 100%; justify-content: center;">
+            Assinar Plano Pro
+          </button>
+        </div>
+      </div>
+
+      <!-- ADVANCED -->
+      <div class="pricing-card" id="card-advanced">
+        <div>
+          <div class="plan-name">Advanced</div>
+          <div class="plan-desc">Para operações de grande volume, múltiplos centros de distribuição e fluxo intenso diário de guias.</div>
+          
+          <div class="plan-price-box">
+            <span class="plan-price">R$ 699</span>
+            <span class="plan-period">/mês</span>
+          </div>
+
+          <ul class="plan-features">
+            <li>Até <strong>1.500 guias</strong> por mês</li>
+            <li>Transmissão em lote mTLS (todas as SEFAZs)</li>
+            <li>Geração de remessa Itaú SISPAG CNAB 240</li>
+            <li>Acesso às APIs REST dedicadas do sistema</li>
+            <li>Suporte Premium 24/7 com gerente de conta</li>
+            <li>Retransmissão automática de falhas de SEFAZ</li>
+            <li>Exportação de relatórios gerenciais e fiscais</li>
+          </ul>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <button onclick="selecionarPlano('advanced')" id="btn-advanced" class="btn-aliado-secondary" style="width: 100%; justify-content: center;">
+            Assinar Plano Advanced
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD TAXA DE SETUP / HOMOLOGAÇÃO -->
+    <div class="setup-card">
+      <div class="setup-info">
+        <h3>🛠 Taxa de Setup / Implantação e Homologação Inicial</h3>
+        <p>
+          Taxa única aplicada exclusivamente para a prestação do serviço de implantação técnica. Inclui a parametrização segura do Certificado Digital A1 (.pfx) no servidor e o acompanhamento de ponta a ponta na homologação do primeiro arquivo de remessa Itaú SISPAG com a tesouraria da sua empresa.
+        </p>
+      </div>
+      <div class="setup-price">
+        <div class="price-tag">R$ 600,00</div>
+        <div class="price-desc">Taxa Única de Homologação</div>
+      </div>
+    </div>
+
+    <div style="text-align: center; font-size: 13px; color: var(--text-dark-muted, #64748b); margin-top: 10px;">
+      💡 <strong>Nota:</strong> Novas empresas cadastradas iniciam automaticamente no <strong>Trial Gratuito</strong> de avaliação com limite de até 10 guias/mês.
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Scripts -->
+  <script src="/js/aliado-icons.js"></script>
+  <script src="/js/aliado-ui.js"></script>
+  <script src="/js/auth.js?v=5"></script>
+  <script src="/js/plans.js?v=5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AliadoIcons.renderAll();
+      const token = localStorage.getItem('sb_access_token');
+      const loginLink = document.getElementById('login-link');
+      const logoutBtn = document.getElementById('logout-btn');
+      if (token) {
+        if (loginLink) loginLink.style.display = 'none';
+        if (logoutBtn) logoutBtn.style.display = 'inline-block';
+      }
+    });
+  </script>
 </body>
 </html>
